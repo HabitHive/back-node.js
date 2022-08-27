@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
 
-dotenv.config({ path: "../.env" });
+dotenv.config({ path: "../.env" }); //src 폴더가있는 동일선상의 파일 경로에 .env파일을 생성해주셔야 합니다
 
 const config = {
     development: {
