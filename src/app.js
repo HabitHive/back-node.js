@@ -1,10 +1,11 @@
 import express from "express";
 import dotenv from "dotenv";
-import router from "./routes/index.js";
+import router from "./route/index.js"
+import morgan from "morgan";
+import chalk from "chalk";
+import { sequelize } from "./models/index.js";
 
 dotenv.config();
-
-import { sequelize } from "./models/index.js";
 
 const app = express();
 
@@ -15,6 +16,7 @@ sequelize
     .then(() => console.log("db connect"))
     .catch((err) => console.error(err));
 
+app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -37,4 +39,4 @@ app.use((err, req, res, next) => {
     });
 });
 
-app.listen(app.get("port"), () => console.log(3000));
+app.listen(app.get("port"), () => console.log(chalk.blueBright(app.get("port"))+" 포트로 열렸습니다"));
