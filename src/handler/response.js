@@ -1,6 +1,5 @@
-export default (success, message, result) =>{
+export default (message, result) =>{
     return {
-        success: success,
         message: message,
         result: result,
     }
