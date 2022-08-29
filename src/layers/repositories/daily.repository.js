@@ -9,6 +9,14 @@ class dailycontroller {
   taglist = async (userId) => {
     const mytaglist = await UserTag.findAll({ where: { userId } });
   };
+
+  taglist = async (userId, usertagId, currentDate) => {
+    const tag = await UserTag.findOne({ where: { userId, usertagId } });
+    await Schedule.craete(
+      { timeCycle, weekCycle },
+      { where: { userId, usertagId } }
+    );
+  };
 }
 
 export default dailycontroller;

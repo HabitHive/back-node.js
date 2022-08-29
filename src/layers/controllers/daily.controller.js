@@ -19,6 +19,20 @@ class dailycontroller {
       const result = await this.dailyservices.taglist(userId);
     } catch {}
   };
+
+  schedule = async (req, res, next) => {
+    try {
+      const { userId } = res.locals;
+      const { usertagId } = req.params;
+      const { currentDate } = req.bady;
+
+      const result = await this.dailyservices.schedule(
+        userId,
+        usertagId,
+        currentDate
+      );
+    } catch {}
+  };
 }
 
 export default dailycontroller;

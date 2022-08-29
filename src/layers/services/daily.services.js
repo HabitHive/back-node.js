@@ -14,6 +14,16 @@ class dailycontroller {
 
     return result;
   };
+
+  schedule = async (userId, usertagId, currentDate) => {
+    const result = await this.dailyrepositories.schedule(
+      userId,
+      usertagId,
+      currentDate
+    );
+
+    return result;
+  };
 }
 
 export default dailycontroller;

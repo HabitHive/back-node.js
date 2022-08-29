@@ -6,6 +6,6 @@ router.get("/list");
 router.post("/buy?tagname=");
 router.get("/dailytag?todayDate=", dailycontroller.dailypage);
 router.get("/dailytag/list", dailycontroller.taglist);
-router.post("/schedule/add", dailycontroller);
+router.post("/schedule/add", dailycontroller.schedule);
 
 export default router;
