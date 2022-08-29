@@ -1,5 +1,5 @@
 import UserTag from "../../models/usertag.js";
-// import Tag from "../../models/tag.js";/
+import Tag from "../../models/tag.js";
 
 class dailycontroller {
   dailypage = async (userId, todayDate) => {

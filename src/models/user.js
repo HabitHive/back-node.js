@@ -7,7 +7,7 @@ export default class User extends Sequelize.Model {
     return super.init(
       {
         UserId: {
-          type: DataTypes.INTEGER,
+          type: Sequelize.INTEGER,
           primaryKey: true,
           autoIncrement: true,
         },
