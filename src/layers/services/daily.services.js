@@ -8,6 +8,12 @@ class dailycontroller {
 
     return result;
   };
+
+  taglist = async (userId) => {
+    const result = await this.dailyrepositories.taglist(userId);
+
+    return result;
+  };
 }
 
 export default dailycontroller;
