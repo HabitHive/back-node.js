@@ -1,7 +1,5 @@
 import dailyrepositories from "../repositories/daily.repository.js";
 
-class dailycontroller {
-    
-}
+class dailycontroller {}
 
 export default dailycontroller;

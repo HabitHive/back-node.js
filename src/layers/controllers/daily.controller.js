@@ -1,7 +1,5 @@
 import dailyservices from "../services/daily.services.js";
 
-class dailycontroller {
-    
-}
+class dailycontroller {}
 
 export default dailycontroller;

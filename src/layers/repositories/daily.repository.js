@@ -1,7 +1,5 @@
 import Tag from "../../models/tag.js";
 
-class dailycontroller {
-    
-}
+class dailycontroller {}
 
 export default dailycontroller;

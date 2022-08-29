@@ -1,6 +1,6 @@
 import express from "express";
-import UserRouter from "./user.router.js"
-import TagRouter from "./tag.router.js"
+import UserRouter from "./user.router.js";
+import TagRouter from "./tag.router.js";
 
 const router = express.Router();
 

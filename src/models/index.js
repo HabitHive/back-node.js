@@ -1,9 +1,9 @@
 export * from "./sequelize.js";
 import sequelize from "./sequelize.js";
 
-import User from "./user.js"
-import Tag from "./tag.js"
-import UserTag from "./usertag.js"
+import User from "./user.js";
+import Tag from "./tag.js";
+import UserTag from "./usertag.js";
 
 const db = {};
 
