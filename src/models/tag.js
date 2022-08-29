@@ -28,5 +28,7 @@ export default class Tag extends Sequelize.Model {
       }
     );
   }
-  static associate(db) {}
+  static associate(db) {
+    db.Tag.hasMany(db.UserTag);
+  }
 }

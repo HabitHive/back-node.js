@@ -6,15 +6,15 @@ export default class UserTag extends Sequelize.Model {
   static init(sequelize) {
     return super.init(
       {
-        tagname: {
+        period: {
           type: Sequelize.STRING(200),
           allowNull: false,
         },
-        content: {
+        startAt: {
           type: Sequelize.STRING(200),
           allowNull: false,
         },
-        image: {
+        endDate: {
           type: Sequelize.STRING(200),
           allowNull: true,
         },
@@ -31,5 +31,7 @@ export default class UserTag extends Sequelize.Model {
       }
     );
   }
-  static associate(db) {}
+  static associate(db) {
+    db.UserTag.belongsTo(db.Tag);
+  }
 }
