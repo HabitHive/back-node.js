@@ -3,24 +3,38 @@ import Sequelize from "sequelize";
 import { sequelize } from "./sequelize.js";
 
 export default class User extends Sequelize.Model {
-    static init(sequelize) {
-        return super.init(
-            {
-                
-            },
-            {
-                sequelize,
-                timestamps: true,
-                paranoid: false,
-                underscored: false,
-                modelName: "User",
-                tableName: "user",
-                charset: "utf8",
-                collate: "utf8_general_ci",
-            }
-        );
-    }
-    static associate(db) {
-
-    }
+  static init(sequelize) {
+    return super.init(
+      {
+        UserId: {
+          type: DataTypes.INTEGER,
+          primaryKey: true,
+          autoIncrement: true,
+        },
+        email: {
+          type: Sequelize.STRING(30),
+          allowNull: true,
+        },
+        password: {
+          type: Sequelize.STRING(100),
+          allowNull: true,
+        },
+        nickname: {
+          type: Sequelize.STRING(20),
+          allowNull: false,
+        },
+      },
+      {
+        sequelize /* static init 메서드의 매개변수와 연결되는 옵션으로, db.sequelize 객체를 넣어야 한다. */,
+        timestamps: false /* true : 각각 레코드가 생성, 수정될 때의 시간이 자동으로 입력된다. */,
+        underscored: false /* 카멜 표기법을 스네이크 표기법으로 바꾸는 옵션 */,
+        modelName: "User" /* 모델 이름을 설정. */,
+        tableName: "users" /* 데이터베이스의 테이블 이름. */,
+        paranoid: false /* true : deletedAt이라는 컬럼이 생기고 지운 시각이 기록된다. */,
+        charset: "utf8" /* 인코딩 */,
+        collate: "utf8_general_ci",
+      }
+    );
+  }
+  static associate(db) {}
 }
