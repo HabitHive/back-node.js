@@ -7,15 +7,15 @@ export default class UserTag extends Sequelize.Model {
     return super.init(
       {
         period: {
-          type: Sequelize.STRING(200),
+          type: Sequelize.STRING(100),
           allowNull: false,
         },
-        startAt: {
-          type: Sequelize.STRING(200),
+        startDate: {
+          type: Sequelize.DATE,
           allowNull: false,
         },
         endDate: {
-          type: Sequelize.STRING(200),
+          type: Sequelize.DATE,
           allowNull: true,
         },
       },

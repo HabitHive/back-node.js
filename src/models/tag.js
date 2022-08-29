@@ -7,12 +7,11 @@ export default class Tag extends Sequelize.Model {
     return super.init(
       {
         tagname: {
-          type: Sequelize.STRING(100),
+          type: Sequelize.STRING(50),
           allowNull: false,
-          unique: true,
         },
         category: {
-          type: Sequelize.STRING(10),
+          type: Sequelize.STRING(30),
           allowNull: false,
         },
       },
