@@ -2,21 +2,17 @@ import Sequelize from "sequelize";
 
 import { sequelize } from "./sequelize.js";
 
-export default class UserTag extends Sequelize.Model {
+export default class Schedule extends Sequelize.Model {
   static init(sequelize) {
     return super.init(
       {
-        period: {
-          type: Sequelize.STRING(100),
+        timeCycle: {
+          type: Sequelize.INTEGER(50),
           allowNull: false,
         },
-        startDate: {
-          type: Sequelize.DATE,
+        weekCycle: {
+          type: Sequelize.STRING(50),
           allowNull: false,
-        },
-        endDate: {
-          type: Sequelize.DATE,
-          allowNull: true,
         },
       },
       {
@@ -24,16 +20,14 @@ export default class UserTag extends Sequelize.Model {
         timestamps: true,
         paranoid: false,
         underscored: false,
-        modelName: "UserTag",
-        tableName: "userTag",
+        modelName: "Schedule",
+        tableName: "schedule",
         charset: "utf8",
         collate: "utf8_general_ci",
       }
     );
   }
   static associate(db) {
-    db.UserTag.belongsTo(db.User);
-    db.UserTag.belongsTo(db.Tag);
-    db.UserTag.hasMany(db.Schedule);
+    db.Schedule.belongsTo(db.UserTag);
   }
 }
