@@ -1,7 +1,7 @@
 export * from "./sequelize.js";
 import sequelize from "./sequelize.js";
 
-import User from "./user.js"
+import User from "./user.js";
 
 const db = {};
 
