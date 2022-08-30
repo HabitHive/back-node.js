@@ -37,6 +37,11 @@ export default class User extends Sequelize.Model {
     );
   }
   static associate(db) {
+    db.User.hasMany(db.Pet, {
+      foreignKey: { name: "user_id", allowNull: false },
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    });
     db.User.hasMany(db.UserTag);
   }
 }
