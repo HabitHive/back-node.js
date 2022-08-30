@@ -1,6 +1,6 @@
 import Dailyrepositories from "../repositories/daily.repository.js";
 
-class dailycontroller {
+class dailyservices {
   dailyrepositories = new Dailyrepositories();
 
   dailypage = async (userId, todayDate) => {
@@ -34,15 +34,16 @@ class dailycontroller {
     return date;
   };
 
-  schedule = async (userId, usertagId, currentDate) => {
+  schedule = async (userId, usertagId, timeCycle, weekCycle) => {
     const result = await this.dailyrepositories.schedule(
       userId,
       usertagId,
-      currentDate
+      timeCycle,
+      weekCycle
     );
 
     return result;
   };
 }
 
-export default dailycontroller;
+export default dailyservices;
