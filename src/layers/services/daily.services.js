@@ -34,11 +34,12 @@ class dailycontroller {
     return date;
   };
 
-  schedule = async (userId, usertagId, currentDate) => {
+  schedule = async (userId, usertagId, timeCycle, weekCycle) => {
     const result = await this.dailyrepositories.schedule(
       userId,
       usertagId,
-      currentDate
+      timeCycle,
+      weekCycle
     );
 
     return result;

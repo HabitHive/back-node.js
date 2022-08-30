@@ -24,12 +24,8 @@ class dailycontroller {
     return tag;
   };
 
-  schedule = async (userId, usertagId, currentDate) => {
-    const tag = await UserTag.findOne({ where: { userId, usertagId } });
-    await Schedule.craete(
-      { timeCycle, weekCycle },
-      { where: { userId, usertagId } }
-    );
+  schedule = async (userId, usertagId, timeCycle, weekCycle) => {
+    await Schedule.craete({ timeCycle, weekCycle, UserTagId: usertagId });
   };
 }
 
