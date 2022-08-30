@@ -1,11 +1,19 @@
 import UserService from "../services/user.service.js";
+import Joi from "joi";
 
 class UserController {
   //회원가입              /api/user/signup
   singup = async (req, res) => {
     try {
-      const { email, password, nickname } = req.body;
-    } catch (error) {}
+      const result = await UserService.singup(req.body);
+      if (result) {
+        res.status(201).json({ message: "성공", result: {} });
+      } else {
+        res.status(400).json({ message: "error", result: {} });
+      }
+    } catch (error) {
+      res.json(error);
+    }
   };
 
   //로그인                /api/user/login
