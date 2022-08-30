@@ -1,5 +1,5 @@
 import UserTag from "../../models/usertag.js";
-// import Tag from "../../models/tag.js";/
+import Tag from "../../models/tag.js";
 
 class dailycontroller {
   dailypage = async (userId, todayDate) => {
@@ -7,10 +7,24 @@ class dailycontroller {
   };
 
   taglist = async (userId) => {
-    const mytaglist = await UserTag.findAll({ where: { userId } });
+    const mytaglist = await UserTag.findAll({
+      where: { UserUserId: userId },
+      include: {
+        model: Tag,
+        attributes: ["tagname"],
+      },
+    });
+    return mytaglist;
   };
 
-  taglist = async (userId, usertagId, currentDate) => {
+  schedulepage = async (userId, usertagId) => {
+    const tag = await UserTag.findOne({
+      where: { id: usertagId, UserUserId: userId },
+    });
+    return tag;
+  };
+
+  schedule = async (userId, usertagId, currentDate) => {
     const tag = await UserTag.findOne({ where: { userId, usertagId } });
     await Schedule.craete(
       { timeCycle, weekCycle },

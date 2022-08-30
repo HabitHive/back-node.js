@@ -7,6 +7,7 @@ router.get("/list");
 router.post("/buy");
 router.get("/dailytag", dailycontroller.dailypage);
 router.get("/dailytag/list", dailycontroller.taglist);
-router.post("/schedule/add", dailycontroller.schedule);
+router.get("/schedule/add/:usertagId", dailycontroller.schedulepage);
+router.post("/schedule/add/:usertagId", dailycontroller.schedule);
 
 export default router;

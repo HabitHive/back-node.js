@@ -1,4 +1,4 @@
-import User from "../../models/user";
+import User from "../../models/user.js";
 
 class UserRepository {
   //회원가입              /api/user/signup
