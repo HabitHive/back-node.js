@@ -22,6 +22,17 @@ class dailycontroller {
     } catch {}
   };
 
+  schedulepage = async (req, res, next) => {
+    try {
+      const { userId } = res.locals;
+      // const userId = 1;
+      const { usertagId } = req.params;
+
+      const result = await this.dailyservices.schedulepage(userId, usertagId);
+      return res.status(200).json({ result, message: "태그의 유효기간" });
+    } catch {}
+  };
+
   schedule = async (req, res, next) => {
     try {
       const { userId } = res.locals;
