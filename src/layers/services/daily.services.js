@@ -25,6 +25,15 @@ class dailycontroller {
     return taglists;
   };
 
+  schedulepage = async (userId, usertagId) => {
+    const result = await this.dailyrepositories.schedulepage(userId, usertagId);
+    let date = result.startDate;
+    let period = result.period / 1;
+    // date = new Date(); //현재 시간
+    date.setDate(date.getDate() + period);
+    return date;
+  };
+
   schedule = async (userId, usertagId, currentDate) => {
     const result = await this.dailyrepositories.schedule(
       userId,
