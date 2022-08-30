@@ -1,7 +1,7 @@
 import UserTag from "../../models/usertag.js";
 import Tag from "../../models/tag.js";
 
-class dailycontroller {
+class dailyrepositories {
   dailypage = async (userId, todayDate) => {
     const mydailypage = await UserTag.findAll({ where: { userId } });
   };
@@ -29,4 +29,4 @@ class dailycontroller {
   };
 }
 
-export default dailycontroller;
+export default dailyrepositories;

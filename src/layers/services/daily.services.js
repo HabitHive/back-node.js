@@ -1,6 +1,6 @@
 import Dailyrepositories from "../repositories/daily.repository.js";
 
-class dailycontroller {
+class dailyservices {
   dailyrepositories = new Dailyrepositories();
 
   dailypage = async (userId, todayDate) => {
@@ -46,4 +46,4 @@ class dailycontroller {
   };
 }
 
-export default dailycontroller;
+export default dailyservices;
