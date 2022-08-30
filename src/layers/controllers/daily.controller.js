@@ -15,8 +15,10 @@ class dailycontroller {
   taglist = async (req, res, next) => {
     try {
       const { userId } = res.locals;
+      // const userId = 2;
 
       const result = await this.dailyservices.taglist(userId);
+      return res.status(200).json({ result, message: "유저의 태그 목록" });
     } catch {}
   };
 
