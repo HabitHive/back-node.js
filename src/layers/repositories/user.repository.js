@@ -5,7 +5,7 @@ class UserRepository {
   singup = async (email, nickname, hashedpassword) => {
     const exsistemail = await User.findOne({ where: { email } });
     if (exsistemail) {
-      return false;
+      throw new Error("exsistemail");
     } else {
       await User.create({
         email,
@@ -17,7 +17,10 @@ class UserRepository {
   };
 
   //로그인                /api/user/login
-  login = async () => {};
+  login = async (email) => {
+    const result = await User.findOne({ where: { email }, raw: true });
+    return result;
+  };
 
   //로그 아웃             /api/user/logout
   logout = async () => {};

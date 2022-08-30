@@ -66,7 +66,7 @@ router.get("/test3", async (req, res) => {
 router.get("/test4", async (req, res) => {
   try {
     console.log(req.session.User);
-    if (req.session.User) {
+    if (req.session) {
       req.session.destroy((err) => {
         if (err) {
           console.log(err);
@@ -84,7 +84,7 @@ router.get("/test4", async (req, res) => {
 
 router.get("/test5", async (req, res) => {
   try {
-    console.log(req.session);
+    console.log(req.session.a4);
     res.json({ result: req.session });
   } catch (error) {
     res.json(error);
