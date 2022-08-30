@@ -15,7 +15,7 @@ export default class PetController {
     return next();
   };
 
-  // 1.1.0 이후 추가 예정
+  // 1.1.0 에서 사용 될 기능
   // 보유 펫 리스트 정보
   getPetList = async (req, res, next) => {
     // const { userId } = res.locals;
