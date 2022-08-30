@@ -11,7 +11,7 @@ class UserController {
           req.body.password,
           req
         );
-        res.status(201).json({ token });
+        res.status(201).json(token);
       }
     } catch (error) {
       console.log(error);
@@ -24,7 +24,7 @@ class UserController {
     try {
       const { email, password } = req.body;
       const token = await UserService.login(email, password, req);
-      res.status(201).json({ token });
+      res.status(201).json(token);
     } catch (error) {
       console.log(error);
       res.status(400).send(error.message);
