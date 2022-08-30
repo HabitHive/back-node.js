@@ -1,8 +1,20 @@
-import User from "../../models/user";
+import User from "../../models/user.js";
 
 class UserRepository {
   //회원가입              /api/user/signup
-  singup = async () => {};
+  singup = async (email, nickname, hashedpassword) => {
+    const exsistemail = await User.findOne({ where: { email } });
+    if (exsistemail) {
+      return false;
+    } else {
+      await User.create({
+        email,
+        password: hashedpassword,
+        nickname,
+      });
+      return true;
+    }
+  };
 
   //로그인                /api/user/login
   login = async () => {};
