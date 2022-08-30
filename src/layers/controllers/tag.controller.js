@@ -17,7 +17,7 @@ class tagcontroller {
     try {
       const { userId } = res.locals;
       const { tagId } = req.params;
-      const { period, startDate } = req.params;
+      const { period, startDate } = req.body;
 
       const result = await this.tagservices.tagbuy(
         userId,
