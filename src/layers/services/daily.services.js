@@ -5,8 +5,24 @@ class dailyservices {
 
   dailypage = async (userId, todayDate) => {
     const result = await this.dailyrepositories.dailypage(userId, todayDate);
-
-    return result;
+    // let startDate = new Date();
+    // let endDate = new Date();
+    // startDate.setDate(startDate.getDate() + 30);
+    // endDate.setDate(endDate.getDate() - 30);
+    // todayDate.setDate(todayDate.getDate() - 4)
+    const dailytaglists = result.map((list) => {
+      if (todayDate <= todayDate <= todayDate && todayDate.getDay()) {
+        console.log(todayDate.getDay()); //나중에 weekCycle 로 제한 하기
+        return {
+          usertagId: list.id,
+          tagname: list.Tag.tagname,
+          // timeCycle: list.schedule.timeCycle,
+        };
+      }
+    });
+    //현재 날짜의 대해 유효기간안에 있고 (startDate > 현재날짜 < endDate)
+    // 현재 날짜의 요일이 weekCycle에 (있으면 보여주거나),(없을면 제거하거나)
+    return dailytaglists;
   };
 
   taglist = async (userId) => {
