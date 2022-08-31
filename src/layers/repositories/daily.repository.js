@@ -1,9 +1,23 @@
 import UserTag from "../../models/usertag.js";
 import Tag from "../../models/tag.js";
+import Schedule from "../../models/schedule.js";
 
 class dailyrepositories {
   dailypage = async (userId, todayDate) => {
-    const mydailypage = await UserTag.findAll({ where: { userId } });
+    const mydailypage = await UserTag.findAll({
+      where: { UserUserId: userId },
+      include: [
+        {
+          model: Tag,
+          attributes: ["tagname"],
+        },
+        {
+          model: Schedule,
+          attributes: ["timeCycle", "weekCycle"],
+        },
+      ],
+    });
+    return mydailypage;
   };
 
   taglist = async (userId) => {

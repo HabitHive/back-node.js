@@ -5,11 +5,13 @@ class dailycontroller {
 
   dailypage = async (req, res, next) => {
     try {
-      const { userId } = res.locals;
-      const { todayDate } = req.query;
-
+      // const { userId } = res.locals;
+      const userId = 2;
+      // const { todayDate } = req.query;
+      const todayDate = new Date();
       const result = await this.dailyservices.dailypage(userId, todayDate);
-    } catch {}
+      return res.status(200).json({ result, message: "날짜에 맞는 태그 일정" });
+    } catch (error) {}
   };
 
   taglist = async (req, res, next) => {
