@@ -1,6 +1,9 @@
 import User from "../../models/user.js";
 
 class UserRepository {
+  findOneUser = async (userId) => {
+    return await User.findOne({ where: { userId } });
+  };
   //회원가입              /api/user/signup
   singup = async () => {};
 

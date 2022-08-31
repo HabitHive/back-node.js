@@ -27,21 +27,43 @@ class UserController {
   };
 
   //유저정보              /api/user/mypage/info
-  mp_info = async (req, res) => {
+  mypageInfo = async (req, res) => {
+    const { userId } = res.locals;
+
     try {
-    } catch (error) {}
+      const receive = await UserService.myInfo(userId);
+      res
+        .status(receive.status)
+        .json({ message: receive.message, result: receive.result });
+    } catch (error) {
+      res.status(error.status).json({ message: error.message });
+    }
   };
 
   //현재 진행 중 태그     /api/user/mypage/still
-  mp_still = async (req, res) => {
+  mypageStillTag = async (req, res) => {
+    const { userId } = res.locals;
     try {
-    } catch (error) {}
+      const receive = await UserService.stillTag();
+      res
+        .status(receive.status)
+        .json({ message: receive.message, result: receive.result });
+    } catch (error) {
+      res.status(error.status).json({ message: error.message });
+    }
   };
 
   //완료된 태그           /api/user/mypage/end
-  mp_end = async (req, res) => {
+  mypageDoneTag = async (req, res) => {
+    const { userId } = res.locals;
     try {
-    } catch (error) {}
+      const receive = await UserService.doneTag();
+      res
+        .status(receive.status)
+        .json({ message: receive.message, result: receive.result });
+    } catch (error) {
+      res.status(error.status).json({ message: error.message });
+    }
   };
 }
 
