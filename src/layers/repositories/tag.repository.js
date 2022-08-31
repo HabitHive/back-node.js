@@ -2,20 +2,18 @@ import Tag from "../../models/tag.js";
 import User from "../../models/user.js";
 import UserTag from "../../models/usertag.js";
 
-class tagrepositories {
+export default class tagRepositories {
   interest = async (userId) => {
-    const interests = await User.findOne({ where: { userId } });
-    return interests;
+    const userInfo = await User.findOne({ where: { userId } });
+    return userInfo;
   };
 
-  buypage = async () => {
-    const taglist = await Tag.findAll();
-    return taglist;
+  buyPage = async () => {
+    const tagList = await Tag.findAll();
+    return tagList;
   };
 
-  tagbuy = async (userId, tagId, period, startDate, endDate) => {
+  tagBuy = async (userId, tagId, period, startDate, endDate) => {
     await UserTag.craete({ userId, tagId, period, startDate, endDate });
   };
 }
-
-export default tagrepositories;

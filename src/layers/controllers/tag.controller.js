@@ -1,25 +1,28 @@
-import Tagservices from "../services/tag.services.js";
+import TagServices from "../services/tag.services.js";
 
-class tagcontroller {
-  tagservices = new Tagservices();
+export default class tagController {
+  tagServices = new TagServices();
 
-  buypage = async (req, res, next) => {
+  buyPage = async (req, res, next) => {
     try {
       const { userId } = res.locals;
 
-      const result = await this.tagservices.buypage(userId);
+      const result = await this.tagServices.buyPage(userId);
 
       return res.status(200).json({ result, message: "목록 불러오기 성공" });
-    } catch {}
+    } catch (error) {
+      console.log(error);
+      res.status(400).send(error.message);
+    }
   };
 
-  tagbuy = async (req, res, next) => {
+  tagBuy = async (req, res, next) => {
     try {
       const { userId } = res.locals;
       const { tagId } = req.params;
       const { period, startDate } = req.body;
 
-      const result = await this.tagservices.tagbuy(
+      const result = await this.tagServices.tagBuy(
         userId,
         tagId,
         period,
@@ -27,7 +30,9 @@ class tagcontroller {
       );
 
       return res.status(200).json({ result, message: "내 태그에 추가" });
-    } catch {}
+    } catch (error) {
+      console.log(error);
+      res.status(400).send(error.message);
+    }
   };
 }
-export default tagcontroller;

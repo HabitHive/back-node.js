@@ -1,55 +1,68 @@
-import Dailyservices from "../services/daily.services.js";
+import DailyServices from "../services/daily.services.js";
 
-class dailycontroller {
-  dailyservices = new Dailyservices();
+export default class dailycontroller {
+  dailyServices = new DailyServices();
 
-  dailypage = async (req, res, next) => {
+  dailyPage = async (req, res, next) => {
     try {
-      // const { userId } = res.locals;
-      const userId = 2;
-      // const { todayDate } = req.query;
-      const todayDate = new Date();
-      const result = await this.dailyservices.dailypage(userId, todayDate);
+      const { userId } = res.locals;
+      // const userId = 2;
+      const { todayDate } = req.query;
+      // const todayDate = new Date();
+      const result = await this.dailyServices.dailyPage(userId, todayDate);
+
       return res.status(200).json({ result, message: "날짜에 맞는 태그 일정" });
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+      res.status(400).send(error.message);
+    }
   };
 
-  taglist = async (req, res, next) => {
+  tagList = async (req, res, next) => {
     try {
       const { userId } = res.locals;
       // const userId = 2;
 
-      const result = await this.dailyservices.taglist(userId);
+      const result = await this.dailyServices.tagList(userId);
+
       return res.status(200).json({ result, message: "유저의 태그 목록" });
-    } catch {}
+    } catch (error) {
+      console.log(error);
+      res.status(400).send(error.message);
+    }
   };
 
-  schedulepage = async (req, res, next) => {
+  schedulePage = async (req, res, next) => {
     try {
       const { userId } = res.locals;
       // const userId = 1;
-      const { usertagId } = req.params;
+      const { userTagId } = req.params;
 
-      const result = await this.dailyservices.schedulepage(userId, usertagId);
+      const result = await this.dailyServices.schedulePage(userId, userTagId);
+
       return res.status(200).json({ result, message: "태그의 유효기간" });
-    } catch {}
+    } catch (error) {
+      console.log(error);
+      res.status(400).send(error.message);
+    }
   };
 
   schedule = async (req, res, next) => {
     try {
       const { userId } = res.locals;
-      const { usertagId } = req.params;
+      const { userTagId } = req.params;
       const { timeCycle, weekCycle } = req.bady;
 
-      const result = await this.dailyservices.schedule(
+      const result = await this.dailyServices.schedule(
         userId,
-        usertagId,
+        userTagId,
         timeCycle,
         weekCycle
       );
       return res.status(200).json({ result, message: "내 태그 스케줄 추가" });
-    } catch {}
+    } catch (error) {
+      console.log(error);
+      res.status(400).send(error.message);
+    }
   };
 }
-
-export default dailycontroller;
