@@ -1,48 +1,27 @@
-import { Op } from "sequelize";
+import { Op, where } from "sequelize";
 import Pet from "../../models/pet.js";
 
-export default class PetRepository {
-  /**
-   * 유저 아이디를 받아 펫을 생성한다.
-   * @param {number} userId 숫자형의 아이디
-   * @returns 생성된 펫의 정보를 반환
-   */
-  createPet = async (userId) => {
-    const pet = await Pet.create({
-      user_id: userId,
-      type: 1,
-      pet_name: "",
-      level: 1,
-      exp: 0,
-    });
+export default new (class PetRepository {
+  findPet = async (userId) => {
+    const pet = await Pet.findOne({ where: { user_id: userId } });
 
     return pet;
   };
-
-  /**
-   * 펫을 구입한 경우 새로운 펫 정보를 생성한다.
-   * @param {number} userId 숫자형의 아이디
-   * @param {number} type 펫의 종류 번호
-   * @param {string} petName 설정된 펫의 이름
-   * @returns 생성된 펫의 정보를 반환
-   */
-  createPet2 = async (userId, type, petName) => {
-    const pet = await Pet.create({
-      user_id: userId,
-      type,
-      pet_name: petName,
-      level: 1,
-      exp: 0,
+  findOrCreatePet = async (userId) => {
+    const [pet, created] = await Pet.findOrCreate({
+      where: { user_id: userId },
+      defaults: { type: 1, level: 1, exp: 0 },
     });
-    return pet;
+
+    return { pet, created };
   };
 
-  findPet = async (userId, type) => {
-    const pet = await Pet.findOne({
-      where: { [Op.and]: [{ type }, { user_id: userId }] },
-      raw: true,
-    });
+  updatePet = async (userId, level, exp) => {
+    const pet = await Pet.update(
+      { level, exp },
+      { where: { user_id: userId } }
+    );
 
     return pet;
   };
-}
+})();
