@@ -65,8 +65,8 @@ router.get("/test3", async (req, res) => {
 //세션값 삭제
 router.get("/test4", async (req, res) => {
   try {
-    console.log(req.session.User);
-    if (req.session) {
+    console.log(req.session.a1);
+    if (req.session.a1) {
       req.session.destroy((err) => {
         if (err) {
           console.log(err);

@@ -65,14 +65,8 @@ class UserService {
         { expiresIn: "7d" }
       );
 
-      req.session.a1 = dummy.dummyaccesstoken1;
-      req.session.a2 = dummy.dummyaccesstoken2;
-      req.session.a3 = dummy.dummyaccesstoken3;
-      req.session.a4 = accesstoken;
-      req.session.b1 = dummy.dummyrefreshtoken1;
-      req.session.b2 = dummy.dummyrefreshtoken2;
-      req.session.b3 = dummy.dummyrefreshtoken3;
-      req.session.b4 = refreshtoken;
+      req.session.a1 = accesstoken;
+      req.session.b1 = refreshtoken;
       req.session.save((err) => {
         if (err) {
           throw new Error("session save error");
