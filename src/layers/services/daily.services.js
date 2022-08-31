@@ -9,8 +9,10 @@ class dailyservices {
     // let endDate = new Date();
     // startDate.setDate(startDate.getDate() + 30);
     // endDate.setDate(endDate.getDate() - 30);
+    // todayDate.setDate(todayDate.getDate() - 4)
     const dailytaglists = result.map((list) => {
-      if (startDate <= todayDate <= endDate) {
+      if (todayDate <= todayDate <= todayDate && todayDate.getDay()) {
+        console.log(todayDate.getDay()); //나중에 weekCycle 로 제한 하기
         return {
           usertagId: list.id,
           tagname: list.Tag.tagname,
