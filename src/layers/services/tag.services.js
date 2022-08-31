@@ -1,20 +1,20 @@
-import Tagrepositories from "../repositories/tag.repository.js";
+import TagRepositories from "../repositories/tag.repository.js";
 
-class tagservices {
-  tagrepositories = new Tagrepositories();
+export default class tagServices {
+  tagRepositories = new TagRepositories();
 
-  buypage = async (userId) => {
-    const interest = await this.tagrepositories.buypage(userId);
-    const result = await this.tagrepositories.buypage();
+  buyPage = async (userId) => {
+    const interest = await this.tagRepositories.interest(userId);
+    const result = await this.tagRepositories.buyPage();
 
     return result;
   };
 
-  tagbuy = async (userId, tagId, period, startDate) => {
+  tagBuy = async (userId, tagId, period, startDate) => {
     let endDate = startDate;
     endDate.setDate(endDate.getDate() + period);
 
-    const result = await this.tagrepositories.tagbuy(
+    const result = await this.tagRepositories.tagBuy(
       userId,
       tagId,
       period,
@@ -25,5 +25,3 @@ class tagservices {
     return result;
   };
 }
-
-export default tagservices;

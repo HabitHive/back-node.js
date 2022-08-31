@@ -2,14 +2,14 @@ import UserTag from "../../models/usertag.js";
 import Tag from "../../models/tag.js";
 import Schedule from "../../models/schedule.js";
 
-class dailyrepositories {
-  dailypage = async (userId, todayDate) => {
-    const mydailypage = await UserTag.findAll({
+export default class dailyRepositories {
+  dailyPage = async (userId, todayDate) => {
+    const myDailyPage = await UserTag.findAll({
       where: { UserUserId: userId },
       include: [
         {
           model: Tag,
-          attributes: ["tagname"],
+          attributes: ["tagName"],
         },
         {
           model: Schedule,
@@ -17,23 +17,23 @@ class dailyrepositories {
         },
       ],
     });
-    return mydailypage;
+    return myDailyPage;
   };
 
-  taglist = async (userId) => {
-    const mytaglist = await UserTag.findAll({
+  tagList = async (userId) => {
+    const myTagList = await UserTag.findAll({
       where: { UserUserId: userId },
       include: {
         model: Tag,
-        attributes: ["tagname"],
+        attributes: ["tagName"],
       },
     });
-    return mytaglist;
+    return myTagList;
   };
 
-  schedulepage = async (userId, usertagId) => {
+  schedulePage = async (userId, userTagId) => {
     const tag = await UserTag.findOne({
-      where: { id: usertagId, UserUserId: userId },
+      where: { id: userTagId, UserUserId: userId },
     });
     return tag;
   };
@@ -42,5 +42,3 @@ class dailyrepositories {
     await Schedule.craete({ timeCycle, weekCycle, UserTagId: usertagId });
   };
 }
-
-export default dailyrepositories;

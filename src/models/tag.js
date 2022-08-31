@@ -6,7 +6,7 @@ export default class Tag extends Sequelize.Model {
   static init(sequelize) {
     return super.init(
       {
-        tagname: {
+        tagName: {
           type: Sequelize.STRING(50),
           allowNull: false,
         },
