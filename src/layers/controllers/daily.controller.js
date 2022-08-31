@@ -37,13 +37,15 @@ class dailycontroller {
     try {
       const { userId } = res.locals;
       const { usertagId } = req.params;
-      const { currentDate } = req.bady;
+      const { timeCycle, weekCycle } = req.bady;
 
       const result = await this.dailyservices.schedule(
         userId,
         usertagId,
-        currentDate
+        timeCycle,
+        weekCycle
       );
+      return res.status(200).json({ result, message: "내 태그 스케줄 추가" });
     } catch {}
   };
 }

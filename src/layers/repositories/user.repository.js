@@ -5,10 +5,25 @@ class UserRepository {
     return await User.findOne({ where: { userId } });
   };
   //회원가입              /api/user/signup
-  singup = async () => {};
+  singup = async (email, nickname, hashedpassword) => {
+    const exsistemail = await User.findOne({ where: { email } });
+    if (exsistemail) {
+      throw new Error("exsistemail");
+    } else {
+      await User.create({
+        email,
+        password: hashedpassword,
+        nickname,
+      });
+      return true;
+    }
+  };
 
   //로그인                /api/user/login
-  login = async () => {};
+  login = async (email) => {
+    const result = await User.findOne({ where: { email }, raw: true });
+    return result;
+  };
 
   //로그 아웃             /api/user/logout
   logout = async () => {};

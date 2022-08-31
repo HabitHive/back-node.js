@@ -1,7 +1,7 @@
 import UserTag from "../../models/usertag.js";
 import Tag from "../../models/tag.js";
 
-class dailycontroller {
+class dailyrepositories {
   dailypage = async (userId, todayDate) => {
     const mydailypage = await UserTag.findAll({ where: { userId } });
   };
@@ -24,13 +24,9 @@ class dailycontroller {
     return tag;
   };
 
-  schedule = async (userId, usertagId, currentDate) => {
-    const tag = await UserTag.findOne({ where: { userId, usertagId } });
-    await Schedule.craete(
-      { timeCycle, weekCycle },
-      { where: { userId, usertagId } }
-    );
+  schedule = async (userId, usertagId, timeCycle, weekCycle) => {
+    await Schedule.craete({ timeCycle, weekCycle, UserTagId: usertagId });
   };
 }
 
-export default dailycontroller;
+export default dailyrepositories;

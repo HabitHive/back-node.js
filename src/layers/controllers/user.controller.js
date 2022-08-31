@@ -4,27 +4,44 @@ class UserController {
   //회원가입              /api/user/signup
   singup = async (req, res) => {
     try {
-      const { email, password, nickname } = req.body;
-    } catch (error) {}
+      const result = await UserService.singup(req.body);
+      if (result === true) {
+        const token = await UserService.login(
+          req.body.email,
+          req.body.password,
+          req
+        );
+        res.status(201).json(token);
+      }
+    } catch (error) {
+      console.log(error);
+      res.status(400).send(error.message);
+    }
   };
 
   //로그인                /api/user/login
   login = async (req, res) => {
     try {
-    } catch (error) {}
+      const { email, password } = req.body;
+      const token = await UserService.login(email, password, req);
+      res.status(201).json(token);
+    } catch (error) {
+      console.log(error);
+      res.status(400).send(error.message);
+    }
   };
 
   //로그 아웃             /api/user/logout
   logout = async (req, res) => {
     try {
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+      res.status(400).send(error.message);
+    }
   };
 
   //관심사 설정           /api/user/interest
-  interest = async (req, res) => {
-    try {
-    } catch (error) {}
-  };
+  interest = async (req, res) => {};
 
   //유저정보              /api/user/mypage/info
   mypageInfo = async (req, res) => {
