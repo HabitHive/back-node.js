@@ -18,8 +18,8 @@ class UserRepository {
 
   //로그인                /api/user/login
   login = async (email) => {
-    const result = await User.findOne({ where: { email }, raw: true });
-    return result;
+    const find_user = await User.findOne({ where: { email }, raw: true });
+    return find_user;
   };
 
   //관심사 설정           /api/user/interest

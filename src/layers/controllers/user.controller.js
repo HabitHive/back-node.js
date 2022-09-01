@@ -4,14 +4,14 @@ class UserController {
   //회원가입              /api/user/signup
   singup = async (req, res) => {
     try {
-      const result = await UserService.singup(req.body);
-      if (result === true) {
+      const service_result = await UserService.singup(req.body);
+      if (service_result) {
         const token = await UserService.login(
           req.body.email,
           req.body.password,
           req
         );
-        res.status(201).json(token);
+        res.status(201).json({ token: token });
       }
     } catch (error) {
       console.log(error);
@@ -27,7 +27,7 @@ class UserController {
         req.body.password,
         req
       );
-      res.status(201).json(token);
+      res.status(201).json({ token: token });
     } catch (error) {
       console.log(error);
       res.status(400).send(error.message);
