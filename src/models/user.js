@@ -6,7 +6,7 @@ export default class User extends Sequelize.Model {
   static init(sequelize) {
     return super.init(
       {
-        UserId: {
+        user_id: {
           type: Sequelize.INTEGER,
           primaryKey: true,
           autoIncrement: true,
