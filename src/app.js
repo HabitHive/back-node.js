@@ -32,11 +32,11 @@ app.use(cookieParser());
 
 //session store
 const options = {
-  host: process.env.DB_HOST,
+  host: process.env.DEV_DB_HOST,
   port: 3306,
-  user: process.env.DB_ID,
-  password: process.env.DB_PW,
-  database: process.env.DB,
+  user: process.env.DEV_DB_ID,
+  password: process.env.DEV_DB_PW,
+  database: process.env.DEV_DB,
 };
 
 const MySQLStore = MySQLStoreCreator(session);

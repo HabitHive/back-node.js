@@ -11,6 +11,8 @@ class UserRepository {
         email,
         password: hashedpassword,
         nickname,
+        interest: "#",
+        point: 0,
       });
       return true;
     }
@@ -18,15 +20,14 @@ class UserRepository {
 
   //로그인                /api/user/login
   login = async (email) => {
-    const result = await User.findOne({ where: { email }, raw: true });
-    return result;
+    const find_user = await User.findOne({ where: { email }, raw: true });
+    return find_user;
   };
 
-  //로그 아웃             /api/user/logout
-  logout = async () => {};
-
   //관심사 설정           /api/user/interest
-  interest = async () => {};
+  interest = async (interest, user_id) => {
+    await User.update({ interest }, { where: { user_id } });
+  };
 
   //유저정보              /api/user/mypage/info
   mp_info = async () => {};
