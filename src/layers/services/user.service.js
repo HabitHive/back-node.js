@@ -94,9 +94,6 @@ class UserService {
 
   //관심사 설정           /api/user/interest
   interest = async (body, user_id) => {
-    if (body.length === 0) {
-      await UserRepository.interest(null, user_id);
-    }
     body.sort();
     body.unshift("");
     body.push("");

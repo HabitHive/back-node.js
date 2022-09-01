@@ -48,7 +48,7 @@ class UserController {
   //관심사 설정           /api/user/interest
   interest = async (req, res) => {
     try {
-      await UserService.interest(req.body, req.local.user_id);
+      await UserService.interest(req.body, res.locals.user_id);
       res.status(200).json({});
     } catch (error) {
       console.log(error);
