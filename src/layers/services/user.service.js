@@ -3,7 +3,6 @@ import bcrypt from "bcrypt";
 import Joi from "joi";
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
-import dummy from "../middlewares/dummydata.js";
 
 dotenv.config();
 
