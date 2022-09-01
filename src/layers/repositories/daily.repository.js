@@ -32,13 +32,32 @@ export default class dailyRepositories {
   };
 
   schedulePage = async (userId, userTagId) => {
+    // 에러가 나면 userTagId가 없거나, 해당 유저의 것이 아닐 때
     const tag = await UserTag.findOne({
       where: { id: userTagId, UserUserId: userId },
+      include: {
+        model: Schedule,
+        attributes: ["startDate", "endDate", "timeCycle", "weekCycle"],
+      },
     });
     return tag;
   };
 
-  schedule = async (userId, usertagId, timeCycle, weekCycle) => {
-    await Schedule.craete({ timeCycle, weekCycle, UserTagId: usertagId });
+  scheduleTagCheck = async (userId, userTagId) => {
+    const tagCheck = await UserTag.findOne({
+      where: { id: userTagId, UserUserId: userId },
+    });
+    return tagCheck;
+  };
+
+  scheduleStartDate = async (userId, userTagId, startDate, endDate) => {
+    await UserTag.update(
+      { startDate, endDate },
+      { UserUserId: userId, id: userTagId }
+    );
+  };
+
+  schedule = async (userTagId, timeCycle, weekCycle) => {
+    await Schedule.craete({ UserTagId: userTagId, timeCycle, weekCycle });
   };
 }

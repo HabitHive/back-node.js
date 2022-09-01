@@ -7,7 +7,7 @@ export default class dailycontroller {
     try {
       const { userId } = res.locals;
       // const userId = 2;
-      const { todayDate } = req.query;
+      const { todayDate } = req.query; //선택한 daily 날짜
       // const todayDate = new Date();
       const result = await this.dailyServices.dailyPage(userId, todayDate);
 
@@ -33,6 +33,7 @@ export default class dailycontroller {
   };
 
   schedulePage = async (req, res, next) => {
+    // 지금 현재로는 필요하지 않은 로직; 나중에 수정에 사용 할지도.
     try {
       const { userId } = res.locals;
       // const userId = 1;
@@ -51,11 +52,12 @@ export default class dailycontroller {
     try {
       const { userId } = res.locals;
       const { userTagId } = req.params;
-      const { timeCycle, weekCycle } = req.bady;
+      const { startDate, timeCycle, weekCycle } = req.bady;
 
       const result = await this.dailyServices.schedule(
         userId,
         userTagId,
+        startDate,
         timeCycle,
         weekCycle
       );
