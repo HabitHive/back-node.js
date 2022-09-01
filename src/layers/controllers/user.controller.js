@@ -34,6 +34,8 @@ class UserController {
   //로그 아웃             /api/user/logout
   logout = async (req, res) => {
     try {
+      await UserService.logout(req);
+      res.status(200).json({});
     } catch (error) {
       console.log(error);
       res.status(400).send(error.message);

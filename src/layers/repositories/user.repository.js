@@ -22,9 +22,6 @@ class UserRepository {
     return result;
   };
 
-  //로그 아웃             /api/user/logout
-  logout = async () => {};
-
   //관심사 설정           /api/user/interest
   interest = async () => {};
 

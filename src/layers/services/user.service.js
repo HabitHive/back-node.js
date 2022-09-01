@@ -68,6 +68,7 @@ class UserService {
       req.session.b1 = refreshtoken;
       req.session.save((err) => {
         if (err) {
+          console.log(err);
           throw new Error("session save error");
         }
       });
@@ -78,7 +79,16 @@ class UserService {
   };
 
   //로그 아웃             /api/user/logout
-  logout = async () => {};
+  logout = async (req) => {
+    if (req.session.a1)
+      req.session.destroy((err) => {
+        if (err) {
+          console.log(err);
+          throw new Error("session dstroy error");
+        }
+      });
+    else throw new Error("not exist session");
+  };
 
   //관심사 설정           /api/user/interest
   interest = async () => {};
