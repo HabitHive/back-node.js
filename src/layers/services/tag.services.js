@@ -10,17 +10,8 @@ export default class tagServices {
     return result;
   };
 
-  tagBuy = async (userId, tagId, period, startDate) => {
-    let endDate = startDate;
-    endDate.setDate(endDate.getDate() + period);
-
-    const result = await this.tagRepositories.tagBuy(
-      userId,
-      tagId,
-      period,
-      startDate,
-      endDate
-    );
+  tagBuy = async (userId, tagId, period) => {
+    const result = await this.tagRepositories.tagBuy(userId, tagId, period);
 
     return result;
   };

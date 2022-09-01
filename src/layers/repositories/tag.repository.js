@@ -13,7 +13,7 @@ export default class tagRepositories {
     return tagList;
   };
 
-  tagBuy = async (userId, tagId, period, startDate, endDate) => {
-    await UserTag.craete({ userId, tagId, period, startDate, endDate });
+  tagBuy = async (userId, tagId, period) => {
+    await UserTag.craete({ userId, tagId, period });
   };
 }
