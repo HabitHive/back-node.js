@@ -91,7 +91,16 @@ class UserService {
   };
 
   //관심사 설정           /api/user/interest
-  interest = async () => {};
+  interest = async (body, user_id) => {
+    if (body.length === 0) {
+      await UserRepository.interest(null, user_id);
+    }
+    body.sort();
+    body.unshift("");
+    body.push("");
+    const interest = body.join("#");
+    await UserRepository.interest(interest, user_id);
+  };
 
   //유저정보              /api/user/mypage/info
   mp_info = async () => {};

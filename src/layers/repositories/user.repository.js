@@ -23,7 +23,9 @@ class UserRepository {
   };
 
   //관심사 설정           /api/user/interest
-  interest = async () => {};
+  interest = async (interest, user_id) => {
+    await User.update({ interest }, { where: { user_id } });
+  };
 
   //유저정보              /api/user/mypage/info
   mp_info = async () => {};
