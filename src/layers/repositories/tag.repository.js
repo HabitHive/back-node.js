@@ -1,11 +1,19 @@
 import Tag from "../../models/tag.js";
 import User from "../../models/user.js";
 import UserTag from "../../models/usertag.js";
+import { Op } from "sequelize";
 
 export default class tagRepositories {
   interest = async (userId) => {
-    const userInfo = await User.findOne({ where: { userId } });
+    const userInfo = await User.findOne({ where: { UserId: userId } });
     return userInfo;
+  };
+
+  recommended = async (uaerInterest) => {
+    const tagList = await Tag.findAll({
+      where: { category: { [Op.or]: uaerInterest } },
+    });
+    return tagList;
   };
 
   buyPage = async () => {
@@ -13,7 +21,7 @@ export default class tagRepositories {
     return tagList;
   };
 
-  tagBuy = async (userId, tagId, period, startDate, endDate) => {
-    await UserTag.craete({ userId, tagId, period, startDate, endDate });
+  tagBuy = async (userId, tagId, period) => {
+    await UserTag.craete({ userId, tagId, period });
   };
 }

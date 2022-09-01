@@ -20,14 +20,9 @@ export default class tagController {
     try {
       const { userId } = res.locals;
       const { tagId } = req.params;
-      const { period, startDate } = req.body;
+      const { period } = req.body;
 
-      const result = await this.tagServices.tagBuy(
-        userId,
-        tagId,
-        period,
-        startDate
-      );
+      const result = await this.tagServices.tagBuy(userId, tagId, period);
 
       return res.status(200).json({ result, message: "내 태그에 추가" });
     } catch (error) {

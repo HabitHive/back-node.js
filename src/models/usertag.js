@@ -16,7 +16,7 @@ export default class UserTag extends Sequelize.Model {
         },
         endDate: {
           type: Sequelize.DATE,
-          allowNull: true,
+          allowNull: false,
         },
       },
       {
