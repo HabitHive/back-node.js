@@ -11,6 +11,8 @@ class UserRepository {
         email,
         password: hashedpassword,
         nickname,
+        interest: "#",
+        point: 0,
       });
       return true;
     }
