@@ -124,6 +124,6 @@ export default async (req, res, next) => {
     }
     //콘솔창에 에러 내용 출력 및 res로 "로그인이 필요합니다" 문자열 송신
     console.log(error);
-    res.status(400).send("로그인이 필요합니다");
+    res.status(400).send("로그인 또는 회원가입이 필요합니다");
   }
 };
