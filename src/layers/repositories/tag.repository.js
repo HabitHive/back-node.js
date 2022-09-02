@@ -5,7 +5,7 @@ import { Op } from "sequelize";
 
 export default class tagRepositories {
   interest = async (userId) => {
-    const userInfo = await User.findOne({ where: { UserId: userId } });
+    const userInfo = await User.findOne({ where: { user_id: userId } });
     return userInfo;
   };
 
@@ -22,6 +22,6 @@ export default class tagRepositories {
   };
 
   tagBuy = async (userId, tagId, period) => {
-    await UserTag.craete({ userId, tagId, period });
+    await UserTag.craete({ user_id: userId, tag_id: tagId, period });
   };
 }

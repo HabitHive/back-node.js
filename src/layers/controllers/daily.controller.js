@@ -51,14 +51,16 @@ export default class dailycontroller {
     try {
       const { userId } = res.locals;
       const { userTagId } = req.params;
-      const { timeCycle, weekCycle } = req.bady;
+      const { timeCycle, weekCycle, startDate } = req.bady;
 
       const result = await this.dailyServices.schedule(
         userId,
         userTagId,
         timeCycle,
-        weekCycle
+        weekCycle,
+        startDate
       );
+
       return res.status(200).json({ result, message: "내 태그 스케줄 추가" });
     } catch (error) {
       console.log(error);
