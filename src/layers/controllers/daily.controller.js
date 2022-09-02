@@ -1,15 +1,13 @@
-import DailyServices from "../services/daily.services.js";
+import DailyService from "../services/daily.service.js";
 
-export default class dailycontroller {
-  dailyServices = new DailyServices();
-
+export default new (class Dailycontroller {
   dailyPage = async (req, res, next) => {
     try {
       const { userId } = res.locals;
       // const userId = 2;
       const { todayDate } = req.query;
       // const todayDate = new Date();
-      const result = await this.dailyServices.dailyPage(userId, todayDate);
+      const result = await DailyService.dailyPage(userId, todayDate);
 
       return res.status(200).json({ result, message: "날짜에 맞는 태그 일정" });
     } catch (error) {
@@ -23,7 +21,7 @@ export default class dailycontroller {
       const { userId } = res.locals;
       // const userId = 2;
 
-      const result = await this.dailyServices.tagList(userId);
+      const result = await DailyService.tagList(userId);
 
       return res.status(200).json({ result, message: "유저의 태그 목록" });
     } catch (error) {
@@ -38,7 +36,7 @@ export default class dailycontroller {
       // const userId = 1;
       const { userTagId } = req.params;
 
-      const result = await this.dailyServices.schedulePage(userId, userTagId);
+      const result = await DailyService.schedulePage(userId, userTagId);
 
       return res.status(200).json({ result, message: "태그의 유효기간" });
     } catch (error) {
@@ -53,7 +51,7 @@ export default class dailycontroller {
       const { userTagId } = req.params;
       const { timeCycle, weekCycle, startDate } = req.bady;
 
-      const result = await this.dailyServices.schedule(
+      const result = await DailyService.schedule(
         userId,
         userTagId,
         timeCycle,
@@ -67,4 +65,4 @@ export default class dailycontroller {
       res.status(400).send(error.message);
     }
   };
-}
+})();

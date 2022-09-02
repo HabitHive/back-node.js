@@ -1,6 +1,9 @@
 import User from "../../models/user.js";
 
 class UserRepository {
+  findOneUser = async (userId) => {
+    return await User.findOne({ where: { userId } });
+  };
   //회원가입              /api/user/signup
   singUp = async (email, nickname, password) => {
     const exsistEmail = await User.findOne({ where: { email } });
@@ -29,14 +32,23 @@ class UserRepository {
     await User.update({ interest }, { where: { user_id } });
   };
 
-  //유저정보              /api/user/mypage/info
-  mp_info = async () => {};
+  findUser = async (user_id) => {
+    const user = await User.findOne({
+      where: { user_id },
+      attributes: { exclude: ["password"] },
+      raw: true,
+    });
+    return user;
+  };
 
-  //현재 진행 중 태그     /api/user/mypage/still
-  mp_still = async () => {};
-
-  //완료된 태그           /api/user/mypage/end
-  mp_end = async () => {};
+  findPoint = async (user_id) => {
+    const user = await User.findOne({
+      where: { user_id },
+      attributes: ["point"],
+      raw: true,
+    });
+    return user.point;
+  };
 }
 
 export default new UserRepository();

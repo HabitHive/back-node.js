@@ -102,13 +102,18 @@ class UserService {
   };
 
   //유저정보              /api/user/mypage/info
-  mp_info = async () => {};
+  myInfo = async (userId) => {
+    const user = await UserRepository.findUser(userId);
+    if (!user) return { status: 400, message: "존재하지 않는 유저입니다." };
 
-  //현재 진행 중 태그     /api/user/mypage/still
-  mp_still = async () => {};
+    const result = {
+      email: user.email,
+      nickname: user.nickname,
+      point: user.point,
+    };
 
-  //완료된 태그           /api/user/mypage/end
-  mp_end = async () => {};
+    return { status: 200, message: "유저 정보", result };
+  };
 }
 
 export default new UserService();
