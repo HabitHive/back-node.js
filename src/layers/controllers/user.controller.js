@@ -3,11 +3,11 @@ import TagService from "../services/tag.service.js";
 
 class UserController {
   //회원가입              /api/user/signup
-  singup = async (req, res) => {
+  singUp = async (req, res) => {
     try {
-      const service_result = await UserService.singup(req.body);
+      const service_result = await UserService.singUp(req.body);
       if (service_result) {
-        const token = await UserService.login(
+        const token = await UserService.logIn(
           req.body.email,
           req.body.password,
           req
@@ -21,9 +21,9 @@ class UserController {
   };
 
   //로그인                /api/user/login
-  login = async (req, res) => {
+  logIn = async (req, res) => {
     try {
-      const token = await UserService.login(
+      const token = await UserService.logIn(
         req.body.email,
         req.body.password,
         req
@@ -36,9 +36,9 @@ class UserController {
   };
 
   //로그 아웃             /api/user/logout
-  logout = async (req, res) => {
+  logOut = async (req, res) => {
     try {
-      await UserService.logout(req);
+      await UserService.logOut(req);
       res.status(200).json({});
     } catch (error) {
       console.log(error);
@@ -50,7 +50,7 @@ class UserController {
   interest = async (req, res) => {
     try {
       await UserService.interest(req.body, res.locals.user_id);
-      res.status(200).json({});
+      res.status(201).json({});
     } catch (error) {
       console.log(error);
       res.status(400).send(error.message);

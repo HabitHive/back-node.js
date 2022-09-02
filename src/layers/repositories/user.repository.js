@@ -2,14 +2,14 @@ import User from "../../models/user.js";
 
 class UserRepository {
   //회원가입              /api/user/signup
-  singup = async (email, nickname, hashedpassword) => {
-    const exsistemail = await User.findOne({ where: { email } });
-    if (exsistemail) {
-      throw new Error("exsistemail");
+  singUp = async (email, nickname, password) => {
+    const exsistEmail = await User.findOne({ where: { email } });
+    if (exsistEmail) {
+      throw new Error("exsist email");
     } else {
       await User.create({
         email,
-        password: hashedpassword,
+        password,
         nickname,
         interest: "#",
         point: 0,
@@ -19,9 +19,9 @@ class UserRepository {
   };
 
   //로그인                /api/user/login
-  login = async (email) => {
-    const find_user = await User.findOne({ where: { email }, raw: true });
-    return find_user;
+  logIn = async (email) => {
+    const findUser = await User.findOne({ where: { email }, raw: true });
+    return findUser;
   };
 
   //관심사 설정           /api/user/interest

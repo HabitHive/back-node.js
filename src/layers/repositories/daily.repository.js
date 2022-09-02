@@ -5,15 +5,15 @@ import Schedule from "../../models/schedule.js";
 export default new (class DailyRepository {
   dailyPage = async (userId, todayDate) => {
     const myDailyPage = await UserTag.findAll({
-      where: { UserUserId: userId },
+      where: { user_id: userId },
       include: [
         {
           model: Tag,
-          attributes: ["tagName"],
+          attributes: ["tag_name"],
         },
         {
           model: Schedule,
-          attributes: ["timeCycle", "weekCycle"],
+          attributes: ["time_cycle", "week_cycle"],
         },
       ],
     });
@@ -22,10 +22,10 @@ export default new (class DailyRepository {
 
   tagList = async (userId) => {
     const myTagList = await UserTag.findAll({
-      where: { UserUserId: userId },
+      where: { user_id: userId },
       include: {
         model: Tag,
-        attributes: ["tagName"],
+        attributes: ["tag_name"],
       },
     });
     return myTagList;
@@ -33,12 +33,30 @@ export default new (class DailyRepository {
 
   schedulePage = async (userId, userTagId) => {
     const tag = await UserTag.findOne({
-      where: { id: userTagId, UserUserId: userId },
+      where: { user_id: userId, user_tag_id: userTagId },
     });
     return tag;
   };
 
-  schedule = async (userId, usertagId, timeCycle, weekCycle) => {
-    await Schedule.create({ timeCycle, weekCycle, UserTagId: usertagId });
+  userTagInOf = async (userId, userTagId) => {
+    const userTag = await UserTag.findOne({
+      where: { user_id: userId, user_tag_id: userTagId },
+    });
+    return userTag;
+  };
+
+  scheduleDate = async (userTagId, startDate, endDate) => {
+    await UserTag.update(
+      { start_date: startDate, end_date: endDate },
+      { where: { user_tag_id: userTagId } }
+    );
+  };
+
+  schedule = async (userId, userTagId, timeCycle, weekCycle) => {
+    await Schedule.craete({
+      user_tag_id: userTagId,
+      time_cycle: timeCycle,
+      week_cycle: weekCycle,
+    });
   };
 })();

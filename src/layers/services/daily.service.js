@@ -48,14 +48,22 @@ export default new (class DailyService {
     return date;
   };
 
-  schedule = async (userId, userTagId, timeCycle, weekCycle) => {
-    const result = await DailyRepository.schedule(
+  schedule = async (userId, userTagId, timeCycle, weekCycle, startDate) => {
+    const result = await this.dailyRepositories.userTagInOf(userId, userTagId);
+    if (result.startDate != startDate) {
+      const period = result.period;
+      const date = startDate;
+      const endDate = date.setDate(date.getDate() + period);
+      await this.dailyRepositories.scheduleDate(userTagId, startDate, endDate);
+    } // 나중에 예약을 한 날짜보다 현재날짜를 자났나면 수정불가!
+
+    await this.dailyRepositories.schedule(
       userId,
       userTagId,
       timeCycle,
       weekCycle
     );
 
-    return result;
+    return;
   };
 })();
