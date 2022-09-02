@@ -6,7 +6,7 @@ import jwt from "jsonwebtoken";
 
 dotenv.config();
 
-const userschema = Joi.object()
+const userSchema = Joi.object()
   .keys({
     email: Joi.string()
       .pattern(
@@ -30,12 +30,12 @@ const userschema = Joi.object()
 
 class UserService {
   //회원가입              /api/user/signup
-  singup = async (body) => {
-    await userschema.validateAsync(body);
+  singUp = async (body) => {
+    await userSchema.validateAsync(body);
     const { email, nickname, password } = body;
     const salt = await bcrypt.genSalt(10); // 기본이 10번이고 숫자가 올라갈수록 연산 시간과 보안이 높아진다.
     const hashedpassword = await bcrypt.hash(password, salt); // hashedpassword를 데이터베이스에 저장한다.
-    const repository_result = await UserRepository.singup(
+    const repository_result = await UserRepository.singUp(
       email,
       nickname,
       hashedpassword
@@ -44,8 +44,8 @@ class UserService {
   };
 
   //로그인                /api/user/login
-  login = async (email, password, req) => {
-    const user = await UserRepository.login(email);
+  logIn = async (email, password, req) => {
+    const user = await UserRepository.logIn(email);
     if (user) {
       const validPassword = await bcrypt.compare(password, user.password);
       if (!validPassword) {
@@ -81,7 +81,7 @@ class UserService {
   };
 
   //로그 아웃             /api/user/logout
-  logout = async (req) => {
+  logOut = async (req) => {
     if (req.session.a1)
       req.session.destroy((err) => {
         if (err) {
