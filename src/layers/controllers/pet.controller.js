@@ -1,6 +1,6 @@
 import PetService from "../services/pet.service.js";
 
-export default class PetController {
+export default new (class PetController {
   petService = new PetService();
 
   // GET 펫 정보
@@ -32,4 +32,4 @@ export default class PetController {
     // const { userId } = res.locals;
     const type = 1;
   };
-}
+})();

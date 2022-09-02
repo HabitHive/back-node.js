@@ -1,4 +1,5 @@
 import UserService from "../services/user.service.js";
+import TagService from "../services/tag.service.js";
 
 class UserController {
   //회원가입              /api/user/signup
@@ -57,13 +58,32 @@ class UserController {
   };
 
   //유저정보              /api/user/mypage/info
-  mp_info = async (req, res) => {};
+  myInfo = async (req, res) => {
+    const { userId } = res.locals;
 
-  //현재 진행 중 태그     /api/user/mypage/still
-  mp_still = async (req, res) => {};
+    try {
+      const receive = await UserService.myInfo(userId);
+      res
+        .status(receive.status)
+        .json({ message: receive.message, result: receive.result });
+    } catch (error) {
+      res.status(error.status).json({ message: error.message });
+    }
+  };
 
-  //완료된 태그           /api/user/mypage/end
-  mp_end = async (req, res) => {};
+  myTagList = async (req, res) => {
+    const { userId } = res.locals;
+    const { date } = req.body;
+    try {
+      const stillTags = await TagService.stillTag();
+      const doneTags = await TagService.doneTag();
+      res
+        .status(receive.status)
+        .json({ message: receive.message, result: { stillTags, doneTags } });
+    } catch (error) {
+      res.status(error.status).json({ message: error.message });
+    }
+  };
 }
 
 export default new UserController();

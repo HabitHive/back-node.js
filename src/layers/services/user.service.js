@@ -102,13 +102,7 @@ class UserService {
   };
 
   //유저정보              /api/user/mypage/info
-  mp_info = async () => {};
-
-  //현재 진행 중 태그     /api/user/mypage/still
-  mp_still = async () => {};
-
-  //완료된 태그           /api/user/mypage/end
-  mp_end = async () => {};
+  myInfo = async () => {};
 }
 
 export default new UserService();

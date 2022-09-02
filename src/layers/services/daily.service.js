@@ -1,10 +1,8 @@
-import DailyRepositories from "../repositories/daily.repository.js";
+import DailyRepository from "../repositories/daily.repository.js";
 
-export default class dailyServices {
-  dailyRepositories = new DailyRepositories();
-
+export default new (class DailyService {
   dailyPage = async (userId, todayDate) => {
-    const result = await this.dailyRepositories.dailyPage(userId, todayDate);
+    const result = await DailyRepository.dailyPage(userId, todayDate);
     // let startDate = new Date();
     // let endDate = new Date();
     // startDate.setDate(startDate.getDate() + 30);
@@ -26,7 +24,7 @@ export default class dailyServices {
   };
 
   tagList = async (userId) => {
-    const result = await this.dailyRepositories.tagList(userId);
+    const result = await DailyRepository.tagList(userId);
     const tagLists = result.map((list) => {
       // let date = list.startDate;
       // date = new Date(2019, 0, 31);
@@ -42,7 +40,7 @@ export default class dailyServices {
   };
 
   schedulePage = async (userId, userTagId) => {
-    const result = await this.dailyRepositories.schedulePage(userId, userTagId);
+    const result = await DailyRepository.schedulePage(userId, userTagId);
     let date = result.startDate;
     let period = result.period / 1;
     // date = new Date(); //현재 시간
@@ -51,7 +49,7 @@ export default class dailyServices {
   };
 
   schedule = async (userId, userTagId, timeCycle, weekCycle) => {
-    const result = await this.dailyRepositories.schedule(
+    const result = await DailyRepository.schedule(
       userId,
       userTagId,
       timeCycle,
@@ -60,4 +58,4 @@ export default class dailyServices {
 
     return result;
   };
-}
+})();
