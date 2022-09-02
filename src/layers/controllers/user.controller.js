@@ -75,11 +75,11 @@ class UserController {
     const { userId } = res.locals;
     const { date } = req.body;
     try {
-      const stillTags = await TagService.stillTag();
-      const doneTags = await TagService.doneTag();
-      res
-        .status(receive.status)
-        .json({ message: receive.message, result: { stillTags, doneTags } });
+      const receive = await TagService.myTag(userId, date);
+      res.status(receive.status).json({
+        message: receive.message,
+        result: receive.result,
+      });
     } catch (error) {
       res.status(error.status).json({ message: error.message });
     }

@@ -102,7 +102,18 @@ class UserService {
   };
 
   //유저정보              /api/user/mypage/info
-  myInfo = async () => {};
+  myInfo = async (userId) => {
+    const user = await UserRepository.findUser(userId);
+    if (!user) return { status: 400, message: "존재하지 않는 유저입니다." };
+
+    const result = {
+      email: user.email,
+      nickname: user.nickname,
+      point: user.point,
+    };
+
+    return { status: 200, message: "유저 정보", result };
+  };
 }
 
 export default new UserService();
