@@ -11,8 +11,8 @@ export default class Pet extends Sequelize.Model {
           autoIncrement: true,
         },
         user_id: { type: Sequelize.INTEGER, allowNull: false },
-        level: Sequelize.INTEGER,
-        exp: Sequelize.INTEGER,
+        level: { type: Sequelize.INTEGER, defaultValue: 1 },
+        exp: { type: Sequelize.INTEGER, defaultValue: 0 },
       },
       {
         sequelize,

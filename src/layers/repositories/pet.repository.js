@@ -1,27 +1,25 @@
-import { Op } from "sequelize";
 import Pet from "../../models/pet.js";
 
-export default class PetRepository {
-  //
-
-  createPet = async (userId) => {
-    const pet = await Pet.create({
-      user_id: userId,
-      type: 1,
-      pet_name: "",
-      level: 1,
-      exp: 0,
+class PetRepository {
+  findOrCreatePet = async (user_id) => {
+    const result = await Pet.findOrCreate({
+      where: { user_id },
+      raw: true,
+    }).spread((info, created) => {
+      return { info, created };
     });
+    return result;
+  };
 
+  findPet = async (user_id) => {
+    const pet = await Pet.findOne({ where: { user_id }, raw: true });
     return pet;
   };
 
-  findPet = async (userId, type) => {
-    const pet = await Pet.findOne({
-      where: { [Op.and]: [{ type }, { user_id: userId }] },
-      raw: true,
-    });
-
-    return pet;
+  updatePet = async (user_id, level, exp) => {
+    const result = await Pet.update({ level, exp }, { where: { user_id } });
+    return result;
   };
 }
+
+export default new PetRepository();
