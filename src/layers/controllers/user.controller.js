@@ -49,7 +49,7 @@ class UserController {
   interest = async (req, res) => {
     try {
       await UserService.interest(req.body, res.locals.user_id);
-      res.status(200).json({});
+      res.status(201).json({});
     } catch (error) {
       console.log(error);
       res.status(400).send(error.message);
