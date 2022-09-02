@@ -1,5 +1,3 @@
-import Tag from "../../models/tag.js";
-import User from "../../models/user.js";
 import UserTag from "../../models/usertag.js";
 import Schedule from "../../models/schedule.js";
 import Point from "../../models/point.js";
