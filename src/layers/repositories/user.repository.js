@@ -2,14 +2,14 @@ import User from "../../models/user.js";
 
 class UserRepository {
   //회원가입              /api/user/signup
-  singUp = async (email, nickname, hashedpassword) => {
+  singUp = async (email, nickname, password) => {
     const exsistEmail = await User.findOne({ where: { email } });
     if (exsistEmail) {
       throw new Error("exsist email");
     } else {
       await User.create({
         email,
-        password: hashedpassword,
+        password,
         nickname,
         interest: "#",
         point: 0,
