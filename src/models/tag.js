@@ -6,28 +6,37 @@ export default class Tag extends Sequelize.Model {
   static init(sequelize) {
     return super.init(
       {
-        tagName: {
+        tag_id: {
+          type: Sequelize.INTEGER,
+          primaryKey: true,
+          autoIncrement: true,
+        },
+        tag_name: {
           type: Sequelize.STRING(50),
           allowNull: false,
         },
         category: {
-          type: Sequelize.STRING(30),
+          type: Sequelize.STRING(100),
           allowNull: false,
         },
       },
       {
         sequelize,
-        timestamps: true,
+        timestamps: false,
         paranoid: false,
         underscored: false,
         modelName: "Tag",
-        tableName: "tag",
+        tableName: "tags",
         charset: "utf8",
         collate: "utf8_general_ci",
       }
     );
   }
   static associate(db) {
-    db.Tag.hasMany(db.UserTag);
+    db.Tag.hasMany(db.UserTag, {
+      foreignKey: { name: "tag_id", allowNull: false },
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    });
   }
 }

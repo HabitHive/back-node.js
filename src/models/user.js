@@ -50,6 +50,15 @@ export default class User extends Sequelize.Model {
       onDelete: "cascade",
       onUpdate: "cascade",
     });
-    db.User.hasMany(db.UserTag);
+    db.User.hasMany(db.UserTag, {
+      foreignKey: { name: "user_id", allowNull: false },
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    });
+    db.User.hasMany(db.Point, {
+      foreignKey: { name: "user_id", allowNull: false },
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    });
   }
 }
