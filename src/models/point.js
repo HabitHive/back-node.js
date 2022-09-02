@@ -16,7 +16,7 @@ export default class Point extends Sequelize.Model {
           allowNull: false,
         },
         point: {
-          type: Sequelize.INTEGER(50),
+          type: Sequelize.INTEGER,
           allowNull: false,
         },
         date: {
