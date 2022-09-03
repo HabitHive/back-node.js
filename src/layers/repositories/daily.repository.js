@@ -4,7 +4,7 @@ import Schedule from "../../models/schedule.js";
 
 export default new (class DailyRepository {
   dailyPage = async (userId, todayDate) => {
-    const myDailyPage = await UserTag.findAll({
+    const dailyTagLists = await UserTag.findAll({
       where: { user_id: userId },
       include: [
         {
@@ -17,7 +17,7 @@ export default new (class DailyRepository {
         },
       ],
     });
-    return myDailyPage;
+    return dailyTagLists;
   };
 
   tagList = async (userId) => {
@@ -52,11 +52,18 @@ export default new (class DailyRepository {
     );
   };
 
-  schedule = async (userId, userTagId, timeCycle, weekCycle) => {
+  schedule = async (userTagId, timeCycle, weekCycle) => {
     await Schedule.craete({
       user_tag_id: userTagId,
       time_cycle: timeCycle,
       week_cycle: weekCycle,
     });
+  };
+
+  scheduleInOf = async (scheduleId) => {
+    const schedule = await Schedule.findOne({
+      where: { schedule_id: scheduleId },
+    });
+    return schedule;
   };
 })();

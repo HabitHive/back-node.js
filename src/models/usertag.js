@@ -55,7 +55,7 @@ export default class UserTag extends Sequelize.Model {
       onDelete: "cascade",
       onUpdate: "cascade",
     });
-    db.UserTag.belongsTo(db.Schedule, {
+    db.UserTag.hasMany(db.Schedule, {
       foreignKey: { name: "user_tag_id", allowNull: false },
       onDelete: "cascade",
       onUpdate: "cascade",
