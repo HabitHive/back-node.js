@@ -12,8 +12,8 @@ export default new (class DailyService {
       if (todayDate <= todayDate <= todayDate) {
         console.log(todayDate.getDay()); //나중에 weekCycle 로 제한 하기&& todayDate.getDay()
         return {
-          userTagId: list.id,
-          tagName: list.Tag.tagName,
+          userTagId: list.user_tag_id,
+          tagName: list.Tag.tag_name,
           // timeCycle: list.schedule.timeCycle,
         };
       }
@@ -31,8 +31,8 @@ export default new (class DailyService {
       // date.setDate(date.getDate() + 30);
       // console.log(date); //< Number(list.endDate)//나중에 유효기간에 따라
       return {
-        userTagId: list.id,
-        tagName: list.Tag.tagName,
+        userTagId: list.user_tag_id,
+        tagName: list.Tag.tag_name,
         period: list.period, // 남은 날짜에 따른 값을 확인해서 배출
       };
     });

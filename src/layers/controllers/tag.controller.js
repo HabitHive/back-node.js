@@ -4,8 +4,8 @@ export default new (class TagController {
   buyPage = async (req, res, next) => {
     try {
       const { userId } = res.locals;
-
-      const result = await TagService.buyPage(userId);
+      // const userId = 2;
+      const result = await this.tagServices.buyPage(userId);
 
       return res.status(200).json({ result, message: "목록 불러오기 성공" });
     } catch (error) {
