@@ -5,9 +5,9 @@ export default new (class TagController {
     try {
       const { userId } = res.locals;
       // const userId = 2;
-      const result = await this.tagServices.buyPage(userId);
+      const dete = await this.tagServices.buyPage(userId);
 
-      return res.status(200).json({ result, message: "목록 불러오기 성공" });
+      return res.status(dete.status).json(dete.result, dete.message);
     } catch (error) {
       console.log(error);
       res.status(400).send(error.message);
@@ -20,9 +20,9 @@ export default new (class TagController {
       const { tagId } = req.params;
       const { period } = req.body;
 
-      const result = await TagService.tagBuy(userId, tagId, period);
+      const dete = await TagService.tagBuy(userId, tagId, period);
 
-      return res.status(200).json({ result, message: "내 태그에 추가" });
+      return res.status(dete.status).json(dete.result, dete.message);
     } catch (error) {
       console.log(error);
       res.status(400).send(error.message);

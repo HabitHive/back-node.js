@@ -1,15 +1,16 @@
 import DailyService from "../services/daily.service.js";
 
 export default new (class Dailycontroller {
+  // 선택한 todayDate 에 대해서 스케줄을 가지고 있는 list을
   dailyPage = async (req, res, next) => {
     try {
       const { userId } = res.locals;
       // const userId = 2;
       const { todayDate } = req.query;
       // const todayDate = new Date();
-      const result = await DailyService.dailyPage(userId, todayDate);
+      const dete = await DailyService.dailyPage(userId, todayDate);
 
-      return res.status(200).json({ result, message: "날짜에 맞는 태그 일정" });
+      return res.status(dete.status).json(dete.result, dete.message);
     } catch (error) {
       console.log(error);
       res.status(400).send(error.message);
@@ -21,24 +22,25 @@ export default new (class Dailycontroller {
       const { userId } = res.locals;
       // const userId = 2;
 
-      const result = await DailyService.tagList(userId);
+      const dete = await DailyService.tagList(userId);
 
-      return res.status(200).json({ result, message: "유저의 태그 목록" });
+      return res.status(dete.status).json(dete.result, dete.message);
     } catch (error) {
       console.log(error);
       res.status(400).send(error.message);
     }
   };
 
+  // 나중에 스케줄 페이지가 필요하게 되었을 때
   schedulePage = async (req, res, next) => {
     try {
       const { userId } = res.locals;
       // const userId = 1;
       const { userTagId } = req.params;
 
-      const result = await DailyService.schedulePage(userId, userTagId);
+      const dete = await DailyService.schedulePage(userId, userTagId);
 
-      return res.status(200).json({ result, message: "태그의 유효기간" });
+      return res.status(dete.status).json(dete.result, dete.message);
     } catch (error) {
       console.log(error);
       res.status(400).send(error.message);
@@ -51,7 +53,7 @@ export default new (class Dailycontroller {
       const { userTagId } = req.params;
       const { timeCycle, weekCycle, startDate } = req.bady;
 
-      const result = await DailyService.schedule(
+      const dete = await DailyService.schedule(
         userId,
         userTagId,
         timeCycle,
@@ -59,7 +61,28 @@ export default new (class Dailycontroller {
         startDate
       );
 
-      return res.status(200).json({ result, message: "내 태그 스케줄 추가" });
+      return res.status(dete.status).json(dete.result, dete.message);
+    } catch (error) {
+      console.log(error);
+      res.status(400).send(error.message);
+    }
+  };
+
+  scheduleUpdate = async (req, res, next) => {
+    try {
+      const { userId } = res.locals;
+      const { scheduleId } = req.params;
+      const { timeCycle, weekCycle, todayDate } = req.bady;
+      // todayDate는 언제 부터 스케줄을 변경 할 것인지
+      const dete = await DailyService.scheduleUpdate(
+        userId,
+        scheduleId,
+        timeCycle,
+        weekCycle,
+        todayDate
+      );
+
+      return res.status(dete.status).json(dete.result, dete.message);
     } catch (error) {
       console.log(error);
       res.status(400).send(error.message);
