@@ -14,8 +14,8 @@ export default class dailyServices {
       if (todayDate <= todayDate <= todayDate) {
         console.log(todayDate.getDay()); //나중에 weekCycle 로 제한 하기&& todayDate.getDay()
         return {
-          userTagId: list.id,
-          tagName: list.Tag.tagName,
+          userTagId: list.user_tag_id,
+          tagName: list.Tag.tag_name,
           // timeCycle: list.schedule.timeCycle,
         };
       }
@@ -33,8 +33,8 @@ export default class dailyServices {
       // date.setDate(date.getDate() + 30);
       // console.log(date); //< Number(list.endDate)//나중에 유효기간에 따라
       return {
-        userTagId: list.id,
-        tagName: list.Tag.tagName,
+        userTagId: list.user_tag_id,
+        tagName: list.Tag.tag_name,
         period: list.period, // 남은 날짜에 따른 값을 확인해서 배출
       };
     });
@@ -43,7 +43,7 @@ export default class dailyServices {
 
   schedulePage = async (userId, userTagId) => {
     const result = await this.dailyRepositories.schedulePage(userId, userTagId);
-    let date = result.startDate;
+    let date = result.start_date;
     let period = result.period / 1;
     // date = new Date(); //현재 시간
     date.setDate(date.getDate() + period);

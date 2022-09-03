@@ -10,10 +10,20 @@ export default class tagRepositories {
   };
 
   recommended = async (uaerInterest) => {
-    const tagList = await Tag.findAll({
-      where: { category: { [Op.or]: uaerInterest } },
+    //uaerInterest[1],uaerInterest[2],uaerInterest[3]
+    const tagList1 = await Tag.findAll({
+      where: { category: { [Op.like]: `%${uaerInterest[1]}%` } },
     });
-    return tagList;
+    const tagList2 = await Tag.findAll({
+      where: { category: { [Op.like]: `%${uaerInterest[2]}%` } },
+    });
+    const tagList3 = await Tag.findAll({
+      where: { category: { [Op.like]: `%${uaerInterest[3]}%` } },
+    });
+    // console.log(tagList1.tag_id, "!!!!!!!!!!!");
+    // console.log(tagList2.tag_id, "%%%%%%%%%%%");
+    // console.log(tagList3.tag_id, "@@@@@@@@@@@");
+    return { tagList1, tagList2, tagList3 };
   };
 
   buyPage = async () => {
