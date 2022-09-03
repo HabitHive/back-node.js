@@ -1,12 +1,13 @@
 import UserService from "../services/user.service.js";
+import TagService from "../services/tag.service.js";
 
 class UserController {
   //회원가입              /api/user/signup
-  singup = async (req, res) => {
+  singUp = async (req, res) => {
     try {
-      const service_result = await UserService.singup(req.body);
+      const service_result = await UserService.singUp(req.body);
       if (service_result) {
-        const token = await UserService.login(
+        const token = await UserService.logIn(
           req.body.email,
           req.body.password,
           req
@@ -20,9 +21,9 @@ class UserController {
   };
 
   //로그인                /api/user/login
-  login = async (req, res) => {
+  logIn = async (req, res) => {
     try {
-      const token = await UserService.login(
+      const token = await UserService.logIn(
         req.body.email,
         req.body.password,
         req
@@ -35,9 +36,9 @@ class UserController {
   };
 
   //로그 아웃             /api/user/logout
-  logout = async (req, res) => {
+  logOut = async (req, res) => {
     try {
-      await UserService.logout(req);
+      await UserService.logOut(req);
       res.status(200).json({});
     } catch (error) {
       console.log(error);
@@ -49,7 +50,7 @@ class UserController {
   interest = async (req, res) => {
     try {
       await UserService.interest(req.body, res.locals.user_id);
-      res.status(200).json({});
+      res.status(201).json({});
     } catch (error) {
       console.log(error);
       res.status(400).send(error.message);
@@ -57,13 +58,32 @@ class UserController {
   };
 
   //유저정보              /api/user/mypage/info
-  mp_info = async (req, res) => {};
+  myInfo = async (req, res) => {
+    const { userId } = res.locals;
 
-  //현재 진행 중 태그     /api/user/mypage/still
-  mp_still = async (req, res) => {};
+    try {
+      const receive = await UserService.myInfo(userId);
+      res
+        .status(receive.status)
+        .json({ message: receive.message, result: receive.result });
+    } catch (error) {
+      res.status(error.status).json({ message: error.message });
+    }
+  };
 
-  //완료된 태그           /api/user/mypage/end
-  mp_end = async (req, res) => {};
+  myTagList = async (req, res) => {
+    const { userId } = res.locals;
+    const { date } = req.body;
+    try {
+      const receive = await TagService.myTag(userId, date);
+      res.status(receive.status).json({
+        message: receive.message,
+        result: receive.result,
+      });
+    } catch (error) {
+      res.status(error.status).json({ message: error.message });
+    }
+  };
 }
 
 export default new UserController();

@@ -2,7 +2,7 @@ import UserTag from "../../models/usertag.js";
 import Tag from "../../models/tag.js";
 import Schedule from "../../models/schedule.js";
 
-export default class dailyRepositories {
+export default new (class DailyRepository {
   dailyPage = async (userId, todayDate) => {
     const myDailyPage = await UserTag.findAll({
       where: { user_id: userId },
@@ -59,4 +59,4 @@ export default class dailyRepositories {
       week_cycle: weekCycle,
     });
   };
-}
+})();

@@ -33,7 +33,7 @@ app.use(cookieParser());
 //session store
 const options = {
   host: process.env.DEV_DB_HOST,
-  port: 3306,
+  port: process.env.RDS_PORT,
   user: process.env.DEV_DB_ID,
   password: process.env.DEV_DB_PW,
   database: process.env.DEV_DB,

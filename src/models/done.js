@@ -1,34 +1,49 @@
 import Sequelize from "sequelize";
+
 import { sequelize } from "./sequelize.js";
 
-export default class Pet extends Sequelize.Model {
+export default class Done extends Sequelize.Model {
   static init(sequelize) {
     return super.init(
       {
-        pet_id: {
+        done_id: {
           type: Sequelize.INTEGER,
           primaryKey: true,
           autoIncrement: true,
         },
-        user_id: { type: Sequelize.INTEGER, allowNull: false },
-        level: { type: Sequelize.INTEGER, defaultValue: 1 },
-        exp: { type: Sequelize.INTEGER, defaultValue: 0 },
+        user_id: {
+          type: Sequelize.INTEGER,
+          allowNull: false,
+        },
+        tag_id: {
+          type: Sequelize.INTEGER,
+          allowNull: false,
+        },
+        date: {
+          type: Sequelize.DATE,
+          allowNull: false,
+        },
       },
       {
         sequelize,
         timestamps: true,
         paranoid: false,
         underscored: false,
-        modelName: "Pet",
-        tableName: "pet",
+        modelName: "Done",
+        tableName: "done",
         charset: "utf8",
         collate: "utf8_general_ci",
       }
     );
   }
   static associate(db) {
-    db.Pet.belongsTo(db.User, {
+    db.Done.belongsTo(db.User, {
       foreignKey: { name: "user_id", allowNull: false },
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    });
+    db.Done.belongsTo(db.Tag, {
+      foreignKey: { name: "tag_id", allowNull: false },
       onDelete: "cascade",
       onUpdate: "cascade",
     });

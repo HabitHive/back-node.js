@@ -15,8 +15,13 @@ export default class Point extends Sequelize.Model {
           type: Sequelize.INTEGER,
           allowNull: false,
         },
+        user_tag_id: {
+          type: Sequelize.INTEGER,
+          allowNull: true,
+          reference,
+        },
         point: {
-          type: Sequelize.INTEGER(50),
+          type: Sequelize.INTEGER,
           allowNull: false,
         },
         date: {
