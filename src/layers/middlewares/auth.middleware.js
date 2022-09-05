@@ -24,7 +24,9 @@ export default async (req, res, next) => {
       throw error;
     }
     // 유저아이디로 유저값 불러오기
-    const existUser = await User.findOne({ where: { user_id: user.key1 } });
+    const existUser = await User.findOne({
+      where: { user_id: user.key1 - parseInt(process.env.SUM) },
+    });
     // 유저 있는지 확인하기 없으면 에러 throw
     if (existUser === null) {
       const error = new Error("User error");
@@ -33,7 +35,7 @@ export default async (req, res, next) => {
     }
 
     // res.loclas로 user_id 넘겨줌
-    res.locals.user_id = user.key1;
+    res.locals.user_id = user.key1 - parseInt(process.env.SUM);
 
     next();
   } catch (error) {
