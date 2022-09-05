@@ -34,6 +34,8 @@ export default async (req, res, next) => {
 
     // res.loclas로 user_id 넘겨줌
     res.locals.user_id = user.key1;
+
+    next();
   } catch (error) {
     console.log(error.name);
     res.status(400).send("로그인 또는 회원가입을 해주세요");
