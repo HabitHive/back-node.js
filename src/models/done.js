@@ -23,6 +23,10 @@ export default class Done extends Sequelize.Model {
           type: Sequelize.DATE,
           allowNull: false,
         },
+        time_cycle: {
+          type: Sequelize.INTEGER(50),
+          allowNull: false,
+        },
       },
       {
         sequelize,

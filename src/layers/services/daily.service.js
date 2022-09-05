@@ -114,6 +114,4 @@ export default new (class DailyService {
       message: "내 태그 스케줄 추가",
     };
   };
-
-  done = async (userId, userTagId) => {};
 })();

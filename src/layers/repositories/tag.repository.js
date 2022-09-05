@@ -2,6 +2,8 @@ import UserTag from "../../models/usertag.js";
 import Tag from "../../models/tag.js";
 import Schedule from "../../models/schedule.js";
 import { Op } from "sequelize";
+import User from "../../models/user.js";
+import Done from "../../models/done.js";
 
 export default new (class TagRepository {
   interest = async (userId) => {
@@ -54,8 +56,14 @@ export default new (class TagRepository {
     const myTags = await UserTag.findAll({
       where: { user_id },
       order: [["end_date", "DESC"]],
+      include: [{ model: Tag, attributes: ["tag_name"] }],
     });
     return myTags;
+  };
+
+  findUserTag = async (user_tag_id) => {
+    const tag = await UserTag.findOne({ where: { userTagId } });
+    return tag;
   };
 
   schedule = async (user_tag_id) => {
@@ -120,10 +128,28 @@ export default new (class TagRepository {
     });
   };
 
+  findSchedule = async (schedule_id) => {
+    const schedule = await Schedule.findOne({
+      where: { schedule_id },
+      include: [{ model: UserTag, attributes: ["user_id"] }],
+    });
+    return schedule;
+  };
+
   isSuccess = async (user_tag_id, success) => {
     const result = await UserTag.update(
       { success },
       { where: { user_tag_id } }
     );
+  };
+
+  createDone = async (user_id, user_tag_id, date, time_cycle) => {
+    const result = await Done.create({
+      user_id,
+      user_tag_id,
+      date,
+      time_cycle,
+    });
+    return result;
   };
 })();

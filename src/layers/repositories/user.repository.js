@@ -56,14 +56,19 @@ class UserRepository {
     return result;
   };
 
-  pointHistory = async (user_tag_id) => {
-    const history = await Point.findAll({ where: { user_tag_id } });
+  existHistory = async (user_tag_id, date) => {
+    const history = await Point.findOne({ where: { user_tag_id, date } });
     return history;
   };
 
   countHistory = async (user_tag_id) => {
     const count = await Point.count({ where: { user_tag_id } });
     return count;
+  };
+
+  createHistory = async (user_id, point, date, user_tag_id) => {
+    const result = await Point.create({ user_id, point, date, user_tag_id });
+    return result;
   };
 }
 

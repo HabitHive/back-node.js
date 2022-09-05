@@ -25,9 +25,9 @@ router.get("/user/mypage/tag", authMiddleware, UserController.myTagList); //ìœ ì
 /* /api/tag */
 router.get("/tag/list", authMiddleware, TagController.buyPage);
 router.post("/tag/buy", authMiddleware, TagController.tagBuy);
-router.get("/tag/dailytag", authMiddleware, DailyController.dailyPage);
-router.get("/tag/dailytag/list", authMiddleware, DailyController.tagList);
-router.post("/tag/daily-tag/done", authMiddleware, DailyController.doneTag);
+router.get("/tag/daily", authMiddleware, DailyController.dailyPage);
+router.get("/tag/daily/list", authMiddleware, DailyController.tagList);
+router.post("/tag/done", authMiddleware, TagController.doneTag);
 router.get(
   "/tag/schedule/add/:usertagId",
   authMiddleware,
