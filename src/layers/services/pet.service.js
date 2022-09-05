@@ -9,9 +9,17 @@ class PetService {
   // 유저가 가진 펫 정보
   petInfo = async (userId) => {
     const pet = await PetRepository.findOrCreatePet(userId);
-    if (!pet) return this.result(400, "존재하지 않는 유저입니다.");
-    else if (pet.created) return this.result(201, "펫 생성 완료", pet.info);
-    else return this.result(200, "펫 불러오기 완료", pet.info);
+    if (!pet) return this.result(400, "알 수 없는 에러");
+    else if (pet[1])
+      return this.result(201, "펫 생성 완료", {
+        level: pet.level,
+        exp: pet.exp,
+      });
+    else
+      return this.result(200, "펫 불러오기 완료", {
+        level: pet.level,
+        exp: pet.exp,
+      });
   };
 
   petExpIncrease = async (userId) => {
@@ -26,6 +34,8 @@ class PetService {
     );
     if (updatePoint == [0]) return this.result(400, "알 수 없는 에러");
 
+    const history = await UserRepository.createHistory(userId, -50);
+
     let { level, exp } = pet;
     let levelUp = false;
     const maxExp = 2 ** (level - 1) * 100; // 100 200 400 800
@@ -39,7 +49,7 @@ class PetService {
     const updatePet = await PetRepository.updatePet(userId, level, exp);
     if (updatePet == [0]) return this.result(400, "알 수 없는 에러");
 
-    return this.result(201, "펫 경험치 증가 성공", { levelUp });
+    return this.result(201, "펫 경험치 증가 성공", { levelUp, level, exp });
   };
 }
 

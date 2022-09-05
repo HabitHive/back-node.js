@@ -28,4 +28,15 @@ export default new (class TagController {
       res.status(400).send(error.message);
     }
   };
+
+  doneTag = async (req, res) => {
+    try {
+      const { userId } = res.locals;
+      const { scheduleId, date } = req.body;
+
+      const receive = await TagService.done(userId, scheduleId, date);
+    } catch (err) {
+      res.status(err.status).send(err.message);
+    }
+  };
 })();

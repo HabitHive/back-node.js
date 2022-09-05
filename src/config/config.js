@@ -52,5 +52,4 @@ const config = {
     },
   },
 };
-console.log(config.development);
 export default config;

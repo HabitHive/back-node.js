@@ -2,12 +2,7 @@ import Pet from "../../models/pet.js";
 
 class PetRepository {
   findOrCreatePet = async (user_id) => {
-    const result = await Pet.findOrCreate({
-      where: { user_id },
-      raw: true,
-    }).spread((info, created) => {
-      return { info, created };
-    });
+    const result = await Pet.findOrCreate({ where: { user_id }, raw: true });
     return result;
   };
 

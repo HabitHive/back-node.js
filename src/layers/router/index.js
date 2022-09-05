@@ -23,7 +23,7 @@ router.get("/tag/list", authMiddleware, TagController.buyPage);
 router.post("/tag/buy", authMiddleware, TagController.tagBuy);
 router.get("/tag/dailytag", authMiddleware, DailyController.dailyPage);
 router.get("/tag/dailytag/list", authMiddleware, DailyController.tagList);
-router.post("/tag/daily-tag/done", authMiddleware, DailyController.doneTag);
+router.post("/tag/daily-tag/done", authMiddleware, TagController.doneTag);
 router.get(
   "/tag/schedule/add/:usertagId",
   authMiddleware,

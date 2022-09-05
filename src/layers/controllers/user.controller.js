@@ -72,7 +72,7 @@ class UserController {
 
   myTagList = async (req, res) => {
     const { userId } = res.locals;
-    const { date } = req.body;
+    const date = new Date(req.body.date);
     try {
       const receive = await UserService.myTag(userId, date);
       res.status(receive.status).json({

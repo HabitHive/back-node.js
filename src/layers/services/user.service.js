@@ -127,70 +127,75 @@ class UserService {
   //내 태그 리스트
   myTag = async (userId, today) => {
     const tagLists = await TagRepository.myAllTagList(userId);
-    console.log(tagLists);
-    let stillTags = [];
-    let doneList = [];
-    let doneTags = { success: [], fail: [] };
-
     if (tagLists == [])
-      return this.result(200, "습관 기록이 없습니다.", { stillTags, doneTags });
+      return this.result(200, "습관 기록이 없습니다.", {
+        stillTags: [],
+        successTags: [],
+        failTags: [],
+      });
+
+    let stillTags = [];
+    let successTags = [];
+    let failTags = [];
 
     // 수정 중... 날짜 어떤 형식인지 알아야 하는데...?
     for (let tag in tagLists) {
       if (tag.success === true) {
-        doneTags.success.push(tag);
+        // 성공 습관
+        successTags.push(tag.Tag["tag_name"]);
       } else if (tag.success === false) {
-        doneTags.fail.push(tag);
+        // 실패 습관
+        failTags.push(tag.Tag["tag_name"]);
+      } else if (tag.end_date === null) {
+        // 시작 전 습관
+        stillTags.push({
+          tagName: tag.Tag["tag_name"],
+          dDay: tag.period,
+          week: [false, false, false, false, false, false, false],
+        });
       } else {
-        // null
-        if (tag.end_date.getDate() > today) {
-          stillTags.push(tag);
+        const startDate = new Date(tag.start_date);
+        const endDate = new Date(tag.end_date);
+        if (endDate >= today) {
+          // 진행 중인 습관
+          let week = [false, false, false, false, false, false, false];
+          const scheduleList = await TagRepository.schedule(tag.user_tag_id);
+          for (let schedule in scheduleList) {
+            const numWeek = schedule.week_cycle.split(",");
+            for (let w in numWeek) {
+              week[w] = true;
+            }
+          }
+          const dDay =
+            (endDate.getTime() - today.getTime()) / (1000 * 3600 * 24);
+          if (dDay > tag.period) {
+            stillTags.push({
+              tagName: tag.Tag["tag_name"],
+              dDay: tag.period,
+              week,
+            });
+          } else {
+            stillTags.push({ tagName: tag.Tag["tag_name"], dDay, week });
+          }
         } else {
-          doneList.push(tag);
+          // 종료 된 습관
+          const count = await UserRepository.countHistory(tag.user_tag_id);
+          const boolean = count == tag.period;
+          const updateTag = await TagRepository.isSuccess(
+            tag.user_tag_id,
+            boolean
+          );
+          if (updateTag == [0]) return this.result(400, "알 수 없는 에러");
+          if (boolean) {
+            successTags.push(tag.Tag["tag_name"]);
+          } else {
+            failTags.push(tag.Tag["tag_name"]);
+          }
         }
       }
     }
 
-    for (let tag in stillTags) {
-      let week = [false, false, false, false, false, false, false];
-      const scheduleList = await TagRepository.schedule(tag.user_tag_id);
-      for (let schedule in scheduleList) {
-        const strWeek = schedule.week_cycle;
-        const numWeek = strWeek.split("뭐로 자르지?");
-        for (let w in numWeek) {
-          week[w] = true;
-        }
-      }
-      stillTags[tag].week_cycle = week;
-
-      // const start = tag.start_date.getDate();
-      // const period = tag.period;
-      // if (start <= today) {
-      //   stillTags[tag].d_day = start - today + period;
-      // }
-    }
-
-    let success = [];
-    let fail = [];
-
-    for (let tag in doneList) {
-      // count method 사용해서 수정하기
-      const count = await UserRepository.countHistory(tag.user_tag_id);
-      const boolean = count == tag.period;
-      const updateTag = await TagRepository.isSuccess(tag.user_tag_id, boolean);
-      if (updateTag == [0]) return this.result(400, "알 수 없는 에러");
-      if (boolean) {
-        success.push(tag);
-      } else {
-        fail.push(tag);
-      }
-    }
-
-    return this.result(200, "태그 리스트 정리 완료", {
-      stillTags,
-      successTags: success.concat(doneTags.success),
-      failTags: fail.concat(doneTags.fail),
-    });
+    return this.result(200, "마이 태그", { stillTags, successTags, failTags });
   };
 }
 
