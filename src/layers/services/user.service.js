@@ -36,9 +36,6 @@ const userSchema = Joi.object()
   .unknown(true);
 
 class UserService {
-  result = async (status, message, result) => {
-    return { status, message, result };
-  };
   //회원가입              /api/user/signup
   singUp = async (body) => {
     await userSchema.validateAsync(body);
@@ -59,34 +56,58 @@ class UserService {
     if (user) {
       const validPassword = await bcrypt.compare(password, user.password);
       if (!validPassword) {
-        throw new Error("Mismatched password");
+        const error = new Error("Mismatched password");
+        error.name = "wrong password";
+        error.status = 403;
+        throw error;
       }
       const accesstoken = jwt.sign(
         { key1: user.user_id + parseInt(process.env.SUM) },
         process.env.ACCESS_TOKEN_SECRET,
-        {
-          expiresIn: "1h",
+        { expiresIn: "1h" },
+        (err, decoded) => {
+          if (err) {
+            console.log(err);
+            const error = new Error("create token error");
+            error.name = "can not create a token";
+            error.status = 500;
+            throw error;
+          }
+          return decoded;
         }
       );
       const refreshtoken = jwt.sign(
-        {
-          key2: accesstoken,
-          key3: user.user_id,
-        },
+        { key2: accesstoken, key3: user.user_id },
         process.env.REFRESH_TOKEN_SECRET,
-        { expiresIn: "7d" }
+        { expiresIn: "7d" },
+        (err, decoded) => {
+          if (err) {
+            console.log(err);
+            const error = new Error("create token error");
+            error.name = "can not create a token";
+            error.status = 500;
+            throw error;
+          }
+          return decoded;
+        }
       );
 
       req.session.a1 = refreshtoken;
       req.session.save((err) => {
         if (err) {
           console.log(err);
-          throw new Error("session save error");
+          const error = new Error("session save error");
+          error.name = "can not create session";
+          error.status = 500;
+          throw error;
         }
       });
       return accesstoken;
     } else {
-      throw new Error("not exist User");
+      const error = new Error("not exist User");
+      error.name = "user not found";
+      error.status = 403;
+      throw error;
     }
   };
 
@@ -96,10 +117,18 @@ class UserService {
       req.session.destroy((err) => {
         if (err) {
           console.log(err);
-          throw new Error("session dstroy error");
+          const error = new Error("session destroy error");
+          error.name = "can not delete session";
+          error.status = 500;
+          throw error;
         }
       });
-    else throw new Error("not exist session");
+    else {
+      const error = new Error("not exist session");
+      error.name = "session not found";
+      error.status = 500;
+      throw error;
+    }
   };
 
   //관심사 설정           /api/user/interest
