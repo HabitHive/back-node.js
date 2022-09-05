@@ -6,38 +6,38 @@ import User from "../../models/user.js";
 import Done from "../../models/done.js";
 
 export default new (class TagRepository {
-  interest = async (userId) => {
-    const userInfo = await User.findOne({ where: { user_id: userId } });
+  interest = async (user_id) => {
+    const userInfo = await User.findOne({ where: { user_id } });
     return userInfo;
   };
 
-  recommended = async (categoryList, uaerInterest) => {
+  recommended = async (categoryList, userInterest) => {
     if (categoryList == 2) {
-    } // 관심사 없으때
+    } // 관심사 없을 때
     if (categoryList == 3) {
       const tagList1 = await Tag.findAll({
-        where: { category: { [Op.like]: `%${uaerInterest[1]}%` } },
+        where: { category: { [Op.like]: `%${userInterest[1]}%` } },
       });
       return { tagList1 };
     }
     if (categoryList == 4) {
       const tagList1 = await Tag.findAll({
-        where: { category: { [Op.like]: `%${uaerInterest[1]}%` } },
+        where: { category: { [Op.like]: `%${userInterest[1]}%` } },
       });
       const tagList2 = await Tag.findAll({
-        where: { category: { [Op.like]: `%${uaerInterest[2]}%` } },
+        where: { category: { [Op.like]: `%${userInterest[2]}%` } },
       });
       return { tagList1, tagList2 };
     }
     if (categoryList == 5) {
       const tagList1 = await Tag.findAll({
-        where: { category: { [Op.like]: `%${uaerInterest[1]}%` } },
+        where: { category: { [Op.like]: `%${userInterest[1]}%` } },
       });
       const tagList2 = await Tag.findAll({
-        where: { category: { [Op.like]: `%${uaerInterest[2]}%` } },
+        where: { category: { [Op.like]: `%${userInterest[2]}%` } },
       });
       const tagList3 = await Tag.findAll({
-        where: { category: { [Op.like]: `%${uaerInterest[3]}%` } },
+        where: { category: { [Op.like]: `%${userInterest[3]}%` } },
       });
       return { tagList1, tagList2, tagList3 };
     }
@@ -48,8 +48,8 @@ export default new (class TagRepository {
     return tagList;
   };
 
-  tagBuy = async (userId, tagId, period) => {
-    await UserTag.craete({ user_id: userId, tag_id: tagId, period });
+  tagBuy = async (user_id, tag_id, period) => {
+    await UserTag.craete({ user_id, tag_id, period });
   };
 
   myAllTagList = async (user_id) => {
@@ -62,7 +62,7 @@ export default new (class TagRepository {
   };
 
   findUserTag = async (user_tag_id) => {
-    const tag = await UserTag.findOne({ where: { userTagId } });
+    const tag = await UserTag.findOne({ where: { user_tag_id } });
     return tag;
   };
 
@@ -99,33 +99,26 @@ export default new (class TagRepository {
     return myTagList;
   };
 
-  schedulePage = async (userId, userTagId) => {
+  schedulePage = async (user_id, user_tag_id) => {
     const tag = await UserTag.findOne({
-      where: { user_id: userId, user_tag_id: userTagId },
+      where: { user_id, user_tag_id },
     });
     return tag;
   };
 
-  userTagInOf = async (userId, userTagId) => {
+  userTagInOf = async (user_id, user_tag_id) => {
     const userTag = await UserTag.findOne({
-      where: { user_id: userId, user_tag_id: userTagId },
+      where: { user_id, user_tag_id },
     });
     return userTag;
   };
 
-  scheduleDate = async (userTagId, startDate, endDate) => {
-    await UserTag.update(
-      { start_date: startDate, end_date: endDate },
-      { where: { user_tag_id: userTagId } }
-    );
+  scheduleDate = async (user_tag_id, start_date, end_date) => {
+    await UserTag.update({ start_date, end_date }, { where: { user_tag_id } });
   };
 
-  schedule = async (userId, userTagId, timeCycle, weekCycle) => {
-    await Schedule.craete({
-      user_tag_id: userTagId,
-      time_cycle: timeCycle,
-      week_cycle: weekCycle,
-    });
+  schedule = async (user_id, user_tag_id, time_cycle, week_cycle) => {
+    await Schedule.craete({ user_tag_id, time_cycle, week_cycle });
   };
 
   findSchedule = async (schedule_id) => {
@@ -141,6 +134,7 @@ export default new (class TagRepository {
       { success },
       { where: { user_tag_id } }
     );
+    return result;
   };
 
   createDone = async (user_id, user_tag_id, date, time_cycle) => {
