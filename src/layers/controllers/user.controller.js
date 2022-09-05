@@ -14,8 +14,13 @@ class UserController {
         res.status(201).json({ token: token });
       }
     } catch (error) {
+      if (error.status) {
+        console.log(error);
+        res.status(error.status).json({ message: error.name });
+        return;
+      }
       console.log(error);
-      res.status(400).send(error.message);
+      res.status(400).json({ message: error.name });
     }
   };
 
@@ -29,8 +34,13 @@ class UserController {
       );
       res.status(201).json({ token: token });
     } catch (error) {
+      if (error.status) {
+        console.log(error);
+        res.status(error.status).json({ message: error.name });
+        return;
+      }
       console.log(error);
-      res.status(400).send(error.message);
+      res.status(400).json({ message: error.name });
     }
   };
 
@@ -40,8 +50,13 @@ class UserController {
       await UserService.logOut(req);
       res.status(200).json({});
     } catch (error) {
+      if (error.status) {
+        console.log(error);
+        res.status(error.status).json({ message: error.name });
+        return;
+      }
       console.log(error);
-      res.status(400).send(error.message);
+      res.status(400).json({ message: error.name });
     }
   };
 
@@ -51,8 +66,13 @@ class UserController {
       await UserService.interest(req.body, res.locals.userId);
       res.status(201).json({});
     } catch (error) {
+      if (error.status) {
+        console.log(error);
+        res.status(error.status).json({ message: error.name });
+        return;
+      }
       console.log(error);
-      res.status(400).send(error.message);
+      res.status(400).json({ message: error.name });
     }
   };
 
