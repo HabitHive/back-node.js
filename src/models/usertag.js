@@ -31,6 +31,10 @@ export default class UserTag extends Sequelize.Model {
           type: Sequelize.DATE,
           allowNull: false,
         },
+        success: {
+          type: Sequelize.BOOLEAN,
+          allowNull: true,
+        },
       },
       {
         sequelize,

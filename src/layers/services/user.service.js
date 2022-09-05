@@ -1,4 +1,5 @@
 import UserRepository from "../repositories/user.repository.js";
+import TagRepository from "../repositories/tag.repository.js";
 import bcrypt from "bcrypt";
 import Joi from "joi";
 import dotenv from "dotenv";
@@ -29,6 +30,9 @@ const userSchema = Joi.object()
   .unknown(true);
 
 class UserService {
+  result = async (status, message, result) => {
+    return { status, message, result };
+  };
   //회원가입              /api/user/signup
   singUp = async (body) => {
     await userSchema.validateAsync(body);
@@ -104,7 +108,7 @@ class UserService {
   //유저정보              /api/user/mypage/info
   myInfo = async (userId) => {
     const user = await UserRepository.findUser(userId);
-    if (!user) return { status: 400, message: "존재하지 않는 유저입니다." };
+    if (!user) return this.result(400, "존재하지 않는 유저입니다.");
 
     const result = {
       email: user.email,
@@ -112,7 +116,75 @@ class UserService {
       point: user.point,
     };
 
-    return { status: 200, message: "유저 정보", result };
+    return this.result(200, "유저 정보", result);
+  };
+
+  //내 태그 리스트
+  myTag = async (userId, today) => {
+    const tagLists = await TagRepository.myAllTagList(userId);
+    let stillTags = [];
+    let doneList = [];
+    let doneTags = { success: [], fail: [] };
+
+    if (tagLists == [])
+      return this.result(200, "습관 기록이 없습니다.", { stillTags, doneTags });
+
+    // 수정 중... 날짜 어떤 형식인지 알아야 하는데...?
+    for (let tag in tagLists) {
+      if (tag.success === true) {
+        doneTags.success.push(tag);
+      } else if (tag.success === false) {
+        doneTags.fail.push(tag);
+      } else {
+        // null
+        if (tag.end_date.getDate() > today) {
+          stillTags.push(tag);
+        } else {
+          doneList.push(tag);
+        }
+      }
+    }
+
+    for (let tag in stillTags) {
+      let week = [false, false, false, false, false, false, false];
+      const scheduleList = await TagRepository.schedule(tag.user_tag_id);
+      for (let schedule in scheduleList) {
+        const strWeek = schedule.week_cycle;
+        const numWeek = strWeek.split("뭐로 자르지?");
+        for (let w in numWeek) {
+          week[w] = true;
+        }
+      }
+      stillTags[tag].week_cycle = week;
+
+      // const start = tag.start_date.getDate();
+      // const period = tag.period;
+      // if (start <= today) {
+      //   stillTags[tag].d_day = start - today + period;
+      // }
+    }
+
+    let success = [];
+    let fail = [];
+
+    for (let tag in doneList) {
+      // count method 사용해서 수정하기
+      const count = await UserRepository.countHistory(tag.user_tag_id);
+      const boolean = count == tag.period;
+      const updateTag = await TagRepository.isSuccess(tag.user_tag_id, boolean);
+      if (updateTag == [0]) return this.result(400, "알 수 없는 에러");
+      if (boolean) {
+        success.push(tag);
+      } else {
+        fail.push(tag);
+      }
+    }
+
+    return this.result(200, "태그 리스트 정리 완료", {
+      stillTags,
+      successTags: success.concat(doneTags.success),
+      failTags: fail.concat(doneTags.fail),
+    });
   };
 }
 

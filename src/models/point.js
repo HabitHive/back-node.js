@@ -1,6 +1,7 @@
 import Sequelize from "sequelize";
 
 import { sequelize } from "./sequelize.js";
+import UserTag from "./usertag.js";
 
 export default class Point extends Sequelize.Model {
   static init(sequelize) {
@@ -18,7 +19,10 @@ export default class Point extends Sequelize.Model {
         user_tag_id: {
           type: Sequelize.INTEGER,
           allowNull: true,
-          reference,
+          references: {
+            model: UserTag,
+            key: "user_tag_id",
+          },
         },
         point: {
           type: Sequelize.INTEGER,

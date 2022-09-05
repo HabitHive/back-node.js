@@ -112,7 +112,7 @@ export default async (req, res, next) => {
     }
 
     //유저 존재 확인 후 반환된 엑세스 토큰내 유저 아이디 로컬에 저장
-    res.locals.user_id = accessTokenVerify.key1 - parseInt(process.env.SUM);
+    res.locals.userId = accessTokenVerify.key1 - parseInt(process.env.SUM);
 
     //여기까지 왔다면 모든 검증 완료 이대로 next()로 다음 단계로 넘어감
     next();

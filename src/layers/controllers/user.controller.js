@@ -1,5 +1,4 @@
 import UserService from "../services/user.service.js";
-import TagService from "../services/tag.service.js";
 
 class UserController {
   //회원가입              /api/user/signup
@@ -75,7 +74,7 @@ class UserController {
     const { userId } = res.locals;
     const { date } = req.body;
     try {
-      const receive = await TagService.myTag(userId, date);
+      const receive = await UserService.myTag(userId, date);
       res.status(receive.status).json({
         message: receive.message,
         result: receive.result,
