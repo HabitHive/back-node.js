@@ -7,7 +7,7 @@ class PetService {
   };
 
   // 유저가 가진 펫 정보
-  petInfo = async (userId, type) => {
+  petInfo = async (userId) => {
     const pet = await PetRepository.findOrCreatePet(userId);
     if (!pet) return this.result(400, "존재하지 않는 유저입니다.");
     else if (pet.created) return this.result(201, "펫 생성 완료", pet.info);
@@ -15,12 +15,16 @@ class PetService {
   };
 
   petExpIncrease = async (userId) => {
+    const pet = await PetRepository.findPet(userId);
     const userPoint = await UserRepository.findPoint(userId);
     if (!userPoint) return this.result(400, "존재하지 않는 유저입니다.");
+    else if (!pet) return this.result(400, "펫이 존재하지 않습니다.");
     else if (userPoint < 50) return this.result(400, "포인트가 부족합니다.");
-
-    const pet = await PetRepository.findPet(userId);
-    if (!pet) return this.result(400, "펫이 존재하지 않습니다.");
+    const updatePoint = await UserRepository.updatePoint(
+      userId,
+      userPoint - 50
+    );
+    if (updatePoint == [0]) return this.result(400, "알 수 없는 에러");
 
     let { level, exp } = pet;
     let levelUp = false;

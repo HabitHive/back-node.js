@@ -1,6 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
-import router from "./layers/routers/index.js";
+import router from "./layers/router/index.js";
 import morgan from "morgan";
 import chalk from "chalk";
 import { sequelize } from "./models/index.js";

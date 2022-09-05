@@ -66,4 +66,6 @@ export default new (class DailyService {
 
     return;
   };
+
+  done = async (userId, userTagId) => {};
 })();

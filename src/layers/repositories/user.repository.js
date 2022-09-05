@@ -1,4 +1,5 @@
 import User from "../../models/user.js";
+import Point from "../../models/point.js";
 
 class UserRepository {
   findOneUser = async (userId) => {
@@ -48,6 +49,21 @@ class UserRepository {
       raw: true,
     });
     return user.point;
+  };
+
+  updatePoint = async (user_id, point) => {
+    const result = await User.update({ point }, { where: { user_id } });
+    return result;
+  };
+
+  pointHistory = async (user_tag_id) => {
+    const history = await Point.findAll({ where: { user_tag_id } });
+    return history;
+  };
+
+  countHistory = async (user_tag_id) => {
+    const count = await Point.count({ where: { user_tag_id } });
+    return count;
   };
 }
 

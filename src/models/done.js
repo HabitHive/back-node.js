@@ -15,7 +15,7 @@ export default class Done extends Sequelize.Model {
           type: Sequelize.INTEGER,
           allowNull: false,
         },
-        tag_id: {
+        user_tag_id: {
           type: Sequelize.INTEGER,
           allowNull: false,
         },
@@ -42,8 +42,8 @@ export default class Done extends Sequelize.Model {
       onDelete: "cascade",
       onUpdate: "cascade",
     });
-    db.Done.belongsTo(db.Tag, {
-      foreignKey: { name: "tag_id", allowNull: false },
+    db.Done.belongsTo(db.UserTag, {
+      foreignKey: { name: "user_tag_id", allowNull: false },
       onDelete: "cascade",
       onUpdate: "cascade",
     });

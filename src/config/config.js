@@ -4,12 +4,12 @@ dotenv.config({ path: "../.env" }); //src 폴더가있는 동일선상의 파일
 
 const config = {
   development: {
-    username: process.env.DEV_DB_ID,
-    password: process.env.DEV_DB_PW,
-    database: process.env.DEV_DB,
-    host: process.env.DEV_DB_HOST,
+    username: process.env.DB_ID,
+    password: process.env.DB_PW,
+    database: process.env.DB,
+    host: process.env.DB_HOST,
     dialect: "mysql",
-    logging: false,
+    logging: true,
     timezone: "+09:00",
     dialectOptions: {
       dateStrings: true,
@@ -52,5 +52,5 @@ const config = {
     },
   },
 };
-
+console.log(config.development);
 export default config;
