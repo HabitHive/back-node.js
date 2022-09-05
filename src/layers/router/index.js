@@ -5,9 +5,13 @@ import DailyController from "../controllers/daily.controller.js";
 import TagController from "../controllers/tag.controller.js";
 import PetController from "../controllers/pet.controller.js";
 
-import authMiddleware from "../middlewares/auth.middleware.js";
+import authMiddleware from "../utils/auth.middleware.js";
+import reissuance from "../utils/token.reissuance.js";
 
 const router = express.Router();
+
+/* /api/token */
+router.get("/token", reissuance); //엑세스 토큰 재발급
 
 /* /api/user */
 router.post("/user/signup", UserController.singUp); //회원가입
