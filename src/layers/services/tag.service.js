@@ -10,9 +10,9 @@ export default new (class TagService {
     // 나중에 구매한 태그는 찾지 않게 만들기
     const userInfo = await TagRepository.interest(userId);
     // 관심사 선택을 아무 것도 안했을 경우 #만 넘어온다. if 문으로 잡아라
-    const uaerInterest = userInfo.interest.split("#");
-    // console.log(uaerInterest);
-    const categoryList = uaerInterest.length;
+    const userInterest = userInfo.interest.split("#");
+    // console.log(userInterest);
+    const categoryList = userInterest.length;
 
     const recommendedList = await TagRepository.recommended(
       categoryList,
@@ -64,11 +64,7 @@ export default new (class TagService {
   tagBuy = async (userId, tagId, period) => {
     const result = await TagRepository.tagBuy(userId, tagId, period);
 
-    return {
-      status: 200,
-      result: result,
-      message: "내 습관 추가",
-    };
+    return { status: 200, result, message: "내 습관 추가" };
   };
 
   /**

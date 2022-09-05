@@ -60,14 +60,10 @@ class UserController {
   myInfo = async (req, res) => {
     const { userId } = res.locals;
 
-    try {
-      const receive = await UserService.myInfo(userId);
-      res
-        .status(receive.status)
-        .json({ message: receive.message, result: receive.result });
-    } catch (error) {
-      res.status(error.status).json({ message: error.message });
-    }
+    const receive = await UserService.myInfo(userId);
+    res
+      .status(receive.status)
+      .json({ message: receive.message, result: receive.result });
   };
 
   //유저 태그 리스트         /api/user/mypage/tag
@@ -75,15 +71,11 @@ class UserController {
     const { userId } = res.locals;
     const date = new Date(req.body.date);
 
-    try {
-      const receive = await UserService.myTag(userId, date);
-      res.status(receive.status).json({
-        message: receive.message,
-        result: receive.result,
-      });
-    } catch (error) {
-      res.status(error.status).json({ message: error.message });
-    }
+    const receive = await UserService.myTag(userId, date);
+    res.status(receive.status).json({
+      message: receive.message,
+      result: receive.result,
+    });
   };
 }
 
