@@ -110,7 +110,11 @@ class UserService {
     await UserRepository.interest(interest, user_id);
   };
 
-  //유저정보              /api/user/mypage/info
+  /**
+   * 유저 정보
+   * @param {number} userId 사용자별 유니크 숫자
+   * @returns email / nickname / point
+   */
   myInfo = async (userId) => {
     const user = await UserRepository.findUser(userId);
     if (!user) return this.result(400, "존재하지 않는 유저입니다.");
@@ -124,7 +128,12 @@ class UserService {
     return this.result(200, "유저 정보", result);
   };
 
-  //내 태그 리스트
+  /**
+   * 유저의 습관 정보 불러오기
+   * @param {number} userId 사용자별 유니크 숫자
+   * @param {string} today 오늘 날짜
+   * @returns stillTags: 종료되지 않은 습관 / successTags: 완주 성공 / failTags: 완주 실패
+   */
   myTag = async (userId, today) => {
     const tagLists = await TagRepository.myAllTagList(userId);
     if (tagLists == [])
@@ -138,7 +147,6 @@ class UserService {
     let successTags = [];
     let failTags = [];
 
-    // 수정 중... 날짜 어떤 형식인지 알아야 하는데...?
     for (let tag in tagLists) {
       if (tag.success === true) {
         // 성공 습관
@@ -147,18 +155,20 @@ class UserService {
         // 실패 습관
         failTags.push(tag.Tag["tag_name"]);
       } else if (tag.end_date === null) {
-        // 시작 전 습관
+        // 예약되지 않은 습관
         stillTags.push({
           tagName: tag.Tag["tag_name"],
           dDay: tag.period,
           week: [false, false, false, false, false, false, false],
         });
       } else {
-        const startDate = new Date(tag.start_date);
         const endDate = new Date(tag.end_date);
         if (endDate >= today) {
-          // 진행 중인 습관
+          // 진행 중이거나 진행 될 예정인 습관
+
+          /* 일정에 해당 요일이 지정된 적 있는지의 여부*/
           let week = [false, false, false, false, false, false, false];
+
           const scheduleList = await TagRepository.schedule(tag.user_tag_id);
           for (let schedule in scheduleList) {
             const numWeek = schedule.week_cycle.split(",");
@@ -166,8 +176,11 @@ class UserService {
               week[w] = true;
             }
           }
+
+          /* 종료까지 남은 기간 == d-Day */
           const dDay =
             (endDate.getTime() - today.getTime()) / (1000 * 3600 * 24);
+
           if (dDay > tag.period) {
             stillTags.push({
               tagName: tag.Tag["tag_name"],
@@ -187,6 +200,8 @@ class UserService {
           );
           if (updateTag == [0]) return this.result(400, "알 수 없는 에러");
           if (boolean) {
+            /* boolean이 true 라면 로직에 문제 있음으로 간주 #done*/
+            console.log("이 문장은 콘솔창에 찍히면 안 됩니다...");
             successTags.push(tag.Tag["tag_name"]);
           } else {
             failTags.push(tag.Tag["tag_name"]);

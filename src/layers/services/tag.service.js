@@ -71,7 +71,15 @@ export default new (class TagService {
     };
   };
 
+  /**
+   * 습관을 완료했을 때 호출
+   * @param {number} userId 사용자별 유니크 숫자
+   * @param {number} scheduleId 일정 유니크 숫자
+   * @param {string} strDate 문자열 날짜
+   * @returns first : 첫 완료 여부 / bonus : 보너스 여부 / bonusPoint
+   */
   done = async (userId, scheduleId, strDate) => {
+    /* 일정 정보 불러오기 */
     const schedule = await TagRepository.findSchedule(scheduleId);
     if (!schedule) return this.result(400, "존재하지 않는 일정입니다.");
     else if (schedule.User["user_id"] !== userId)
@@ -95,10 +103,11 @@ export default new (class TagService {
     console.log(done);
 
     const exist = await UserRepository.existHistory(userTagId, date);
-    const fisrt = exist ? false : true;
+    const fisrt = exist ? false : true; // 이미 기록이 존재한다면 포인트 X
     let bonus = false;
     let bonusPoint = 0;
 
+    /* 첫 완료*/
     if (fisrt && date != endDate) {
       const userPoint = await UserRepository.findPoint(userId);
       const increase = await UserRepository.updatePoint(userId, userPoint + 20);
@@ -107,10 +116,10 @@ export default new (class TagService {
       await UserRepository.createHistory(userId, 20, date, userTagId);
     }
 
+    /* 첫 완료 + 마지막 날 */
     if (fisrt && date == endDate) {
-      // 보너스 날
       const count = await UserRepository.countHistory(userTagId);
-      bonus = count == tag.period;
+      bonus = count == tag.period; // 일정 내내 성공했다면 보너스 true
       if (bonus) {
         bonusPoint = tag.period * 20;
       }

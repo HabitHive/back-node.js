@@ -6,7 +6,11 @@ class PetService {
     return { status, message, result };
   };
 
-  // 유저가 가진 펫 정보
+  /**
+   * 펫 정보 요청
+   * @param {number} userId 사용자별 유니크 숫자
+   * @returns 펫 정보 level, exp
+   */
   petInfo = async (userId) => {
     const pet = await PetRepository.findOrCreatePet(userId);
     if (!pet) return this.result(400, "알 수 없는 에러");
@@ -22,6 +26,11 @@ class PetService {
       });
   };
 
+  /**
+   * 펫 경험치 증가 요청
+   * @param {number} userId 사용자별 유니크 숫자
+   * @returns levelUp: 레벨업 여부 / level / exp
+   */
   petExpIncrease = async (userId) => {
     const pet = await PetRepository.findPet(userId);
     const userPoint = await UserRepository.findPoint(userId);

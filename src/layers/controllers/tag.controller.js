@@ -35,6 +35,7 @@ export default new (class TagController {
       const { scheduleId, date } = req.body;
 
       const receive = await TagService.done(userId, scheduleId, date);
+      return res.status(receive.status).json(receive.message, receive.result);
     } catch (err) {
       res.status(err.status).send(err.message);
     }
