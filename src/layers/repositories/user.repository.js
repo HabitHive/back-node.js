@@ -2,14 +2,14 @@ import User from "../../models/user.js";
 import Point from "../../models/point.js";
 
 class UserRepository {
-  findOneUser = async (userId) => {
-    return await User.findOne({ where: { userId } });
-  };
   //회원가입              /api/user/signup
   singUp = async (email, nickname, password) => {
     const exsistEmail = await User.findOne({ where: { email } });
     if (exsistEmail) {
-      throw new Error("exsist email");
+      const error = new Error("account error");
+      error.name = "exsist email";
+      error.status = 403;
+      throw error;
     } else {
       await User.create({
         email,

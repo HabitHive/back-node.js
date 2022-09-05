@@ -10,7 +10,20 @@ export default async (req, res, next) => {
     const [tokenType, tokenValue] = (authorization || "").split(" ");
     const refreshToken = req.session.a1; // 리프레쉬 토큰값
     const user = jwt.verify(tokenValue, process.env.ACCESS_TOKEN_SECRET); // 받아온 엑세스 토큰 값을 검증해서 user에 저장
-    const verifyUser = jwt.decode(refreshToken);
+    const verifyUser = jwt.verify(
+      refreshToken,
+      process.env.REFRESH_TOKEN_SECRET,
+      (err, decoded) => {
+        if (err) {
+          console.log(err);
+          const error = new Error("verify token error");
+          error.name = "invalid token";
+          error.status = 500;
+          throw error;
+        }
+        return decoded;
+      }
+    ); // 받아온 리프레쉬 토큰 값을 검증해서 verifyUser에 저장
     const existUser = await User.findOne({
       where: { user_id: user.key1 - parseInt(process.env.SUM) },
     }); // 유저아이디로 유저값 불러오기
@@ -55,8 +68,15 @@ export default async (req, res, next) => {
 
     next();
   } catch (error) {
-    console.log(error.name);
-    res.status(400).send("로그인 또는 회원가입을 해주세요");
+    if (error.status) {
+      console.log(error);
+      res
+        .status(error.status)
+        .json({ message: "로그인 또는 회원가입을 해주세요" });
+      return;
+    }
+    console.log(error);
+    res.status(401).json({ message: "로그인 또는 회원가입을 해주세요" });
     return;
   }
 };
