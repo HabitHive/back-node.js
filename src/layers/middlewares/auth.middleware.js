@@ -1,129 +1,28 @@
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
-import User from "../../models/user.js";
 dotenv.config();
 
 export default async (req, res, next) => {
-  let { authorization } = req.headers; //header 안쪽 authorization(구조분해 할당)라는 key값으로 엑세스 토큰 받아오기
-  let refreshToken = req.session.a1; //리프레쉬 토큰 값 불러오기
+  // 요청 헤더에서 토큰 값을 가지고 옴
+  const { authorization } = req.headers;
+  const [tokenType, tokenValue] = (authorization || "").split(" "); // 구조분해 할당
+
+  if (tokenType !== "Bearer") {
+    const error = new Error("Token error");
+    error.name = "wrong Token";
+    throw error;
+  }
 
   try {
-    //엑세스 토큰 존재 유무 확인
-    if (authorization === undefined) {
-      throw new Error("not exist header");
-    }
+    // 받아온 토큰 값을 검증해서 user에 저장
+    const user = jwt.verify(tokenValue, process.env.ACCESS_TOKEN_SECRET);
 
-    //authorization 파일 양식 확인
-    const [tokenType, tokenValue] = (authorization || "").split(" ");
-
-    if (tokenType !== "Bearer") {
-      throw new Error("not exist token");
-    }
-
-    //리프레쉬 토큰 존재 유무 확인
-    if (refreshToken === undefined) {
-      throw new Error("not exist token");
-    }
-
-    //엑세스 토큰 유효성 검사
-    const accessTokenVerify = jwt.verify(
-      tokenValue,
-      process.env.ACCESS_TOKEN_SECRET,
-      (err, decoded) => {
-        //에러날시 아래 코드 작동
-        if (err) {
-          //엑세스 토큰의 유효기간 만기시 재발급 과정 진행
-          if (err.name === "TokenExpiredError") {
-            const refreshTokenVerify = jwt.verify(
-              refreshToken,
-              process.env.REFRESH_TOKEN_SECRET,
-              (err, decoded) => {
-                if (err) {
-                  //유효성 검사에서 불합격시 "invalid signature" 에러 반환 처리
-                  throw new Error("invalid signature");
-                } else {
-                  //유효성 검사 통과시 리프레쉬 디코드 값 반환
-                  return decoded;
-                }
-              }
-            );
-
-            //로그인시 생성된 엑세스 토큰 값, 현재 헤더 내 토큰 값
-            const provenAccessTokenValue = refreshTokenVerify.key2;
-            const [tokenType, nowAccessTokenValue] = (
-              authorization || ""
-            ).split(" ");
-
-            //로그인시 생성된 엑세스 토큰 값과 헤더 내 엑세스 토큰 값 비교
-
-            //같을 시
-            if (provenAccessTokenValue === nowAccessTokenValue) {
-              const newAccessToken = jwt.sign(
-                { key1: refreshTokenVerify.key3 + parseInt(process.env.SUM) },
-                process.env.ACCESS_TOKEN_SECRET,
-                {
-                  expiresIn: "1h",
-                }
-              );
-              const newRefreshToken = jwt.sign(
-                {
-                  key2: newAccessToken,
-                  key3: refreshTokenVerify.key3,
-                },
-                process.env.REFRESH_TOKEN_SECRET,
-                { expiresIn: "7d" }
-              );
-              req.headers.authorization = `Bearer ${newAccessToken}`;
-              req.session.a1 = newRefreshToken;
-              req.session.save();
-              console.log(req.headers.authorization);
-              console.log(req.session.a1);
-
-              const decodedValue = jwt.decode(nowAccessTokenValue);
-              return decodedValue;
-            }
-            //다를 시
-            else {
-              throw new Error("invalid signature");
-            }
-          }
-          //엑세스 토큰의 유효성 검사 불합격시 "invalid signature"이름으로 예외처리
-          if (err.name === "JsonWebTokenError") {
-            throw new Error("invalid signature");
-          }
-          //그 이외의 에러시 에러 반환 처리
-          throw new Error(err);
-        }
-        //검사 통과시 디코드 값 반환
-        else {
-          return decoded;
-        }
-      }
-    );
-
-    //반환된 엑세스 토큰내 유저 아이디 검색
-    const findUser = await User.findOne({
-      where: { user_id: accessTokenVerify.key1 - parseInt(process.env.SUM) },
-    });
-
-    //유저아이디 존재하지 않을시 에러 반환 처리
-    if (findUser === null) {
-      throw new Error("invalid signature");
-    }
-
-    //유저 존재 확인 후 반환된 엑세스 토큰내 유저 아이디 로컬에 저장
-    res.locals.userId = accessTokenVerify.key1 - parseInt(process.env.SUM);
-
-    //여기까지 왔다면 모든 검증 완료 이대로 next()로 다음 단계로 넘어감
+    // res.loclas로 넘겨줌
+    res.locals.user_id = user.key1;
     next();
   } catch (error) {
-    //에러 메시지가 "invalid signature"인 경우 헤더 및 세션 초기화
-    if (error.message === "invalid signature") {
-      req.headers.authorization = undefined;
-      req.session.destroy();
-    }
-    //콘솔창에 에러 내용 출력 및 res로 "로그인이 필요합니다" 문자열 송신
     console.log(error);
-    res.status(400).send("로그인 또는 회원가입이 필요합니다");
+    res.status(400).send(error.name);
+    return;
   }
 };
