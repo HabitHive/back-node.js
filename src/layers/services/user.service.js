@@ -11,20 +11,25 @@ const userSchema = Joi.object()
   .keys({
     email: Joi.string()
       .pattern(
+        // /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/
         new RegExp(
-          "^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$"
+          /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/
         )
       )
       .required(),
     password: Joi.string()
       .pattern(
+        // /^(?=.*[A-Za-z])(?=.*d)(?=.*[@$!%*#?&])[A-Za-zd@$!%*#?&]{8,16}$/
         new RegExp(
-          "^(?=.*[A-Za-z])(?=.*d)(?=.*[@$!%*#?&])[A-Za-zd@$!%*#?&]{8,16}$"
+          /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,16}$/
         )
       )
       .required(),
     nickname: Joi.string()
-      .pattern(new RegExp("(?=.*[a-z0-9가-힣])[a-z0-9가-힣]{1,10}$"))
+      .pattern(
+        // /(?=.*[a-z0-9가-힣])[a-z0-9가-힣]{1,10}$/
+        new RegExp(/(?=.*[a-z0-9가-힣])[a-z0-9가-힣]{1,10}$/)
+      )
       .required(),
   })
   .unknown(true);
@@ -122,6 +127,7 @@ class UserService {
   //내 태그 리스트
   myTag = async (userId, today) => {
     const tagLists = await TagRepository.myAllTagList(userId);
+    console.log(tagLists);
     let stillTags = [];
     let doneList = [];
     let doneTags = { success: [], fail: [] };
