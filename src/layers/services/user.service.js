@@ -1,5 +1,6 @@
 import UserRepository from "../repositories/user.repository.js";
 import TagRepository from "../repositories/tag.repository.js";
+import PetRepository from "../repositories/pet.repository.js";
 import bcrypt from "bcrypt";
 import Joi from "joi";
 import dotenv from "dotenv";
@@ -119,10 +120,13 @@ class UserService {
     const user = await UserRepository.findUser(userId);
     if (!user) return this.result(400, "존재하지 않는 유저입니다.");
 
+    const pet = await PetRepository.findPet(userId);
+
     const result = {
       email: user.email,
       nickname: user.nickname,
       point: user.point,
+      petLevel: pet?.level,
     };
 
     return this.result(200, "유저 정보", result);

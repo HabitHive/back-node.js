@@ -16,13 +16,13 @@ class PetService {
     if (!pet) return this.result(400, "알 수 없는 에러");
     else if (pet[1])
       return this.result(201, "펫 생성 완료", {
-        level: pet.level,
-        exp: pet.exp,
+        level: pet[0].level,
+        exp: pet[0].exp,
       });
     else
       return this.result(200, "펫 불러오기 완료", {
-        level: pet.level,
-        exp: pet.exp,
+        level: pet[0].level,
+        exp: pet[0].exp,
       });
   };
 

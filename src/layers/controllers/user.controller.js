@@ -70,9 +70,11 @@ class UserController {
     }
   };
 
+  //유저 태그 리스트         /api/user/mypage/tag
   myTagList = async (req, res) => {
     const { userId } = res.locals;
     const date = new Date(req.body.date);
+
     try {
       const receive = await UserService.myTag(userId, date);
       res.status(receive.status).json({
