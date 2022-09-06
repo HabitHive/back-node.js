@@ -15,7 +15,6 @@ export default new (class TagService {
     const userInterest = userInfo.interest.split("#");
 
     const categoryList = userInterest.length;
-    console.log(categoryList);
     if (
       categoryList != 2 &&
       categoryList != 3 &&
