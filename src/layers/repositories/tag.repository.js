@@ -71,9 +71,9 @@ export default new (class TagRepository {
     return scheduleList;
   };
 
-  dailyPage = async (userId, todayDate) => {
+  dailyPage = async (user_id, todayDate) => {
     const myDailyPage = await UserTag.findAll({
-      where: { user_id: userId },
+      where: { user_id },
       include: [
         {
           model: Tag,
@@ -88,9 +88,9 @@ export default new (class TagRepository {
     return myDailyPage;
   };
 
-  tagList = async (userId) => {
+  tagList = async (user_id) => {
     const myTagList = await UserTag.findAll({
-      where: { user_id: userId },
+      where: { user_id },
       include: {
         model: Tag,
         attributes: ["tag_name"],
