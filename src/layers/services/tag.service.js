@@ -24,6 +24,8 @@ export default new (class TagService {
         tagName: allList.tag_name,
       };
     });
+    let randomTagList = [];
+    let randomCount = [];
 
     //관심목록을 설정을 안했을 경우 (O)
     if (categoryList != 2) {
@@ -58,20 +60,16 @@ export default new (class TagService {
         });
       }
 
-      let randomTagList = [];
-      let randomCount = [];
       while (randomTagList.length != 3) {
-        let randomNum = Math.floor(Math.random() * (algorithmScore.length + 1));
+        let randomNum = Math.floor(Math.random() * algorithmScore.length);
         if (!randomCount.includes(randomNum)) {
           randomTagList.push(algorithmScore[randomNum]);
           randomCount.push(randomNum);
         }
       }
     } else {
-      let randomTagList = [];
-      let randomCount = [];
       while (randomTagList.length != 3) {
-        let randomNum = Math.floor(Math.random() * (tagLists.length + 1));
+        let randomNum = Math.floor(Math.random() * tagLists.length);
         if (!randomCount.includes(randomNum)) {
           randomTagList.push(tagLists[randomNum]);
           randomCount.push(randomNum);

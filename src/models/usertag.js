@@ -13,23 +13,23 @@ export default class UserTag extends Sequelize.Model {
         },
         user_id: {
           type: Sequelize.INTEGER,
-          allowNull: false,
+          allowNull: true,
         },
         tag_id: {
           type: Sequelize.INTEGER,
-          allowNull: false,
+          allowNull: true,
         },
         period: {
           type: Sequelize.INTEGER,
-          allowNull: false,
+          allowNull: true,
         },
         start_date: {
           type: Sequelize.DATE,
-          allowNull: false,
+          allowNull: true,
         },
         end_date: {
           type: Sequelize.DATE,
-          allowNull: false,
+          allowNull: true,
         },
         success: {
           type: Sequelize.BOOLEAN,
