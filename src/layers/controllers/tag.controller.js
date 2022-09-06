@@ -4,10 +4,11 @@ export default new (class TagController {
   buyPage = async (req, res, next) => {
     try {
       const { userId } = res.locals;
-      // const userId = 2;
-      const data = await this.tagServices.buyPage(userId);
-
-      return res.status(data.status).json(data.result, data.message);
+      // const userId = 1;
+      const date = await TagService.buyPage(userId);
+      return res
+        .status(date.status)
+        .json({ result: date.result, message: date.message });
     } catch (error) {
       console.log(error);
       res.status(400).send(error.message);
@@ -17,13 +18,15 @@ export default new (class TagController {
   tagBuy = async (req, res, next) => {
     try {
       const { userId } = res.locals;
+      // const userId = 2;
       const { tagId } = req.params;
       // 파라미터로 꺼내면 문자형이에요
       const { period } = req.body;
 
-      const data = await TagService.tagBuy(userId, tagId / 1, period);
-
-      return res.status(data.status).json(data.result, data.message);
+      const date = await TagService.tagBuy(userId, tagId / 1, period);
+      return res
+        .status(date.status)
+        .json({ result: date.result, message: date.message });
     } catch (error) {
       console.log(error);
       res.status(400).send(error.message);

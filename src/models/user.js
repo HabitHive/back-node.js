@@ -31,6 +31,14 @@ export default class User extends Sequelize.Model {
           type: Sequelize.INTEGER,
           defaultValue: 0,
         },
+        social: {
+          type: Sequelize.BOOLEAN,
+          allowNull: false,
+        },
+        provider: {
+          type: Sequelize.STRING,
+          allowNull: true,
+        },
       },
       {
         sequelize /* static init 메서드의 매개변수와 연결되는 옵션으로, db.sequelize 객체를 넣어야 한다. */,
@@ -52,6 +60,7 @@ export default class User extends Sequelize.Model {
     });
     db.User.hasMany(db.UserTag, {
       foreignKey: { name: "user_id", allowNull: false },
+      sourceKey: "user_id",
       onDelete: "cascade",
       onUpdate: "cascade",
     });
