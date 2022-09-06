@@ -14,8 +14,13 @@ class UserController {
         res.status(201).json({ token: token });
       }
     } catch (error) {
+      if (error.status) {
+        console.log(error);
+        res.status(error.status).json({ message: error.name });
+        return;
+      }
       console.log(error);
-      res.status(400).send(error.message);
+      res.status(400).json({ message: error.name });
     }
   };
 
@@ -29,8 +34,13 @@ class UserController {
       );
       res.status(201).json({ token: token });
     } catch (error) {
+      if (error.status) {
+        console.log(error);
+        res.status(error.status).json({ message: error.name });
+        return;
+      }
       console.log(error);
-      res.status(400).send(error.message);
+      res.status(400).json({ message: error.name });
     }
   };
 
@@ -40,8 +50,13 @@ class UserController {
       await UserService.logOut(req);
       res.status(200).json({});
     } catch (error) {
+      if (error.status) {
+        console.log(error);
+        res.status(error.status).json({ message: error.name });
+        return;
+      }
       console.log(error);
-      res.status(400).send(error.message);
+      res.status(400).json({ message: error.name });
     }
   };
 
@@ -51,8 +66,13 @@ class UserController {
       await UserService.interest(req.body, res.locals.userId);
       res.status(201).json({});
     } catch (error) {
+      if (error.status) {
+        console.log(error);
+        res.status(error.status).json({ message: error.name });
+        return;
+      }
       console.log(error);
-      res.status(400).send(error.message);
+      res.status(400).json({ message: error.name });
     }
   };
 
@@ -60,28 +80,22 @@ class UserController {
   myInfo = async (req, res) => {
     const { userId } = res.locals;
 
-    try {
-      const receive = await UserService.myInfo(userId);
-      res
-        .status(receive.status)
-        .json({ message: receive.message, result: receive.result });
-    } catch (error) {
-      res.status(error.status).json({ message: error.message });
-    }
+    const receive = await UserService.myInfo(userId);
+    res
+      .status(receive.status)
+      .json({ message: receive.message, result: receive.result });
   };
 
+  //유저 태그 리스트         /api/user/mypage/tag
   myTagList = async (req, res) => {
     const { userId } = res.locals;
-    const { date } = req.body;
-    try {
-      const receive = await UserService.myTag(userId, date);
-      res.status(receive.status).json({
-        message: receive.message,
-        result: receive.result,
-      });
-    } catch (error) {
-      res.status(error.status).json({ message: error.message });
-    }
+    const date = new Date(req.body.date);
+
+    const receive = await UserService.myTag(userId, date);
+    res.status(receive.status).json({
+      message: receive.message,
+      result: receive.result,
+    });
   };
 }
 

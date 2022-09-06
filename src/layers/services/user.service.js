@@ -1,5 +1,6 @@
 import UserRepository from "../repositories/user.repository.js";
 import TagRepository from "../repositories/tag.repository.js";
+import PetRepository from "../repositories/pet.repository.js";
 import bcrypt from "bcrypt";
 import Joi from "joi";
 import dotenv from "dotenv";
@@ -35,9 +36,6 @@ const userSchema = Joi.object()
   .unknown(true);
 
 class UserService {
-  result = async (status, message, result) => {
-    return { status, message, result };
-  };
   //회원가입              /api/user/signup
   singUp = async (body) => {
     await userSchema.validateAsync(body);
@@ -58,34 +56,58 @@ class UserService {
     if (user) {
       const validPassword = await bcrypt.compare(password, user.password);
       if (!validPassword) {
-        throw new Error("Mismatched password");
+        const error = new Error("Mismatched password");
+        error.name = "wrong password";
+        error.status = 403;
+        throw error;
       }
       const accesstoken = jwt.sign(
         { key1: user.user_id + parseInt(process.env.SUM) },
         process.env.ACCESS_TOKEN_SECRET,
-        {
-          expiresIn: "1h",
+        { expiresIn: "1h" },
+        (err, decoded) => {
+          if (err) {
+            console.log(err);
+            const error = new Error("create token error");
+            error.name = "can not create a token";
+            error.status = 500;
+            throw error;
+          }
+          return decoded;
         }
       );
       const refreshtoken = jwt.sign(
-        {
-          key2: accesstoken,
-          key3: user.user_id,
-        },
+        { key2: accesstoken, key3: user.user_id },
         process.env.REFRESH_TOKEN_SECRET,
-        { expiresIn: "7d" }
+        { expiresIn: "7d" },
+        (err, decoded) => {
+          if (err) {
+            console.log(err);
+            const error = new Error("create token error");
+            error.name = "can not create a token";
+            error.status = 500;
+            throw error;
+          }
+          return decoded;
+        }
       );
 
       req.session.a1 = refreshtoken;
       req.session.save((err) => {
         if (err) {
           console.log(err);
-          throw new Error("session save error");
+          const error = new Error("session save error");
+          error.name = "can not create session";
+          error.status = 500;
+          throw error;
         }
       });
       return accesstoken;
     } else {
-      throw new Error("not exist User");
+      const error = new Error("not exist User");
+      error.name = "user not found";
+      error.status = 403;
+      throw error;
     }
   };
 
@@ -95,10 +117,18 @@ class UserService {
       req.session.destroy((err) => {
         if (err) {
           console.log(err);
-          throw new Error("session dstroy error");
+          const error = new Error("session destroy error");
+          error.name = "can not delete session";
+          error.status = 500;
+          throw error;
         }
       });
-    else throw new Error("not exist session");
+    else {
+      const error = new Error("not exist session");
+      error.name = "session not found";
+      error.status = 500;
+      throw error;
+    }
   };
 
   //관심사 설정           /api/user/interest
@@ -110,87 +140,110 @@ class UserService {
     await UserRepository.interest(interest, user_id);
   };
 
-  //유저정보              /api/user/mypage/info
+  /**
+   * 유저 정보
+   * @param {number} userId 사용자별 유니크 숫자
+   * @returns email / nickname / point
+   */
   myInfo = async (userId) => {
     const user = await UserRepository.findUser(userId);
     if (!user) return this.result(400, "존재하지 않는 유저입니다.");
+
+    const pet = await PetRepository.findPet(userId);
 
     const result = {
       email: user.email,
       nickname: user.nickname,
       point: user.point,
+      petLevel: pet?.level,
     };
 
     return this.result(200, "유저 정보", result);
   };
 
-  //내 태그 리스트
+  /**
+   * 유저의 습관 정보 불러오기
+   * @param {number} userId 사용자별 유니크 숫자
+   * @param {string} today 오늘 날짜
+   * @returns stillTags: 종료되지 않은 습관 / successTags: 완주 성공 / failTags: 완주 실패
+   */
   myTag = async (userId, today) => {
     const tagLists = await TagRepository.myAllTagList(userId);
-    console.log(tagLists);
-    let stillTags = [];
-    let doneList = [];
-    let doneTags = { success: [], fail: [] };
-
     if (tagLists == [])
-      return this.result(200, "습관 기록이 없습니다.", { stillTags, doneTags });
+      return this.result(200, "습관 기록이 없습니다.", {
+        stillTags: [],
+        successTags: [],
+        failTags: [],
+      });
 
-    // 수정 중... 날짜 어떤 형식인지 알아야 하는데...?
+    let stillTags = [];
+    let successTags = [];
+    let failTags = [];
+
     for (let tag in tagLists) {
       if (tag.success === true) {
-        doneTags.success.push(tag);
+        // 성공 습관
+        successTags.push(tag.Tag["tag_name"]);
       } else if (tag.success === false) {
-        doneTags.fail.push(tag);
+        // 실패 습관
+        failTags.push(tag.Tag["tag_name"]);
+      } else if (tag.end_date === null) {
+        // 예약되지 않은 습관
+        stillTags.push({
+          tagName: tag.Tag["tag_name"],
+          dDay: tag.period,
+          week: [false, false, false, false, false, false, false],
+        });
       } else {
-        // null
-        if (tag.end_date.getDate() > today) {
-          stillTags.push(tag);
+        const endDate = new Date(tag.end_date);
+        if (endDate >= today) {
+          // 진행 중이거나 진행 될 예정인 습관
+
+          /* 일정에 해당 요일이 지정된 적 있는지의 여부*/
+          let week = [false, false, false, false, false, false, false];
+
+          const scheduleList = await TagRepository.schedule(tag.user_tag_id);
+          for (let schedule in scheduleList) {
+            const numWeek = schedule.week_cycle.split(",");
+            for (let w in numWeek) {
+              week[w] = true;
+            }
+          }
+
+          /* 종료까지 남은 기간 == d-Day */
+          const dDay =
+            (endDate.getTime() - today.getTime()) / (1000 * 3600 * 24);
+
+          if (dDay > tag.period) {
+            stillTags.push({
+              tagName: tag.Tag["tag_name"],
+              dDay: tag.period,
+              week,
+            });
+          } else {
+            stillTags.push({ tagName: tag.Tag["tag_name"], dDay, week });
+          }
         } else {
-          doneList.push(tag);
+          // 종료 된 습관
+          const count = await UserRepository.countHistory(tag.user_tag_id);
+          const boolean = count == tag.period;
+          const updateTag = await TagRepository.isSuccess(
+            tag.user_tag_id,
+            boolean
+          );
+          if (updateTag == [0]) return this.result(400, "알 수 없는 에러");
+          if (boolean) {
+            /* boolean이 true 라면 로직에 문제 있음으로 간주 #done*/
+            console.log("이 문장은 콘솔창에 찍히면 안 됩니다...");
+            successTags.push(tag.Tag["tag_name"]);
+          } else {
+            failTags.push(tag.Tag["tag_name"]);
+          }
         }
       }
     }
 
-    for (let tag in stillTags) {
-      let week = [false, false, false, false, false, false, false];
-      const scheduleList = await TagRepository.schedule(tag.user_tag_id);
-      for (let schedule in scheduleList) {
-        const strWeek = schedule.week_cycle;
-        const numWeek = strWeek.split("뭐로 자르지?");
-        for (let w in numWeek) {
-          week[w] = true;
-        }
-      }
-      stillTags[tag].week_cycle = week;
-
-      // const start = tag.start_date.getDate();
-      // const period = tag.period;
-      // if (start <= today) {
-      //   stillTags[tag].d_day = start - today + period;
-      // }
-    }
-
-    let success = [];
-    let fail = [];
-
-    for (let tag in doneList) {
-      // count method 사용해서 수정하기
-      const count = await UserRepository.countHistory(tag.user_tag_id);
-      const boolean = count == tag.period;
-      const updateTag = await TagRepository.isSuccess(tag.user_tag_id, boolean);
-      if (updateTag == [0]) return this.result(400, "알 수 없는 에러");
-      if (boolean) {
-        success.push(tag);
-      } else {
-        fail.push(tag);
-      }
-    }
-
-    return this.result(200, "태그 리스트 정리 완료", {
-      stillTags,
-      successTags: success.concat(doneTags.success),
-      failTags: fail.concat(doneTags.fail),
-    });
+    return this.result(200, "마이 태그", { stillTags, successTags, failTags });
   };
 }
 
