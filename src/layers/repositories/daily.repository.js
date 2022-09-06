@@ -3,9 +3,9 @@ import Tag from "../../models/tag.js";
 import Schedule from "../../models/schedule.js";
 
 export default new (class DailyRepository {
-  dailyPage = async (userId, todayDate) => {
+  dailyPage = async (user_id) => {
     const dailyTagLists = await UserTag.findAll({
-      where: { user_id: userId },
+      where: { user_id },
       include: [
         {
           model: Tag,
@@ -20,9 +20,9 @@ export default new (class DailyRepository {
     return dailyTagLists;
   };
 
-  tagList = async (userId) => {
+  tagList = async (user_id) => {
     const myTagList = await UserTag.findAll({
-      where: { user_id: userId },
+      where: { user_id },
       include: {
         model: Tag,
         attributes: ["tag_name"],
@@ -31,39 +31,26 @@ export default new (class DailyRepository {
     return myTagList;
   };
 
-  schedulePage = async (userId, userTagId) => {
-    const tag = await UserTag.findOne({
-      where: { user_id: userId, user_tag_id: userTagId },
-    });
+  schedulePage = async (user_id, user_tag_id) => {
+    const tag = await UserTag.findOne({ where: { user_id, user_tag_id } });
     return tag;
   };
 
-  userTagInOf = async (userId, userTagId) => {
-    const userTag = await UserTag.findOne({
-      where: { user_id: userId, user_tag_id: userTagId },
-    });
+  userTagInOf = async (user_id, user_tag_id) => {
+    const userTag = await UserTag.findOne({ where: { user_id, user_tag_id } });
     return userTag;
   };
 
-  scheduleDate = async (userTagId, startDate, endDate) => {
-    await UserTag.update(
-      { start_date: startDate, end_date: endDate },
-      { where: { user_tag_id: userTagId } }
-    );
+  scheduleDate = async (user_tag_id, start_date, end_date) => {
+    await UserTag.update({ start_date, end_date }, { where: { user_tag_id } });
   };
 
-  schedule = async (userTagId, timeCycle, weekCycle) => {
-    await Schedule.craete({
-      user_tag_id: userTagId,
-      time_cycle: timeCycle,
-      week_cycle: weekCycle,
-    });
+  schedule = async (user_tag_id, time_cycle, week_cycle) => {
+    await Schedule.craete({ user_tag_id, time_cycle, week_cycle });
   };
 
-  scheduleInOf = async (scheduleId) => {
-    const schedule = await Schedule.findOne({
-      where: { schedule_id: scheduleId },
-    });
+  scheduleInOf = async (schedule_id) => {
+    const schedule = await Schedule.findOne({ where: { schedule_id } });
     return schedule;
   };
 })();
