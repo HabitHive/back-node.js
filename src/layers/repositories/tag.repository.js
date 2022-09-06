@@ -1,3 +1,4 @@
+import User from "../../models/user.js";
 import UserTag from "../../models/usertag.js";
 import Tag from "../../models/tag.js";
 import Schedule from "../../models/schedule.js";
@@ -10,8 +11,6 @@ export default new (class TagRepository {
   };
 
   recommended = async (categoryList, uaerInterest) => {
-    if (categoryList == 2) {
-    } // 관심사 없으때
     if (categoryList == 3) {
       const tagList1 = await Tag.findAll({
         where: { category: { [Op.like]: `%${uaerInterest[1]}%` } },
