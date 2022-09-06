@@ -4,7 +4,7 @@ import Point from "../../models/point.js";
 class UserRepository {
   //회원가입              /api/user/signup
   singUp = async (email, nickname, password) => {
-    const exsistEmail = await User.findOne({ where: { email } });
+    const exsistEmail = await User.findOne({ where: { email, social: false } });
     if (exsistEmail) {
       const error = new Error("account error");
       error.name = "exsist email";
@@ -17,6 +17,8 @@ class UserRepository {
         nickname,
         interest: "#",
         point: 0,
+        social: false,
+        provider: null,
       });
       return true;
     }

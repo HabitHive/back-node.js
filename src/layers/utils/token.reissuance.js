@@ -23,33 +23,13 @@ export default async (req, res, next) => {
     const newAccessToken = jwt.sign(
       { key1: refreshTokenVerify.key3 + parseInt(process.env.SUM) },
       process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: "1h" },
-      (err, decoded) => {
-        if (err) {
-          console.log(err);
-          const error = new Error("create token error");
-          error.name = "can not create a token";
-          error.status = 500;
-          throw error;
-        }
-        return decoded;
-      }
+      { expiresIn: "1h" }
     );
 
     const newRefreshToken = jwt.sign(
       { key2: newAccessToken, key3: refreshTokenVerify.key3 },
       process.env.REFRESH_TOKEN_SECRET,
-      { expiresIn: "7d" },
-      (err, decoded) => {
-        if (err) {
-          console.log(err);
-          const error = new Error("create token error");
-          error.name = "can not create a token";
-          error.status = 500;
-          throw error;
-        }
-        return decoded;
-      }
+      { expiresIn: "7d" }
     );
 
     req.session.a1 = newRefreshToken;

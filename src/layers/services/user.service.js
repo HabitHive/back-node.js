@@ -22,14 +22,14 @@ const userSchema = Joi.object()
       .pattern(
         // /^(?=.*[A-Za-z])(?=.*d)(?=.*[@$!%*#?&])[A-Za-zd@$!%*#?&]{8,16}$/
         new RegExp(
-          /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,16}$/
+          /^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[@$!%*#?&])[A-Za-z0-9@$!%*#?&]{8,16}$/
         )
       )
       .required(),
     nickname: Joi.string()
       .pattern(
         // /(?=.*[a-z0-9가-힣])[a-z0-9가-힣]{1,10}$/
-        new RegExp(/(?=.*[a-z0-9가-힣])[a-z0-9가-힣]{1,10}$/)
+        new RegExp(/(?=.*[A-Za-z0-9가-힣])[A-Za-z0-9가-힣]{1,10}$/)
       )
       .required(),
   })
@@ -64,32 +64,12 @@ class UserService {
       const accesstoken = jwt.sign(
         { key1: user.user_id + parseInt(process.env.SUM) },
         process.env.ACCESS_TOKEN_SECRET,
-        { expiresIn: "1h" },
-        (err, decoded) => {
-          if (err) {
-            console.log(err);
-            const error = new Error("create token error");
-            error.name = "can not create a token";
-            error.status = 500;
-            throw error;
-          }
-          return decoded;
-        }
+        { expiresIn: "1h" }
       );
       const refreshtoken = jwt.sign(
         { key2: accesstoken, key3: user.user_id },
         process.env.REFRESH_TOKEN_SECRET,
-        { expiresIn: "7d" },
-        (err, decoded) => {
-          if (err) {
-            console.log(err);
-            const error = new Error("create token error");
-            error.name = "can not create a token";
-            error.status = 500;
-            throw error;
-          }
-          return decoded;
-        }
+        { expiresIn: "7d" }
       );
 
       req.session.a1 = refreshtoken;
@@ -113,6 +93,7 @@ class UserService {
 
   //로그 아웃             /api/user/logout
   logOut = async (req) => {
+    req.logOut();
     if (req.session.a1)
       req.session.destroy((err) => {
         if (err) {
