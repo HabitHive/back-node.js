@@ -13,9 +13,21 @@ export default new (class TagService {
     const userInfo = await TagRepository.interest(userId);
     // 관심사 선택을 아무 것도 안했을 경우 #만 넘어온다. if 문으로 잡아라
     const userInterest = userInfo.interest.split("#");
-    // console.log(userInterest);
-    const categoryList = userInterest.length;
 
+    const categoryList = userInterest.length;
+    console.log(categoryList);
+    if (
+      categoryList != 2 &&
+      categoryList != 3 &&
+      categoryList != 4 &&
+      categoryList != 5
+    ) {
+      return {
+        status: 400,
+        result: userInterest,
+        message: "관심 목록 설정이 잘못 되었는데",
+      };
+    }
     const tagLists = await TagRepository.buyPage();
 
     const tagList = tagLists.map((allList) => {

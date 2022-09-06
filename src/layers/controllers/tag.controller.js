@@ -4,7 +4,7 @@ export default new (class TagController {
   buyPage = async (req, res, next) => {
     try {
       const { userId } = res.locals;
-      // const userId = 2;
+      // const userId = 1;
       const date = await TagService.buyPage(userId);
       return res
         .status(date.status)
