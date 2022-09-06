@@ -93,7 +93,6 @@ class UserService {
 
   //로그 아웃             /api/user/logout
   logOut = async (req) => {
-    req.logOut();
     if (req.session.a1)
       req.session.destroy((err) => {
         if (err) {
