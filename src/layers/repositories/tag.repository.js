@@ -50,7 +50,6 @@ export default new (class TagRepository {
 
   tagBuy = async (user_id, tag_id, period) => {
     await UserTag.create({ user_id, tag_id, period });
-    console.log(1);
   };
 
   myAllTagList = async (user_id) => {
