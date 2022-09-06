@@ -29,7 +29,7 @@ const userSchema = Joi.object()
     nickname: Joi.string()
       .pattern(
         // /(?=.*[a-z0-9가-힣])[a-z0-9가-힣]{1,10}$/
-        new RegExp(/(?=.*[A-Za-z0-9가-힣])[A-Za-z0-9가-힣]{1,10}$/)
+        new RegExp(/^(?=.*[A-Za-z0-9가-힣])[A-Za-z0-9가-힣]{1,10}$/)
       )
       .required(),
   })
