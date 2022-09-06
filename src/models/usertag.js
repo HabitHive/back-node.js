@@ -51,6 +51,7 @@ export default class UserTag extends Sequelize.Model {
   static associate(db) {
     db.UserTag.belongsTo(db.User, {
       foreignKey: { name: "user_id", allowNull: false },
+      targetKey: "user_id",
       onDelete: "cascade",
       onUpdate: "cascade",
     });
