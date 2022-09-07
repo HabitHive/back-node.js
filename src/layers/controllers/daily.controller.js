@@ -4,13 +4,15 @@ export default new (class Dailycontroller {
   // 선택한 todayDate 에 대해서 스케줄을 가지고 있는 list을
   dailyPage = async (req, res, next) => {
     try {
-      const { userId } = res.locals;
-      // const userId = 2;
+      // const { userId } = res.locals;
+      const userId = 2;
       const { todayDate } = req.query;
-      // const todayDate = new Date();
-      const dete = await DailyService.dailyPage(userId, todayDate);
 
-      return res.status(dete.status).json(dete.result, dete.message);
+      const date = await DailyService.dailyPage(userId, todayDate);
+
+      return res
+        .status(date.status)
+        .json({ result: date.result, message: date.message });
     } catch (error) {
       console.log(error);
       res.status(400).send(error.message);
@@ -21,10 +23,11 @@ export default new (class Dailycontroller {
     try {
       const { userId } = res.locals;
       // const userId = 2;
+      const date = await DailyService.tagList(userId);
 
-      const dete = await DailyService.tagList(userId);
-
-      return res.status(dete.status).json(dete.result, dete.message);
+      return res
+        .status(date.status)
+        .json({ result: date.result, message: date.message });
     } catch (error) {
       console.log(error);
       res.status(400).send(error.message);
@@ -38,9 +41,11 @@ export default new (class Dailycontroller {
       // const userId = 1;
       const { userTagId } = req.params;
 
-      const dete = await DailyService.schedulePage(userId, userTagId);
+      const date = await DailyService.schedulePage(userId, userTagId);
 
-      return res.status(dete.status).json(dete.result, dete.message);
+      return res
+        .status(date.status)
+        .json({ result: date.result, message: date.message });
     } catch (error) {
       console.log(error);
       res.status(400).send(error.message);
@@ -49,19 +54,23 @@ export default new (class Dailycontroller {
 
   schedule = async (req, res, next) => {
     try {
-      const { userId } = res.locals;
+      // const { userId } = res.locals;
+      const userId = 2;
       const { userTagId } = req.params;
-      const { timeCycle, weekCycle, startDate } = req.bady;
+      const { startTime, endTime, weekCycle, startDate } = req.body;
 
-      const dete = await DailyService.schedule(
+      const date = await DailyService.schedule(
         userId,
         userTagId,
-        timeCycle,
+        startTime,
+        endTime,
         weekCycle,
         startDate
       );
 
-      return res.status(dete.status).json(dete.result, dete.message);
+      return res
+        .status(date.status)
+        .json({ result: date.result, message: date.message });
     } catch (error) {
       console.log(error);
       res.status(400).send(error.message);
@@ -74,7 +83,7 @@ export default new (class Dailycontroller {
       const { scheduleId } = req.params;
       const { timeCycle, weekCycle, todayDate } = req.bady;
       // todayDate는 언제 부터 스케줄을 변경 할 것인지
-      const dete = await DailyService.scheduleUpdate(
+      const date = await DailyService.scheduleUpdate(
         userId,
         scheduleId,
         timeCycle,
@@ -82,7 +91,9 @@ export default new (class Dailycontroller {
         todayDate
       );
 
-      return res.status(dete.status).json(dete.result, dete.message);
+      return res
+        .status(date.status)
+        .json({ result: date.result, message: date.message });
     } catch (error) {
       console.log(error);
       res.status(400).send(error.message);

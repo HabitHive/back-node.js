@@ -56,34 +56,53 @@ export default new (class DailyService {
     };
   };
   // 지금은 스케줄의 생성에 대한 로직만
-  schedule = async (userId, userTagId, timeCycle, weekCycle, startDate) => {
+
+  schedule = async (
+    userId,
+    userTagId,
+    startTime,
+    endTime,
+    weekCycle,
+    startDate
+  ) => {
+    // 스케줄 시간이 지난 후에 새로운 스케줄을 설정은?? 지금은 수정 X
     const userTag = await DailyRepository.userTagInOf(userId, userTagId);
-    if (userTag.startDate == null) {
+    if (userTag.start_date == null) {
       const period = userTag.period;
-      const date = startDate;
-      const endDate = date.setDate(date.getDate() + period / 1);
-      await this.dailyRepositories.scheduleDate(userTagId, startDate, endDate);
+      let date = new Date(startDate);
+      date.setDate(date.getDate() + period);
+      let endDate = date
+        .toLocaleDateString()
+        .split(". ")
+        .join("-")
+        .slice(0, -1);
+      await DailyRepository.scheduleDate(userTagId, startDate, endDate);
     }
-    if (new Date() >= userTag.startDate) {
-      // 스케줄 시간이 지난 후에 새로운 스케줄을 설정은?? 지금은 수정 X
+    if (new Date() >= new Date(userTag.start_date)) {
       return {
         status: 400,
-        result,
+        result: {},
         message: "이미 예약한 시간 이후 인데",
-      };
+      }; // 나중에 예약을 한 날짜보다 현재날짜를 자났나면 수정불가! (O)
     }
     if (userTag.startDate != startDate) {
       const period = userTag.period;
-      const date = startDate;
-      const endDate = date.setDate(date.getDate() + period / 1);
-      await this.dailyRepositories.scheduleDate(userTagId, startDate, endDate);
-    } // 나중에 예약을 한 날짜보다 현재날짜를 자났나면 수정불가!
+      let date = new Date(startDate);
+      date.setDate(date.getDate() + period);
+      let endDate = date
+        .toLocaleDateString()
+        .split(". ")
+        .join("-")
+        .slice(0, -1);
+      await DailyRepository.scheduleDate(userTagId, startDate, endDate);
+    }
+    const timeCycle = startTime + "," + endTime;
 
-    await this.dailyRepositories.schedule(userTagId, timeCycle, weekCycle);
+    await DailyRepository.schedule(userTagId, timeCycle, weekCycle);
 
     return {
       status: 200,
-      result,
+      result: {},
       message: "내 태그 스케줄 추가",
     };
   };
