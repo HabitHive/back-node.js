@@ -64,7 +64,7 @@ export default async (req, res, next) => {
     }
 
     // res.loclas로 user_id 넘겨줌
-    res.locals.user_id = user.key1 - parseInt(process.env.SUM);
+    res.locals.userId = user.key1 - parseInt(process.env.SUM);
 
     next();
   } catch (error) {
