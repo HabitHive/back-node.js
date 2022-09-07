@@ -11,6 +11,14 @@ import reissuance from "../utils/token.reissuance.js";
 
 const router = express.Router();
 
+/* /api/google */
+router.get("/google", SocailLogin.Google);
+router.get(
+  "/google/callback",
+  SocailLogin.GoogleCallBack,
+  SocailLogin.ResponseToken
+);
+
 /* /api/kakao */
 router.get("/kakao", SocailLogin.Kakao);
 router.get(
