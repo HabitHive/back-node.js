@@ -11,6 +11,14 @@ import reissuance from "../utils/token.reissuance.js";
 
 const router = express.Router();
 
+/* /api/naver */
+router.get("/naver", SocailLogin.Naver);
+router.get(
+  "/naver/callback",
+  SocailLogin.NaverCallBack,
+  SocailLogin.ResponseToken
+);
+
 /* /api/google */
 router.get("/google", SocailLogin.Google);
 router.get(
