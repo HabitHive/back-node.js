@@ -26,6 +26,15 @@ class SocialLogin {
     // failureFlash: true, //실패시 플래시 메시지 출력여부
   });
 
+  Naver = passport.authenticate("naver");
+
+  NaverCallBack = passport.authenticate("naver", {
+    // successRedirect: "/", // kakaoStrategy에서 성공한다면 이 주소로 이동
+    failureRedirect: "/api/naver", // kakaoStrategy에서 실패한다면 이 주소로 이동
+    // successFlash: "성공적", // 성공시 플래시 메시지 출력
+    // failureFlash: true, //실패시 플래시 메시지 출력여부
+  });
+
   ResponseToken = (req, res) => {
     try {
       if (req.user) {

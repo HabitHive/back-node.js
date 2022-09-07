@@ -48,7 +48,7 @@ export default () => {
               provider: "kakao",
             });
             const newUser = await User.findOne({
-              // 카카오 플랫폼에서 로그인 했고 & 소셜 로그인 한 경우
+              // 방금 가입한 유저 찾기
               where: {
                 email: profile._json.kakao_account.email,
                 social: true,
