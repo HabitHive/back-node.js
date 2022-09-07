@@ -46,7 +46,7 @@ export default new (class DailyRepository {
   };
 
   schedule = async (user_tag_id, time_cycle, week_cycle) => {
-    await Schedule.craete({ user_tag_id, time_cycle, week_cycle });
+    await Schedule.create({ user_tag_id, time_cycle, week_cycle });
   };
 
   scheduleInOf = async (schedule_id) => {
