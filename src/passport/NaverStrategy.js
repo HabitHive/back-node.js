@@ -42,6 +42,7 @@ export default () => {
               social: true,
               provider: "naver",
             });
+            // 방금 가입한 유저 찾기
             const newUser = await User.findOne({
               where: {
                 email: profile._json.email,
