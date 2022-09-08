@@ -52,8 +52,8 @@ app.use(
     resave: false,
     saveUninitialized: false,
     store: sessionStore,
-    key: "user",
-    secret: "secret",
+    key: process.env.SESSION_KEY,
+    secret: process.env.SESSION_SECRET,
     cookie: {
       httpOnly: true,
       secure: false,

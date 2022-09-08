@@ -15,8 +15,12 @@ export default class Schedule extends Sequelize.Model {
           type: Sequelize.INTEGER,
           allowNull: false,
         },
+        user_id: {
+          type: Sequelize.INTEGER,
+          allowNull: false,
+        },
         time_cycle: {
-          type: Sequelize.INTEGER(50),
+          type: Sequelize.STRING(50),
           allowNull: false,
         },
         week_cycle: {
@@ -39,6 +43,11 @@ export default class Schedule extends Sequelize.Model {
   static associate(db) {
     db.Schedule.belongsTo(db.UserTag, {
       foreignKey: { name: "user_tag_id", allowNull: false },
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    });
+    db.Schedule.belongsTo(db.User, {
+      foreignKey: { name: "user_id", allowNull: false },
       onDelete: "cascade",
       onUpdate: "cascade",
     });

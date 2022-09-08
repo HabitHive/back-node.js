@@ -4,22 +4,37 @@ import dotenv from "dotenv";
 dotenv.config();
 
 class SocialLogin {
-  //* 카카오로 로그인하기 라우터 ***********************
   //? /kakao로 요청오면, 카카오 로그인 페이지로 가게 되고, 카카오 서버를 통해 카카오 로그인을 하게 되면, 다음 라우터로 요청한다.
   // router.get("/kakao", passport.authenticate("kakao"));
   Kakao = passport.authenticate("kakao");
 
   //? 위에서 카카오 서버 로그인이 되면, 카카오 redirect url 설정에 따라 이쪽 라우터로 오게 된다.
   // router.get("/kakao/callback", passport.authenticate("kakao",{option}));
-
-  //? 그리고 passport 로그인 전략에 의해 kakaoStrategy로 가서 카카오계정 정보와 DB를 비교해서 회원가입시키거나 로그인 처리하게 한다.
   KakaoCallBack = passport.authenticate("kakao", {
-    // successRedirect: "/", // kakaoStrategy에서 성공한다면 실행
-    failureRedirect: "/api/kakao", // kakaoStrategy에서 실패한다면 실행
+    // successRedirect: "/", // kakaoStrategy에서 성공한다면 이 주소로 이동
+    failureRedirect: "/api/kakao", // kakaoStrategy에서 실패한다면 이 주소로 이동
     // successFlash: "성공적", // 성공시 플래시 메시지 출력
     // failureFlash: true, //실패시 플래시 메시지 출력여부
   });
-  // kakaoStrategy에서 성공한다면 콜백 실행
+
+  Google = passport.authenticate("google", { scope: ["profile", "email"] });
+
+  GoogleCallBack = passport.authenticate("google", {
+    // successRedirect: "/", // kakaoStrategy에서 성공한다면 이 주소로 이동
+    failureRedirect: "/api/google", // kakaoStrategy에서 실패한다면 이 주소로 이동
+    // successFlash: "성공적", // 성공시 플래시 메시지 출력
+    // failureFlash: true, //실패시 플래시 메시지 출력여부
+  });
+
+  Naver = passport.authenticate("naver");
+
+  NaverCallBack = passport.authenticate("naver", {
+    // successRedirect: "/", // kakaoStrategy에서 성공한다면 이 주소로 이동
+    failureRedirect: "/api/naver", // kakaoStrategy에서 실패한다면 이 주소로 이동
+    // successFlash: "성공적", // 성공시 플래시 메시지 출력
+    // failureFlash: true, //실패시 플래시 메시지 출력여부
+  });
+
   ResponseToken = (req, res) => {
     try {
       if (req.user) {
