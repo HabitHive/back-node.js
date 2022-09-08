@@ -4,18 +4,18 @@ import Schedule from "../../models/schedule.js";
 
 export default new (class DailyRepository {
   dailyPage = async (user_id) => {
-    const dailyTagLists = await UserTag.findAll({
+    const dailyTagLists = await Schedule.findAll({
       where: { user_id },
-      include: [
-        {
-          model: Tag,
-          attributes: ["tag_name"],
-        },
-        {
-          model: Schedule,
-          attributes: ["time_cycle", "week_cycle"],
-        },
-      ],
+      include: {
+        model: UserTag,
+        attributes: ["start_date", "end_date"],
+        include: [
+          {
+            model: Tag,
+            attributes: ["tag_name"],
+          },
+        ],
+      },
     });
     return dailyTagLists;
   };
