@@ -49,7 +49,7 @@ export default new (class TagRepository {
   };
 
   tagBuy = async (user_id, tag_id, period) => {
-    await UserTag.create({ user_id, tag_id, period });
+    await UserTag.craete({ user_id, tag_id, period });
   };
 
   myAllTagList = async (user_id) => {
@@ -118,7 +118,7 @@ export default new (class TagRepository {
   };
 
   schedule = async (user_id, user_tag_id, time_cycle, week_cycle) => {
-    await Schedule.create({ user_tag_id, time_cycle, week_cycle });
+    await Schedule.craete({ user_tag_id, time_cycle, week_cycle });
   };
 
   findSchedule = async (schedule_id) => {

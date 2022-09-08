@@ -1,5 +1,6 @@
 import User from "../../models/user.js";
 import Point from "../../models/point.js";
+import { date } from "joi";
 
 class UserRepository {
   //회원가입              /api/user/signup
@@ -62,6 +63,8 @@ class UserRepository {
     const history = await Point.findOne({ where: { user_tag_id, date } });
     return history;
   };
+
+  colorHistory = async(user_id, date);
 
   countHistory = async (user_tag_id) => {
     const count = await Point.count({ where: { user_tag_id } });

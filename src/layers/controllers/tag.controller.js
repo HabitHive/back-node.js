@@ -33,6 +33,11 @@ export default new (class TagController {
     }
   };
 
+  monthly = async (req, res) => {
+    const { userId } = res.locals;
+    const { yearMonth } = req.query;
+  };
+
   doneTag = async (req, res) => {
     const { userId } = res.locals;
     const { scheduleId, date } = req.body;

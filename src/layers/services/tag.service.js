@@ -101,6 +101,8 @@ export default new (class TagService {
     return { status: 200, result, message: "내 습관 추가" };
   };
 
+  monthDone = async (userId, date) => {};
+
   /**
    * 습관을 완료했을 때 호출
    * @param {number} userId 사용자별 유니크 숫자
