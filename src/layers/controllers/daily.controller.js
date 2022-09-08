@@ -4,8 +4,8 @@ export default new (class Dailycontroller {
   // 선택한 todayDate 에 대해서 스케줄을 가지고 있는 list을
   dailyPage = async (req, res, next) => {
     try {
-      // const { userId } = res.locals;
-      const userId = 2;
+      const { userId } = res.locals;
+      // const userId = 2;
       const { todayDate } = req.query;
 
       const date = await DailyService.dailyPage(userId, todayDate);
@@ -54,8 +54,8 @@ export default new (class Dailycontroller {
 
   schedule = async (req, res, next) => {
     try {
-      // const { userId } = res.locals;
-      const userId = 2;
+      const { userId } = res.locals;
+      // const userId = 2;
       const { userTagId } = req.params;
       const { startTime, endTime, weekCycle, startDate } = req.body;
 
