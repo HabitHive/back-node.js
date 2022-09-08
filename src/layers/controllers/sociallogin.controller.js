@@ -30,51 +30,30 @@ class SocialLogin {
 
   NaverCallBack = passport.authenticate("naver", {
     // successRedirect: "/", // kakaoStrategy에서 성공한다면 이 주소로 이동
-    failureRedirect: "/api/naver", // kakaoStrategy에서 실패한다면 이 주소로 이동
+    failureRedirect: "http://localhost:3000", // kakaoStrategy에서 실패한다면 이 주소로 이동
     // successFlash: "성공적", // 성공시 플래시 메시지 출력
     // failureFlash: true, //실패시 플래시 메시지 출력여부
   });
 
   ResponseToken = (req, res) => {
-    try {
-      if (req.user) {
-        const accessToken = jwt.sign(
-          { key1: req.user + parseInt(process.env.SUM) },
-          process.env.ACCESS_TOKEN_SECRET,
-          { expiresIn: "1h" }
-        );
-        const refreshToken = jwt.sign(
-          { key2: accessToken, key3: req.user },
-          process.env.REFRESH_TOKEN_SECRET,
-          { expiresIn: "7d" }
-        );
+    if (req.user) {
+      const accessToken = jwt.sign(
+        { key1: req.user + parseInt(process.env.SUM) },
+        process.env.ACCESS_TOKEN_SECRET,
+        { expiresIn: "1h" }
+      );
+      const refreshToken = jwt.sign(
+        { key2: accessToken, key3: req.user },
+        process.env.REFRESH_TOKEN_SECRET,
+        { expiresIn: "7d" }
+      );
 
-        req.session.a1 = refreshToken;
-        req.session.save((err) => {
-          if (err) {
-            console.log(err);
-            const error = new Error("session save error");
-            error.name = "can not create session";
-            error.status = 500;
-            throw error;
-          }
-        });
-        res.status(201).json({ token: accessToken });
-        return;
-      }
-      const error = new Error("social session not exist");
-      error.name = "social login error";
-      error.status = 500;
-      throw error;
-    } catch (error) {
-      if (error.status) {
-        console.log(error);
-        res.status(error.status).json({ message: error.name });
-        return;
-      }
-      console.log(error);
-      res.status(400).json({ message: error.name });
+      req.session.a1 = refreshToken;
+      req.session.save();
+      res.redirect(`http://localhost:3000?token=${accessToken}`);
+      return;
     }
+    res.redirect("http://localhost:3000");
   };
 }
 
