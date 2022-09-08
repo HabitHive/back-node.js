@@ -92,12 +92,11 @@ app.use((req, res, next) => {
   const error = new Error(
     `메서드 ${req.method} 경로 ${req.url} 존재하지 않습니다.`
   );
-  error.status = 404;
   next(error);
 });
 
 app.use((err, req, res, next) => {
-  return res.json({
+  return res.status(404).json({
     success: false,
     message: err.message,
     result: err,
