@@ -36,6 +36,9 @@ export default new (class TagController {
   monthly = async (req, res) => {
     const { userId } = res.locals;
     const { yearMonth } = req.query;
+
+    const receive = await TagService;
+    return res.status(receive.status).json(receive.message);
   };
 
   doneTag = async (req, res) => {

@@ -25,11 +25,24 @@ sequelize
   .then(() => console.log("db connect"))
   .catch((err) => console.error(err));
 
+const whitelist = ["http://localhost:3000"];
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (whitelist.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      console.log(origin);
+      callback(new Error("Not Allowed Origin!"));
+    }
+  },
+};
 app.use(
-  cors({
-    origin: process.env.CLIENT_HOST,
-    credentials: process.env.ENABLE_CORS,
-  })
+  cors(
+    corsOptions
+    // {    origin: process.env.CLIENT_HOST,
+    // credentials: process.env.ENABLE_CORS,}
+  )
 );
 
 app.use(cookieParser());

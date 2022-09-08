@@ -18,7 +18,7 @@ export default async (req, res, next) => {
           console.log(err);
           const error = new Error("verify token error");
           error.name = "invalid token";
-          error.status = 500;
+          error.status = 400;
           throw error;
         }
         return decoded;
