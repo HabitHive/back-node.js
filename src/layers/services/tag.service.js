@@ -105,16 +105,24 @@ export default new (class TagService {
     }
 
     //===========================================================================================================
-    // 포인트 찾아서 보내기 (X)
+    // 포인트 찾아서 보내기 (O) => 확인 안됌 (X)
+    const userPoint = userInfo.point;
     return {
       status: 200,
-      result: { randomTagList, tagList },
+      result: { randomTagList, tagList, userPoint },
       message: "습관 목록 불러오기 성공",
     };
   };
 
   tagBuy = async (userId, tagId, period) => {
-    const result = await TagRepository.tagBuy(userId, tagId, period);
+    const userInfo = await TagRepository.interest(userId);
+    const fixPoint = 0; // 포인트는 어떡게 만들어나...
+
+    if (userInfo.point < fixPoint) {
+      return { status: 400, result, message: "보유한 포인트가 부족합니다." };
+    }
+    const point = userInfo.point - fixPoint;
+    const result = await TagRepository.tagBuy(userId, tagId, period, point);
 
     return { status: 200, result, message: "내 습관 추가" };
   };
