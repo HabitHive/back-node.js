@@ -14,6 +14,7 @@ export default new (class TagService {
     // 관심사 선택을 아무 것도 안했을 경우 #만 넘어온다. if 문으로 잡아라
     const userInterest = userInfo.interest.split("#");
 
+    // 잘못 저장 되었던 관심목록에 대한것 중 ( 3개이상의 요소 거나, 없을 때 )
     const categoryList = userInterest.length;
     if (
       categoryList != 2 &&
@@ -27,18 +28,29 @@ export default new (class TagService {
         message: "관심 목록 설정이 잘못 되었는데",
       };
     }
-    const tagLists = await TagRepository.buyPage();
 
+    // 구매한 태그들
+    const BuyLists = await TagRepository.tagBuyList(userId);
+    const BuyList = BuyLists.map((List) => {
+      return {
+        tagId: List.tag_id,
+      };
+    });
+
+    const tagLists = await TagRepository.buyPage(BuyList);
+    // 전체 목록 리스트 = > 목록 중에서 구매한 태그는 제거(X)
     const tagList = tagLists.map((allList) => {
       return {
         tagId: allList.tag_id,
         tagName: allList.tag_name,
+        category: allList.category,
       };
     });
+    // 랜덤 요소를 위한 선언
     let randomTagList = [];
     let randomCount = [];
 
-    //관심목록을 설정을 안했을 경우 (O)
+    //관심목록을 설정을 안했을 경우 (O) => 목록 중에서 구매한 태그는 제거(X)
     if (categoryList != 2) {
       const recommendedList = await TagRepository.recommended(
         categoryList,
@@ -51,6 +63,7 @@ export default new (class TagService {
           return {
             tagId: point.tag_id,
             tagName: point.tag_name,
+            category: point.category,
           };
         });
       }
@@ -59,6 +72,7 @@ export default new (class TagService {
           return {
             tagId: point.tag_id,
             tagName: point.tag_name,
+            category: point.category,
           };
         });
       }
@@ -67,6 +81,7 @@ export default new (class TagService {
           return {
             tagId: point.tag_id,
             tagName: point.tag_name,
+            category: point.category,
           };
         });
       }
@@ -87,6 +102,8 @@ export default new (class TagService {
         }
       }
     } // 관심사 없을 때
+
+    //===========================================================================================================
 
     return {
       status: 200,

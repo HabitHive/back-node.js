@@ -43,7 +43,12 @@ export default new (class TagRepository {
     }
   };
 
-  buyPage = async () => {
+  tagBuyList = async (user_id) => {
+    const BuyList = await UserTag.findAll({ user_id });
+    return BuyList;
+  };
+
+  buyPage = async (BuyList) => {
     const tagList = await Tag.findAll();
     return tagList;
   };

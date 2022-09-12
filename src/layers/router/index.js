@@ -48,21 +48,13 @@ router.get("/user/mypage/info", authMiddleware, UserController.myInfo); //유저
 router.get("/user/mypage/tag", authMiddleware, UserController.myTagList); //유저 습관 전적
 
 /* /api/tag */
-router.get("/tag/list", authMiddleware, TagController.buyPage);
-router.post("/tag/buy", authMiddleware, TagController.tagBuy);
-router.get("/tag/daily", authMiddleware, DailyController.dailyPage);
-router.get("/tag/daily/list", authMiddleware, DailyController.tagList);
-router.post("/tag/done", authMiddleware, TagController.doneTag); //습관 완료
-router.get(
-  "/tag/schedule/add/:userTagId",
-  authMiddleware,
-  DailyController.schedulePage
-);
-router.post(
-  "/tag/schedule/add/:userTagId",
-  authMiddleware,
-  DailyController.schedule
-);
+router.get("/tag/list", TagController.buyPage);
+router.post("/tag/buy", TagController.tagBuy);
+router.get("/tag/daily", DailyController.dailyPage);
+router.get("/tag/daily/list", DailyController.tagList);
+router.post("/tag/done", TagController.doneTag); //습관 완료
+router.get("/tag/schedule/add/:userTagId", DailyController.schedulePage);
+router.post("/tag/schedule/add/:userTagId", DailyController.schedule);
 
 /* /api/pet */
 router.get("/pet", authMiddleware, PetController.getPetInfo);
