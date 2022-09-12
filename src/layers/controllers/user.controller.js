@@ -19,7 +19,6 @@ class UserController {
         res.status(error.status).json({ message: error.name });
         return;
       }
-      console.log(error);
       res.status(400).json({ message: error.name });
     }
   };
@@ -39,7 +38,6 @@ class UserController {
         res.status(error.status).json({ message: error.name });
         return;
       }
-      console.log(error);
       res.status(400).json({ message: error.name });
     }
   };
@@ -55,7 +53,6 @@ class UserController {
         res.status(error.status).json({ message: error.name });
         return;
       }
-      console.log(error);
       res.status(400).json({ message: error.name });
     }
   };
@@ -71,7 +68,6 @@ class UserController {
         res.status(error.status).json({ message: error.name });
         return;
       }
-      console.log(error);
       res.status(400).json({ message: error.name });
     }
   };
