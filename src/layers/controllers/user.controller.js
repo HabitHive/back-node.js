@@ -15,11 +15,9 @@ class UserController {
       }
     } catch (error) {
       if (error.status) {
-        console.log(error);
         res.status(error.status).json({ message: error.name });
         return;
       }
-      console.log(error);
       res.status(400).json({ message: error.name });
     }
   };
@@ -35,11 +33,9 @@ class UserController {
       res.status(201).json({ token: token });
     } catch (error) {
       if (error.status) {
-        console.log(error);
         res.status(error.status).json({ message: error.name });
         return;
       }
-      console.log(error);
       res.status(400).json({ message: error.name });
     }
   };
@@ -51,11 +47,9 @@ class UserController {
       res.status(200).json({});
     } catch (error) {
       if (error.status) {
-        console.log(error);
         res.status(error.status).json({ message: error.name });
         return;
       }
-      console.log(error);
       res.status(400).json({ message: error.name });
     }
   };
@@ -67,11 +61,9 @@ class UserController {
       res.status(201).json({});
     } catch (error) {
       if (error.status) {
-        console.log(error);
         res.status(error.status).json({ message: error.name });
         return;
       }
-      console.log(error);
       res.status(400).json({ message: error.name });
     }
   };

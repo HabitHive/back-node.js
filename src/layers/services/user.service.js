@@ -75,7 +75,6 @@ class UserService {
       req.session.a1 = refreshtoken;
       req.session.save((err) => {
         if (err) {
-          console.log(err);
           const error = new Error("session save error");
           error.name = "can not create session";
           error.status = 500;

@@ -1,3 +1,4 @@
+import { use } from "passport";
 import TagService from "../services/tag.service.js";
 
 export default new (class TagController {
@@ -33,17 +34,23 @@ export default new (class TagController {
     }
   };
 
+  invalid = (res) => {
+    res.status(400).json({ message: "필수 입력값이 비어 있습니다." });
+  };
+
   monthly = async (req, res) => {
     const { userId } = res.locals;
     const { yearMonth } = req.query;
+    if (!yearMonth) return this.invalid(res);
 
-    const receive = await TagService;
+    const receive = await TagService.monthDone(userId, yearMonth);
     return res.status(receive.status).json(receive.message);
   };
 
   doneTag = async (req, res) => {
     const { userId } = res.locals;
     const { scheduleId, date } = req.body;
+    if (!scheduleId || !date) return this.invalid(res);
 
     const receive = await TagService.done(userId, scheduleId, date);
     return res.status(receive.status).json(receive.message, receive.result);

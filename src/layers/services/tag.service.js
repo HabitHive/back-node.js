@@ -101,7 +101,9 @@ export default new (class TagService {
     return { status: 200, result, message: "내 습관 추가" };
   };
 
-  monthDone = async (userId, date) => {};
+  monthDone = async (userId, strDate) => {
+    const history = await UserRepository.colorHistory(userId, date);
+  };
 
   /**
    * 습관을 완료했을 때 호출

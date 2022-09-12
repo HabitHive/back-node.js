@@ -1,5 +1,6 @@
 import User from "../../models/user.js";
 import Point from "../../models/point.js";
+import { Op } from "sequelize";
 
 class UserRepository {
   //회원가입              /api/user/signup
@@ -64,7 +65,10 @@ class UserRepository {
   };
 
   colorHistory = async (user_id, date) => {
-    const history = await Point.findAll();
+    const result = await Point.findAll({
+      where: { user_id, date: { [Op.like]: `%${date}%` } },
+    });
+    return result;
   };
 
   countHistory = async (user_tag_id) => {
