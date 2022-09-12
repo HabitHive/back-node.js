@@ -19,7 +19,6 @@ export default new (class TagController {
     try {
       const { userId } = res.locals;
       // const userId = 2;
-      // 포인트 정하기(X) 어떻게 프로트에서?? 백앤드...
       const { tagId, period } = req.body;
 
       const date = await TagService.tagBuy(userId, tagId, period);
