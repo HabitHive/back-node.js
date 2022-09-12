@@ -94,6 +94,7 @@ export default new (class TagService {
         }
       }
     } else {
+      // 관심사 없을 때
       while (randomTagList.length != 3) {
         let randomNum = Math.floor(Math.random() * tagLists.length);
         if (!randomCount.includes(randomNum)) {
@@ -101,10 +102,10 @@ export default new (class TagService {
           randomCount.push(randomNum);
         }
       }
-    } // 관심사 없을 때
+    }
 
     //===========================================================================================================
-
+    // 포인트 찾아서 보내기 (X)
     return {
       status: 200,
       result: { randomTagList, tagList },
