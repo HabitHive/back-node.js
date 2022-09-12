@@ -1,4 +1,3 @@
-import { use } from "passport";
 import TagService from "../services/tag.service.js";
 
 export default new (class TagController {
