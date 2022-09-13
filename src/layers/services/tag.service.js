@@ -7,7 +7,7 @@ export default new (class TagService {
   };
 
   buyPage = async (userId) => {
-    // 구매한 태그는 찾지 않게 만들기 (X)
+    // 구매한 태그는 찾지 않게 만들기 (O)
     // TagId의 고유 값을 선택한 횟수 관심회 한 태그들의 목록 으로 추천 알고리즘 만들기 (XXX)
 
     const userInfo = await TagRepository.interest(userId);
@@ -32,51 +32,35 @@ export default new (class TagService {
 
     // 구매한 태그들
     const BuyLists = await TagRepository.tagBuyList(userId);
+    // 산 태그 리스트 목록
+    const BuyTagIdList = [];
+    for (let i = 0; i < BuyLists.length; i++) {
+      BuyLists.map((allList) => {
+        BuyTagIdList.push(allList.tag_id);
+      });
+    }
 
-    const BuyList = BuyLists.map((List) => {
-      return {
-        tagId: List.tag_id,
-      };
+    const tagLists = await TagRepository.buyPage();
+    // 전체 목록 리스트 = > 목록 중에서 구매한 태그는 제거(O)
+    const tagsFilter = tagLists.map((allList) => {
+      if (!BuyTagIdList.includes(allList.tag_id)) {
+        return {
+          tagId: allList.tag_id,
+          tagName: allList.tag_name,
+          category: allList.category.split("#"),
+        };
+      }
+    });
+    // 전체 태그 리스트에서 구매한 리스트 부분 배열 null로 만들고 정리
+    const tagList = tagsFilter.filter(function (check) {
+      return check !== undefined;
     });
 
-    const tagLists = await TagRepository.buyPage(BuyList);
-    // 전체 목록 리스트 = > 목록 중에서 구매한 태그는 제거(X)
-    const tagList = tagLists.map((allList) => {
-      return {
-        tagId: allList.tag_id,
-        tagName: allList.tag_name,
-        category: allList.category.split("#"),
-      };
-    });
-    console.log(
-      BuyList.map((allList) => {
-        return {
-          tagId: allList.tagId,
-        };
-      })
-    );
-    const a = BuyList.map((allList) => {
-      return {
-        tagId: allList.tagId,
-      };
-    });
-    const b = tagList.map((allList) => {
-      return {
-        tagId: allList.tagId,
-      };
-    });
-    console.log(
-      tagList.map((allList) => {
-        return {
-          tagId: allList.tagId,
-        };
-      })
-    );
     // 랜덤 요소를 위한 선언
     let randomTagList = [];
     let randomCount = [];
 
-    //관심목록을 설정을 안했을 경우 (O) => 목록 중에서 구매한 태그는 제거(X)
+    //관심목록을 설정을 안했을 경우 (O) => 목록 중에서 구매한 태그는 제거(O)
     if (categoryList != 2) {
       const recommendedList = await TagRepository.recommended(
         categoryList,
@@ -111,6 +95,9 @@ export default new (class TagService {
           };
         });
       }
+      // 태그가 수가 부족하면 무한 로딩에 걸릴 수있다...
+      // 카테고리로 찾는 경우에는 특정 카테고리에 대해서 다 사고 찾을 때 개수가 3개보다 부족할 수 있다.
+      // 보안 필요
       while (randomTagList.length != 3) {
         let randomNum = Math.floor(Math.random() * algorithmScore.length);
         if (!randomCount.includes(randomNum)) {
@@ -121,16 +108,15 @@ export default new (class TagService {
     } else {
       // 관심사 없을 때
       while (randomTagList.length != 3) {
-        let randomNum = Math.floor(Math.random() * tagLists.length);
+        let randomNum = Math.floor(Math.random() * tagList.length);
         if (!randomCount.includes(randomNum)) {
-          randomTagList.push(tagLists[randomNum]);
+          randomTagList.push(tagList[randomNum]);
           randomCount.push(randomNum);
         }
       }
     }
 
-    //===========================================================================================================
-    // 포인트 찾아서 보내기 (O) => 확인 안됌 (X)
+    // 포인트 찾아서 보내기 (O)
     const userPoint = userInfo.point;
     return {
       status: 200,
