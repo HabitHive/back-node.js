@@ -13,7 +13,9 @@ export default new (class TagService {
     const userInfo = await TagRepository.interest(userId);
     // 관심사 선택을 아무 것도 안했을 경우 #만 넘어온다. if 문으로 잡아라
     const userInterest = userInfo.interest.split("#");
+    // 관심사를 #으로 자르고 배열로 만든다.
 
+    // 잘못 저장 되었던 관심목록에 대한것 중 ( 3개이상의 요소 거나, 없을 때 )
     const categoryList = userInterest.length;
     if (
       categoryList != 2 &&
@@ -27,18 +29,54 @@ export default new (class TagService {
         message: "관심 목록 설정이 잘못 되었는데",
       };
     }
-    const tagLists = await TagRepository.buyPage();
 
+    // 구매한 태그들
+    const BuyLists = await TagRepository.tagBuyList(userId);
+
+    const BuyList = BuyLists.map((List) => {
+      return {
+        tagId: List.tag_id,
+      };
+    });
+
+    const tagLists = await TagRepository.buyPage(BuyList);
+    // 전체 목록 리스트 = > 목록 중에서 구매한 태그는 제거(X)
     const tagList = tagLists.map((allList) => {
       return {
         tagId: allList.tag_id,
         tagName: allList.tag_name,
+        category: allList.category.split("#"),
       };
     });
+    console.log(
+      BuyList.map((allList) => {
+        return {
+          tagId: allList.tagId,
+        };
+      })
+    );
+    const a = BuyList.map((allList) => {
+      return {
+        tagId: allList.tagId,
+      };
+    });
+    const b = tagList.map((allList) => {
+      return {
+        tagId: allList.tagId,
+      };
+    });
+    console.log(
+      tagList.map((allList) => {
+        return {
+          tagId: allList.tagId,
+        };
+      })
+    );
+    // 랜덤 요소를 위한 선언
     let randomTagList = [];
     let randomCount = [];
 
-    //관심목록을 설정을 안했을 경우 (O)
+    //관심목록을 설정을 안했을 경우 (O) => 목록 중에서 구매한 태그는 제거(X)
     if (categoryList != 2) {
       const recommendedList = await TagRepository.recommended(
         categoryList,
@@ -51,6 +89,7 @@ export default new (class TagService {
           return {
             tagId: point.tag_id,
             tagName: point.tag_name,
+            category: point.category.split("#"),
           };
         });
       }
@@ -59,6 +98,7 @@ export default new (class TagService {
           return {
             tagId: point.tag_id,
             tagName: point.tag_name,
+            category: point.category.split("#"),
           };
         });
       }
@@ -67,10 +107,10 @@ export default new (class TagService {
           return {
             tagId: point.tag_id,
             tagName: point.tag_name,
+            category: point.category.split("#"),
           };
         });
       }
-
       while (randomTagList.length != 3) {
         let randomNum = Math.floor(Math.random() * algorithmScore.length);
         if (!randomCount.includes(randomNum)) {
@@ -79,6 +119,7 @@ export default new (class TagService {
         }
       }
     } else {
+      // 관심사 없을 때
       while (randomTagList.length != 3) {
         let randomNum = Math.floor(Math.random() * tagLists.length);
         if (!randomCount.includes(randomNum)) {
@@ -86,19 +127,34 @@ export default new (class TagService {
           randomCount.push(randomNum);
         }
       }
-    } // 관심사 없을 때
+    }
 
+    //===========================================================================================================
+    // 포인트 찾아서 보내기 (O) => 확인 안됌 (X)
+    const userPoint = userInfo.point;
     return {
       status: 200,
-      result: { randomTagList, tagList },
+      result: { randomTagList, tagList, userPoint },
       message: "습관 목록 불러오기 성공",
     };
   };
 
   tagBuy = async (userId, tagId, period) => {
-    const result = await TagRepository.tagBuy(userId, tagId, period);
+    // 같은 태그를 구매하나? 테이블 만들 때 찾으면서 만드느 것 있던 데 (x)
+    const userInfo = await TagRepository.interest(userId);
+    const fixPoint = 10; // 포인트는 어떡게 만들어나...
+    const point = userInfo.point - fixPoint;
+    if (point < 0) {
+      return {
+        status: 400,
+        result: point,
+        message: "보유한 포인트가 부족합니다.",
+      };
+    }
 
-    return { status: 200, result, message: "내 습관 추가" };
+    const result = await TagRepository.tagBuy(userId, tagId, period, point);
+
+    return { status: 200, result: point, message: "내 습관 추가" };
   };
 
   /**

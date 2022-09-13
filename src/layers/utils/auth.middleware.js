@@ -36,7 +36,7 @@ export default async (req, res, next) => {
     }
 
     // 세션 확인 없다면 에러 throw
-    if (req.session.a1) {
+    if (req.session.a1 === undefined) {
       const error = new Error("Session error");
       error.name = "not login";
       throw error;
@@ -65,10 +65,9 @@ export default async (req, res, next) => {
 
     // res.loclas로 user_id 넘겨줌
     res.locals.userId = user.key1 - parseInt(process.env.SUM);
-
     next();
   } catch (error) {
-    res.status(401).json({ message: "로그인 또는 회원가입을 해주세요" });
+    res.status(401).json({ message: error.name });
     return;
   }
 };
