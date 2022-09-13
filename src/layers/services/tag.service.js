@@ -128,7 +128,7 @@ export default new (class TagService {
   tagBuy = async (userId, tagId, period) => {
     // 같은 태그를 구매하나? 테이블 만들 때 찾으면서 만드느 것 있던 데 (x)
     const userInfo = await TagRepository.interest(userId);
-    const fixPoint = 10; // 포인트는 어떡게 만들어나...
+    const fixPoint = period * 10; // 포인트는 어떡게 만들어나...
     const point = userInfo.point - fixPoint;
     if (point < 0) {
       return {
