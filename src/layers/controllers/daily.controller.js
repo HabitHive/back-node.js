@@ -34,7 +34,7 @@ export default new (class Dailycontroller {
     }
   };
 
-  // 나중에 스케줄 페이지가 필요하게 되었을 때
+  // 스케줄을  만들 때
   schedulePage = async (req, res, next) => {
     try {
       const { userId } = res.locals;

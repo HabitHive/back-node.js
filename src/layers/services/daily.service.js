@@ -77,10 +77,8 @@ export default new (class DailyService {
 
   schedulePage = async (userId, userTagId) => {
     const result = await DailyRepository.schedulePage(userId, userTagId);
-    let date = result.startDate;
-    let period = result.period / 1;
-    // date = new Date(); //현재 시간
-    date.setDate(date.getDate() + period);
+    let date = `${result.startDate}~${result.endDate}`;
+
     return {
       status: 200,
       result: date,
@@ -99,7 +97,7 @@ export default new (class DailyService {
   ) => {
     // 스케줄 시간이 지난 후에 새로운 스케줄을 설정은?? 지금은 수정 X
     const userTag = await DailyRepository.userTagInOf(userId, userTagId);
-    console.log(userTag);
+
     if (userTag.start_date == null) {
       const period = userTag.period;
       let date = new Date(startDate);
@@ -113,7 +111,7 @@ export default new (class DailyService {
     } else {
       if (new Date() >= new Date(userTag.start_date)) {
         return {
-          status: 400,
+          status: 403,
           result: {},
           message: "이미 예약한 시간 이후 인데",
         }; // 나중에 예약을 한 날짜보다 현재날짜를 자났나면 수정불가! (O)
@@ -133,7 +131,7 @@ export default new (class DailyService {
     }
 
     const timeCycle = startTime + "," + endTime;
-    console.log(timeCycle);
+
     await DailyRepository.schedule(userTagId, timeCycle, weekCycle);
 
     return {
