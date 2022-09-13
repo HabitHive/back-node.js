@@ -71,13 +71,6 @@ export default async (req, res, next) => {
 
     next();
   } catch (error) {
-    if (error.status) {
-      res
-        .status(error.status)
-        .json({ message: "로그인 또는 회원가입을 해주세요" });
-      return;
-    }
-    console.log(error.name);
     res.status(401).json({ message: "로그인 또는 회원가입을 해주세요" });
     return;
   }
