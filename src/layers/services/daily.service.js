@@ -6,6 +6,7 @@ export default new (class DailyService {
   };
 
   dailyPage = async (userId, todayDate) => {
+    // 완료된 스케줄 만들 요소 Done 만들기 (아직)
     let week = new Date(todayDate).getDay();
     if (isNaN(week)) {
       return {
@@ -14,7 +15,11 @@ export default new (class DailyService {
         message: "날짜 형식이 맞아?",
       };
     }
+    // 해당 날짜의 스케줄 중에 완료된 것들 목록
+    const doneSchedules = await DailyRepository.doneSchedule(todayDate);
+    // [배열로 user_tag_id가 넘오면 ] 나오게 해야한다. 아니면 다른 방법 찾기
 
+    // 모든 userId의 스케줄을 다 들고온다. 비효율적임 나중에 해결(X)
     const result = await DailyRepository.dailyPage(userId);
 
     const dailyTagLists = result.map((list) => {
@@ -31,6 +36,8 @@ export default new (class DailyService {
               userTagId: list.user_tag_id,
               weekCycle: list.time_cycle,
               tagName: list.UserTag.Tag.tag_name,
+              category: list.UserTag.Tag.category.split("#"),
+              done: doneSchedules.includes(list.user_tag_id),
             };
         }
       }

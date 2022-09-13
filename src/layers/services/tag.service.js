@@ -43,7 +43,7 @@ export default new (class TagService {
       return {
         tagId: allList.tag_id,
         tagName: allList.tag_name,
-        category: allList.category,
+        category: allList.category.split("#"),
       };
     });
     // 랜덤 요소를 위한 선언
@@ -63,7 +63,7 @@ export default new (class TagService {
           return {
             tagId: point.tag_id,
             tagName: point.tag_name,
-            category: point.category,
+            category: point.category.split("#"),
           };
         });
       }
@@ -72,7 +72,7 @@ export default new (class TagService {
           return {
             tagId: point.tag_id,
             tagName: point.tag_name,
-            category: point.category,
+            category: point.category.split("#"),
           };
         });
       }
@@ -81,7 +81,7 @@ export default new (class TagService {
           return {
             tagId: point.tag_id,
             tagName: point.tag_name,
-            category: point.category,
+            category: point.category.split("#"),
           };
         });
       }

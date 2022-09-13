@@ -1,8 +1,17 @@
 import UserTag from "../../models/usertag.js";
 import Tag from "../../models/tag.js";
 import Schedule from "../../models/schedule.js";
+import Done from "../../models/done.js";
 
 export default new (class DailyRepository {
+  doneSchedule = async (todayDate) => {
+    const doneSchedules = await Done.findAll({
+      where: { date: { [Op.like]: `%${todayDate}%` } },
+      attributes: ["user_tag_id"],
+    });
+    return doneSchedules;
+  };
+
   dailyPage = async (user_id) => {
     const dailyTagLists = await Schedule.findAll({
       where: { user_id },
