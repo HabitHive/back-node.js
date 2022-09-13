@@ -66,7 +66,8 @@ class UserRepository {
 
   colorHistory = async (user_id, date) => {
     const result = await Point.findAll({
-      where: { user_id, date: { [Op.like]: `%${date}%` } },
+      where: { user_id, date: { [Op.like]: `${date}%` } },
+      raw: true,
     });
     return result;
   };

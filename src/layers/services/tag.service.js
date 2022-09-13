@@ -88,9 +88,11 @@ export default new (class TagService {
       }
     } // 관심사 없을 때
 
+    const temporary = [tagList[0], tagList[1], tagList[2]];
+
     return {
       status: 200,
-      result: { randomTagList, tagList },
+      result: { randomTagList: temporary, tagList },
       message: "습관 목록 불러오기 성공",
     };
   };
@@ -102,7 +104,20 @@ export default new (class TagService {
   };
 
   monthDone = async (userId, strDate) => {
-    const history = await UserRepository.colorHistory(userId, date);
+    const yearMonth = strDate.split("-").pop().join("-");
+    const date = new Date(yearMonth + "-1");
+    const lastDate = new Date(strDate);
+
+    const history = await UserRepository.colorHistory(userId, yearMonth);
+
+    while (date <= lastDate) {
+      let count = 0;
+      history.map((h) => {
+        if (h.date == date) {
+          count++;
+        }
+      });
+    }
   };
 
   /**

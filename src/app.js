@@ -39,9 +39,8 @@ const corsOptions = {
 };
 app.use(
   cors(
-    corsOptions
-    // {    origin: process.env.CLIENT_HOST,
-    // credentials: process.env.ENABLE_CORS,}
+    // corsOptions
+    { origin: true, credentials: true }
   )
 );
 

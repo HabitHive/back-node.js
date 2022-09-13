@@ -146,4 +146,11 @@ export default new (class TagRepository {
     });
     return result;
   };
+
+  // 임시 태그 생성 메소드
+  input = async (req, res) => {
+    const { tag_name, category } = req.body;
+    await Tag.create({ tag_name, category });
+    res.send("완료");
+  };
 })();

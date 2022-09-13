@@ -37,10 +37,10 @@ export default new (class TagController {
 
   monthly = async (req, res) => {
     const { userId } = res.locals;
-    const { yearMonth } = req.query;
-    if (!yearMonth) return this.invalid(res);
+    const { date } = req.query;
+    if (!date) return this.invalid(res);
 
-    const receive = await TagService.monthDone(userId, yearMonth);
+    const receive = await TagService.monthDone(userId, date);
     return res.status(receive.status).json(receive.message);
   };
 
