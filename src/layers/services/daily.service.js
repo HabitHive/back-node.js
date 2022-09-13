@@ -55,12 +55,17 @@ export default new (class DailyService {
   };
 
   tagList = async (userId) => {
+    const check = await DailyRepository.checkSchedule(userId);
+    // 배열로 스케줄들의 user_tag_id가 배열로써 나오게
+
+    // 유저의 UserTag 모두 가져오기
     const result = await DailyRepository.tagList(userId);
     const tagLists = result.map((list) => {
       return {
         userTagId: list.user_tag_id,
         tagName: list.Tag.tag_name,
         period: list.period,
+        new: !check.includes(list.user_tag_id),
       };
     });
     return {

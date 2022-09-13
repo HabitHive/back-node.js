@@ -29,6 +29,14 @@ export default new (class DailyRepository {
     return dailyTagLists;
   };
 
+  checkSchedule = async (user_id) => {
+    const newcheck = await Schedule.findAll({
+      where: { user_id },
+      attributes: ["user_tag_id"],
+    });
+    return newcheck;
+  };
+
   tagList = async (user_id) => {
     const myTagList = await UserTag.findAll({
       where: { user_id },
