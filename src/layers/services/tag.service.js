@@ -13,6 +13,7 @@ export default new (class TagService {
     const userInfo = await TagRepository.interest(userId);
     // 관심사 선택을 아무 것도 안했을 경우 #만 넘어온다. if 문으로 잡아라
     const userInterest = userInfo.interest.split("#");
+    // 관심사를 #으로 자르고 배열로 만든다.
 
     // 잘못 저장 되었던 관심목록에 대한것 중 ( 3개이상의 요소 거나, 없을 때 )
     const categoryList = userInterest.length;
@@ -31,6 +32,7 @@ export default new (class TagService {
 
     // 구매한 태그들
     const BuyLists = await TagRepository.tagBuyList(userId);
+
     const BuyList = BuyLists.map((List) => {
       return {
         tagId: List.tag_id,
@@ -46,6 +48,30 @@ export default new (class TagService {
         category: allList.category.split("#"),
       };
     });
+    console.log(
+      BuyList.map((allList) => {
+        return {
+          tagId: allList.tagId,
+        };
+      })
+    );
+    const a = BuyList.map((allList) => {
+      return {
+        tagId: allList.tagId,
+      };
+    });
+    const b = tagList.map((allList) => {
+      return {
+        tagId: allList.tagId,
+      };
+    });
+    console.log(
+      tagList.map((allList) => {
+        return {
+          tagId: allList.tagId,
+        };
+      })
+    );
     // 랜덤 요소를 위한 선언
     let randomTagList = [];
     let randomCount = [];
@@ -85,7 +111,6 @@ export default new (class TagService {
           };
         });
       }
-
       while (randomTagList.length != 3) {
         let randomNum = Math.floor(Math.random() * algorithmScore.length);
         if (!randomCount.includes(randomNum)) {
@@ -115,16 +140,21 @@ export default new (class TagService {
   };
 
   tagBuy = async (userId, tagId, period) => {
+    // 같은 태그를 구매하나? 테이블 만들 때 찾으면서 만드느 것 있던 데 (x)
     const userInfo = await TagRepository.interest(userId);
-    const fixPoint = 0; // 포인트는 어떡게 만들어나...
-
-    if (userInfo.point < fixPoint) {
-      return { status: 400, result, message: "보유한 포인트가 부족합니다." };
-    }
+    const fixPoint = 10; // 포인트는 어떡게 만들어나...
     const point = userInfo.point - fixPoint;
+    if (point < 0) {
+      return {
+        status: 400,
+        result: point,
+        message: "보유한 포인트가 부족합니다.",
+      };
+    }
+
     const result = await TagRepository.tagBuy(userId, tagId, period, point);
 
-    return { status: 200, result, message: "내 습관 추가" };
+    return { status: 200, result: point, message: "내 습관 추가" };
   };
 
   /**

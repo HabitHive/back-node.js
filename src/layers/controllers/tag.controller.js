@@ -6,6 +6,7 @@ export default new (class TagController {
       const { userId } = res.locals;
       // const userId = 1;
       const date = await TagService.buyPage(userId);
+
       return res
         .status(date.status)
         .json({ result: date.result, message: date.message });
