@@ -10,7 +10,6 @@ export default async (req, res, next) => {
       process.env.REFRESH_TOKEN_SECRET,
       (err, decoded) => {
         if (err) {
-          console.log(err);
           const error = new Error("verify token error");
           error.name = "invalid token";
           error.status = 403;
@@ -35,7 +34,6 @@ export default async (req, res, next) => {
     req.session.a1 = newRefreshToken;
     req.session.save((err) => {
       if (err) {
-        console.log(err);
         const error = new Error("session save error");
         error.name = "can not create session";
         error.status = 500;

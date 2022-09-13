@@ -50,7 +50,9 @@ class SocialLogin {
 
       req.session.a1 = refreshToken;
       req.session.save();
-      res.redirect(`http://localhost:3000?token=${accessToken}`);
+      res.redirect(
+        `http://localhost:3000?token=${accessToken}&session=${req.sessionID}`
+      );
       return;
     }
     res.redirect("http://localhost:3000");
