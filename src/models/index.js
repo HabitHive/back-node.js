@@ -8,6 +8,7 @@ import Tag from "./tag.js";
 import Point from "./point.js";
 import Schedule from "./schedule.js";
 import Done from "./done.js";
+import Session from "./session.js";
 
 const db = {};
 
@@ -19,6 +20,7 @@ db.Tag = Tag;
 db.Point = Point;
 db.Schedule = Schedule;
 db.Done = Done;
+db.Session = Session;
 
 User.init(sequelize);
 UserTag.init(sequelize);
@@ -27,6 +29,7 @@ Point.init(sequelize);
 Schedule.init(sequelize);
 Pet.init(sequelize);
 Done.init(sequelize);
+Session.init(sequelize);
 
 User.associate(db);
 UserTag.associate(db);
@@ -35,5 +38,6 @@ Point.associate(db);
 Schedule.associate(db);
 Pet.associate(db);
 Done.associate(db);
+Session.associate(db);
 
 export { db };

@@ -11,7 +11,7 @@ class UserController {
           req.body.password,
           req
         );
-        res.status(201).json({ token: token });
+        res.status(201).json({ token: token, session: req.sessionID });
       }
     } catch (error) {
       if (error.status) {
@@ -31,7 +31,7 @@ class UserController {
         req.body.password,
         req
       );
-      res.status(201).json({ token: token });
+      res.status(201).json({ token: token, session: req.sessionID });
     } catch (error) {
       if (error.status) {
         console.log(error);
