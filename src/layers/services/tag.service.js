@@ -115,7 +115,6 @@ export default new (class TagService {
         }
       }
     }
-
     // 포인트 찾아서 보내기 (O)
     const userPoint = userInfo.point;
     return {
@@ -141,6 +140,23 @@ export default new (class TagService {
     const result = await TagRepository.tagBuy(userId, tagId, period, point);
 
     return { status: 200, result: point, message: "내 습관 추가" };
+  };
+
+  monthDone = async (userId, strDate) => {
+    const yearMonth = strDate.split("-").pop().join("-");
+    const date = new Date(yearMonth + "-1");
+    const lastDate = new Date(strDate);
+
+    const history = await UserRepository.colorHistory(userId, yearMonth);
+
+    while (date <= lastDate) {
+      let count = 0;
+      history.map((h) => {
+        if (h.date == date) {
+          count++;
+        }
+      });
+    }
   };
 
   /**

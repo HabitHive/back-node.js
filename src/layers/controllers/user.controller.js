@@ -15,7 +15,6 @@ class UserController {
       }
     } catch (error) {
       if (error.status) {
-        console.log(error);
         res.status(error.status).json({ message: error.name });
         return;
       }
@@ -34,7 +33,6 @@ class UserController {
       res.status(201).json({ token: token, session: req.sessionID });
     } catch (error) {
       if (error.status) {
-        console.log(error);
         res.status(error.status).json({ message: error.name });
         return;
       }
@@ -49,7 +47,6 @@ class UserController {
       res.status(200).json({});
     } catch (error) {
       if (error.status) {
-        console.log(error);
         res.status(error.status).json({ message: error.name });
         return;
       }
@@ -64,7 +61,6 @@ class UserController {
       res.status(201).json({});
     } catch (error) {
       if (error.status) {
-        console.log(error);
         res.status(error.status).json({ message: error.name });
         return;
       }
@@ -85,13 +81,20 @@ class UserController {
   //유저 태그 리스트         /api/user/mypage/tag
   myTagList = async (req, res) => {
     const { userId } = res.locals;
-    const date = new Date(req.body.date);
+    const date = new Date(req.body.today);
 
-    const receive = await UserService.myTag(userId, date);
-    res.status(receive.status).json({
-      message: receive.message,
-      result: receive.result,
-    });
+    try {
+      const receive = await UserService.myTag(userId, date);
+      res.status(receive.status).json({
+        message: receive.message,
+        result: receive.result,
+      });
+    } catch (err) {
+      res.status(400).json({
+        name: err.name,
+        message: "에러가.. 떴어요...? 왜죠.... 알려주세요...",
+      });
+    }
   };
 }
 

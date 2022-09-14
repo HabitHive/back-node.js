@@ -64,7 +64,7 @@ class UserService {
       const accesstoken = jwt.sign(
         { key1: user.user_id + parseInt(process.env.SUM) },
         process.env.ACCESS_TOKEN_SECRET,
-        { expiresIn: "1h" }
+        { expiresIn: "3h" }
       );
       const refreshtoken = jwt.sign(
         { key2: accesstoken, key3: user.user_id },
@@ -75,7 +75,6 @@ class UserService {
       req.session.a1 = refreshtoken;
       req.session.save((err) => {
         if (err) {
-          console.log(err);
           const error = new Error("session save error");
           error.name = "can not create session";
           error.status = 500;
@@ -114,6 +113,10 @@ class UserService {
     await UserRepository.interest(interest, user_id);
   };
 
+  result = async (status, message, result) => {
+    return { status, message, result };
+  };
+
   /**
    * 유저 정보
    * @param {number} userId 사용자별 유니크 숫자
@@ -142,7 +145,9 @@ class UserService {
    * @returns stillTags: 종료되지 않은 습관 / successTags: 완주 성공 / failTags: 완주 실패
    */
   myTag = async (userId, today) => {
+    console.log("1", userId, "/", today);
     const tagLists = await TagRepository.myAllTagList(userId);
+    console.log("2", tagLists);
     if (tagLists == [])
       return this.result(200, "습관 기록이 없습니다.", {
         stillTags: [],
@@ -155,6 +160,7 @@ class UserService {
     let failTags = [];
 
     for (let tag in tagLists) {
+      console.log(tag);
       if (tag.success === true) {
         // 성공 습관
         successTags.push(tag.Tag["tag_name"]);

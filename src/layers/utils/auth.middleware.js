@@ -49,11 +49,11 @@ export default async (req, res, next) => {
     }
 
     // 처음 발급한 엑세스 토큰값이랑 비교 후 틀리다면 에러 반환
-    if (tokenValue !== verifyUser.key2) {
-      const error = new Error("Token error");
-      error.name = "does not match token";
-      throw error;
-    }
+    // if (tokenValue !== verifyUser.key2) {
+    //   const error = new Error("Token error");
+    //   error.name = "does not match token";
+    //   throw error;
+    // }
 
     // 세션 확인 없다면 에러 throw
     if (refreshToken === undefined) {
