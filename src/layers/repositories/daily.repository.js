@@ -40,6 +40,7 @@ export default new (class DailyRepository {
 
   tagList = async (user_id) => {
     const myTagList = await UserTag.findAll({
+      order: [["createdAt", "desc"]], // 정렬할 컬럼명과 오름차순/내림차순 구분
       where: { user_id },
       include: {
         model: Tag,
