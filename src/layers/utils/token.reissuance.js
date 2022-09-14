@@ -11,8 +11,11 @@ export default async (req, res, next) => {
       where: { session_id: session },
       raw: true,
     });
-    console.log(session);
-    console.log(sessionData);
+    if (sessionData === null) {
+      const error = new Error("not exist session");
+      error.name = "session error";
+      throw error;
+    }
     const refreshToken = sessionData.data.a1;
     const refreshTokenVerify = jwt.verify(
       refreshToken,
@@ -21,7 +24,6 @@ export default async (req, res, next) => {
         if (err) {
           const error = new Error("verify token error");
           error.name = "invalid token";
-          error.status = 403;
           throw error;
         }
         return decoded;
@@ -40,19 +42,13 @@ export default async (req, res, next) => {
       { expiresIn: "7d" }
     );
 
-    const result = await Session.update(
+    await Session.update(
       { data: { a1: newRefreshToken, cookie: sessionData.data.cookie } },
       { where: { session_id: session } }
     );
 
-    console.log(result);
-
     res.status(201).json({ token: newAccessToken });
   } catch (error) {
-    if (error.status) {
-      res.status(error.status).json({ message: error.name });
-      return;
-    }
     res.status(403).json({ message: error.name });
   }
 };

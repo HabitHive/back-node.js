@@ -24,11 +24,23 @@ sequelize
   .then(() => console.log("db connect"))
   .catch((err) => console.error(err));
 
+const whitelist = ["http://localhost:3000"];
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (whitelist.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      console.log(origin);
+      callback(new Error("Not Allowed Origin!"));
+    }
+  },
+};
 app.use(
-  cors({
-    origin: true,
-    credentials: true,
-  })
+  cors(
+    // corsOptions
+    { origin: true, credentials: true }
+  )
 );
 
 //session store
@@ -38,10 +50,10 @@ const options = {
   user: process.env.DEV_DB_ID,
   password: process.env.DEV_DB_PW,
   database: process.env.DEV_DB,
-  clearExpired: true, // 만료된 세션 자동 확인 및 지우기 여부
-  checkExpirationInterval: 3000, //3 seconds, 만료된 세션이 지워지는 빈도; milliseconds
-  expiration: 30000, //30 sesonds
-  createDatabaseTable: false, // 세션 데이터베이스 테이블 생성 여부(아직 존재하지 않는 경우)
+  clearExpired: true, //  만료된 세션 자동 확인 및 지우기 여부
+  checkExpirationInterval: 7 * 24 * 60 * 60 * 1000, //  (단위: milliseconds) 1000 = 1 seconds, 만료된 세션이 지워지는 빈도
+  expiration: 30 * 24 * 60 * 60 * 1000, //  유효기간 1 month
+  createDatabaseTable: false, //  세션 데이터베이스 테이블 생성 여부(아직 존재하지 않는 경우 기본값 true)
 };
 
 const MySQLStore = MySQLStoreCreator(session);
@@ -54,7 +66,7 @@ app.use(
     saveUninitialized: false,
     store: sessionStore,
     secret: process.env.SESSION_SECRET,
-    cookie: { httpOnly: true, maxAge: 30000 },
+    cookie: { httpOnly: true, maxAge: 30 * 24 * 60 * 60 * 1000 },
   })
 );
 

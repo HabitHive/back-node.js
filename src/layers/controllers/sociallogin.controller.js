@@ -12,7 +12,7 @@ class SocialLogin {
   // router.get("/kakao/callback", passport.authenticate("kakao",{option}));
   KakaoCallBack = passport.authenticate("kakao", {
     // successRedirect: "/", // kakaoStrategy에서 성공한다면 이 주소로 이동
-    failureRedirect: "/api/kakao", // kakaoStrategy에서 실패한다면 이 주소로 이동
+    failureRedirect: "http://localhost:3000", // kakaoStrategy에서 실패한다면 이 주소로 이동
     // successFlash: "성공적", // 성공시 플래시 메시지 출력
     // failureFlash: true, //실패시 플래시 메시지 출력여부
   });
@@ -21,7 +21,7 @@ class SocialLogin {
 
   GoogleCallBack = passport.authenticate("google", {
     // successRedirect: "/", // kakaoStrategy에서 성공한다면 이 주소로 이동
-    failureRedirect: "/api/google", // kakaoStrategy에서 실패한다면 이 주소로 이동
+    failureRedirect: "http://localhost:3000", // kakaoStrategy에서 실패한다면 이 주소로 이동
     // successFlash: "성공적", // 성공시 플래시 메시지 출력
     // failureFlash: true, //실패시 플래시 메시지 출력여부
   });

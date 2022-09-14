@@ -1,12 +1,12 @@
 import passport from "passport";
-import KakaoStrategy from "passport-kakao";
+import Kakao from "passport-kakao";
 import User from "../models/user.js";
 
-const KakaoLogin = KakaoStrategy.Strategy;
+const KakaoStrategy = Kakao.Strategy;
 
 export default () => {
   passport.use(
-    new KakaoLogin(
+    new KakaoStrategy(
       {
         clientID: process.env.KAKAO_ID, // 카카오 로그인에서 발급받은 REST API 키
         callbackURL: "http://43.200.163.13/api/kakao/callback", // 카카오 로그인 Redirect URI 경로
@@ -30,7 +30,7 @@ export default () => {
             },
             raw: true,
           });
-          // 이미 가입된 카카오 프로필이면 성공 덤으로 카카오톡 닉네임 업데이트
+          // 이미 가입된 카카오 프로필이면 카카오톡 닉네임 업데이트
           if (exUser) {
             await User.update(
               { nickname: profile._json.kakao_account.profile.nickname },
@@ -59,7 +59,6 @@ export default () => {
             done(null, newUser.user_id); // 회원가입하고 로그인 인증 완료
           }
         } catch (error) {
-          console.error(error);
           done(error);
         }
       }
