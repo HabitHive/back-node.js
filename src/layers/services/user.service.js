@@ -92,17 +92,11 @@ class UserService {
 
   //로그 아웃             /api/user/logout
   logOut = async (req) => {
-    if (req.session.a1)
-      req.session.destroy((err) => {
-        if (err) {
-          console.log(err);
-          const error = new Error("session destroy error");
-          error.name = "can not delete session";
-          error.status = 500;
-          throw error;
-        }
-      });
-    else {
+    const { session } = req.headers;
+    const sessionData = await UserRepository.session(session);
+    if (sessionData) {
+      await UserRepository.logOut(session);
+    } else {
       const error = new Error("not exist session");
       error.name = "session not found";
       error.status = 500;

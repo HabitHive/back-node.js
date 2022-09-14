@@ -1,10 +1,19 @@
 import jwt from "jsonwebtoken";
+import Session from "../../models/session.js";
 import dotenv from "dotenv";
+
 dotenv.config();
 
 export default async (req, res, next) => {
   try {
-    const refreshToken = req.session.a1;
+    const { session } = req.headers;
+    const sessionData = await Session.findOne({
+      where: { session_id: session },
+      raw: true,
+    });
+    console.log(session);
+    console.log(sessionData);
+    const refreshToken = sessionData.data.a1;
     const refreshTokenVerify = jwt.verify(
       refreshToken,
       process.env.REFRESH_TOKEN_SECRET,
@@ -31,15 +40,12 @@ export default async (req, res, next) => {
       { expiresIn: "7d" }
     );
 
-    req.session.a1 = newRefreshToken;
-    req.session.save((err) => {
-      if (err) {
-        const error = new Error("session save error");
-        error.name = "can not create session";
-        error.status = 500;
-        throw error;
-      }
-    });
+    const result = await Session.update(
+      { data: { a1: newRefreshToken, cookie: sessionData.data.cookie } },
+      { where: { session_id: session } }
+    );
+
+    console.log(result);
 
     res.status(201).json({ token: newAccessToken });
   } catch (error) {

@@ -43,13 +43,19 @@ export default new (class TagRepository {
     }
   };
 
+  tagBuyList = async (user_id) => {
+    const BuyList = await UserTag.findAll({ where: { user_id } });
+    return BuyList;
+  };
+
   buyPage = async () => {
     const tagList = await Tag.findAll();
     return tagList;
   };
 
-  tagBuy = async (user_id, tag_id, period) => {
-    await UserTag.craete({ user_id, tag_id, period });
+  tagBuy = async (user_id, tag_id, period, point) => {
+    await UserTag.create({ user_id, tag_id, period });
+    await User.update({ point }, { where: { user_id } });
   };
 
   myAllTagList = async (user_id) => {
