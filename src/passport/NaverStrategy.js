@@ -1,12 +1,12 @@
 import passport from "passport";
-import NaverStrategy from "passport-naver";
+import Naver from "passport-naver";
 import User from "../models/user.js";
 
-const NaverLogin = NaverStrategy.Strategy;
+const NaverStrategy = Naver.Strategy;
 
 export default () => {
   passport.use(
-    new NaverLogin(
+    new NaverStrategy(
       {
         clientID: process.env.NAVER_ID,
         clientSecret: process.env.NAVER_SECRET,
@@ -54,7 +54,6 @@ export default () => {
             done(null, newUser.user_id); // 회원가입하고 로그인 인증 완료
           }
         } catch (error) {
-          console.error(error);
           done(error);
         }
       }
