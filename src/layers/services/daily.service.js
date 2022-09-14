@@ -17,6 +17,7 @@ export default new (class DailyService {
     }
     // 해당 날짜의 스케줄 중에 완료된 것들 목록
     const doneSchedule = await DailyRepository.doneSchedule(todayDate);
+    // 에러가 난다. 작동은 하는 데 (라이크부분에서)
     const doneSchedules = [];
     // [배열로 user_tag_id가 넘오면 ] 나오게 해야한다. 아니면 다른 방법 찾기
     doneSchedule.map((list) => {
@@ -100,7 +101,7 @@ export default new (class DailyService {
 
   schedulePage = async (userId, userTagId) => {
     const result = await DailyRepository.schedulePage(userId, userTagId);
-    let date = `${result[0].startDate}~${result[0].endDate}`;
+    let date = `${result.startDate}~${result.endDate}`;
 
     return {
       status: 200,
