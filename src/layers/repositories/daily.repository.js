@@ -60,7 +60,7 @@ export default new (class DailyRepository {
     return userTag;
   };
 
-  scheduleDate = async (user_tag_id, start_date, end_date) => {
+  startDateUpdate = async (user_tag_id, start_date, end_date) => {
     await UserTag.update({ start_date, end_date }, { where: { user_tag_id } });
   };
 

@@ -120,7 +120,7 @@ export default new (class DailyService {
   ) => {
     // 스케줄 시간이 지난 후에 새로운 스케줄을 설정은?? 지금은 수정 X
     const userTag = await DailyRepository.userTagInOf(userId, userTagId);
-
+    console.log(userTag.start_date);
     if (userTag.start_date == null) {
       const period = userTag.period;
       let date = new Date(startDate);
@@ -130,7 +130,7 @@ export default new (class DailyService {
         .split(". ")
         .join("-")
         .slice(0, -1);
-      await DailyRepository.scheduleDate(userTagId, startDate, endDate);
+      await DailyRepository.startDateUpdate(userTagId, startDate, endDate);
     } else {
       if (new Date() >= new Date(userTag.start_date)) {
         return {
@@ -149,7 +149,7 @@ export default new (class DailyService {
           .split(". ")
           .join("-")
           .slice(0, -1);
-        await DailyRepository.scheduleDate(userTagId, startDate, endDate);
+        await DailyRepository.startDateUpdate(userTagId, startDate, endDate);
       }
     }
 
@@ -165,28 +165,46 @@ export default new (class DailyService {
   };
 
   scheduleUpdate = async (
+    // 스케줄을 선택하고 수정할 때 원래 있던 스케줄 수정
     userId,
-    scheduleId,
-    timeCycle,
+    userTagId,
+    startTime,
+    endTime,
     weekCycle,
-    todayDate
+    startDate
   ) => {
-    const schedule = await DailyRepository.scheduleInOf(scheduleId);
-    // 받아온 유저테그의 시작 시간과 현재 시간을 비교해서 시간을 전체적인 시간을 업데이트
-    // 현재 시간과 시작시간 비교해 시간이 지났다면 유전태그의 endDate를 todayDate(원하는 날짜)로 바꾸고
-    // 그리고 유저 태그를 새로 생성한다.
+    // 스케줄 시간이 지난 후에 새로운 스케줄을 설정은?? 지금은 수정 X
+
+    const userTag = await DailyRepository.userTagInOf(userId, userTagId);
+    // 유저의가 선택한 태그의 정보
+
+    if (new Date() >= new Date(userTag.start_date)) {
+      return {
+        status: 403,
+        result: {},
+        message: "이미 예약한 시간 이후 인데",
+      }; // 나중에 예약을 한 날짜보다 현재날짜를 자났나면 수정불가! (O)
+    }
+
     if (userTag.startDate != startDate) {
       const period = userTag.period;
-      const date = startDate;
-      const endDate = date.setDate(date.getDate() + period / 1);
-      await this.dailyRepositories.scheduleDate(userTagId, startDate, endDate);
-    } // 나중에 예약을 한 날짜보다 현재날짜를 자났나면 수정불가!
+      let date = new Date(startDate);
+      date.setDate(date.getDate() + period);
+      let endDate = date
+        .toLocaleDateString()
+        .split(". ")
+        .join("-")
+        .slice(0, -1);
+      await DailyRepository.scheduleDate(userTagId, startDate, endDate);
+    }
 
-    await this.dailyRepositories.schedule(userTagId, timeCycle, weekCycle);
+    const timeCycle = startTime + "," + endTime;
+
+    await DailyRepository.schedule(userTagId, userId, timeCycle, weekCycle);
 
     return {
       status: 200,
-      result,
+      result: {},
       message: "내 태그 스케줄 추가",
     };
   };
