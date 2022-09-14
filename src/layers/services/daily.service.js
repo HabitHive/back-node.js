@@ -16,10 +16,14 @@ export default new (class DailyService {
       };
     }
     // 해당 날짜의 스케줄 중에 완료된 것들 목록
-    const doneSchedules = await DailyRepository.doneSchedule(todayDate);
+    const doneSchedule = await DailyRepository.doneSchedule(todayDate);
+    const doneSchedules = [];
     // [배열로 user_tag_id가 넘오면 ] 나오게 해야한다. 아니면 다른 방법 찾기
+    doneSchedule.map((list) => {
+      doneSchedules.push(list.user_tag_id);
+    });
 
-    // 모든 userId의 스케줄을 다 들고온다. 비효율적임 나중에 해결(X)
+    // 모든 userId의 스케줄을 다 들고온다. 비효율적임 나중에 해결하자 (X)
     const result = await DailyRepository.dailyPage(userId);
 
     const dailyTagLists = result.map((list) => {
@@ -55,18 +59,37 @@ export default new (class DailyService {
   };
 
   tagList = async (userId) => {
+    // 시간 순서대로 배열 (X)
     const check = await DailyRepository.checkSchedule(userId);
-    // 배열로 스케줄들의 user_tag_id가 배열로써 나오게
+    // 배열로 스케줄들의 user_tag_id가 배열로써 나오게 (O)
+    const checkList = [];
+    check.map((list) => {
+      checkList.push(list.user_tag_id);
+    });
 
     // 유저의 UserTag 모두 가져오기
     const result = await DailyRepository.tagList(userId);
     const tagLists = result.map((list) => {
-      return {
-        userTagId: list.user_tag_id,
-        tagName: list.Tag.tag_name,
-        period: list.period,
-        new: !check.includes(list.user_tag_id),
-      };
+      if (list.start_date == null) {
+        return {
+          userTagId: list.user_tag_id,
+          tagName: list.Tag.tag_name,
+          period: list.period,
+          new: !checkList.includes(list.user_tag_id),
+          category: list.Tag.category.split("#"),
+          date: list.start_date,
+        };
+      } else {
+        return {
+          userTagId: list.user_tag_id,
+          tagName: list.Tag.tag_name,
+          period: list.period,
+          new: !checkList.includes(list.user_tag_id),
+          category: list.Tag.category.split("#"),
+          date:
+            list.start_date.split(" ")[0] + " ~ " + list.end_date.split(" ")[0],
+        };
+      }
     });
     return {
       status: 200,
@@ -77,7 +100,7 @@ export default new (class DailyService {
 
   schedulePage = async (userId, userTagId) => {
     const result = await DailyRepository.schedulePage(userId, userTagId);
-    let date = `${result.startDate}~${result.endDate}`;
+    let date = `${result[0].startDate}~${result[0].endDate}`;
 
     return {
       status: 200,
@@ -132,7 +155,7 @@ export default new (class DailyService {
 
     const timeCycle = startTime + "," + endTime;
 
-    await DailyRepository.schedule(userTagId, timeCycle, weekCycle);
+    await DailyRepository.schedule(userTagId, userId, timeCycle, weekCycle);
 
     return {
       status: 200,

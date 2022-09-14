@@ -1,6 +1,7 @@
 import UserTag from "../../models/usertag.js";
 import Tag from "../../models/tag.js";
 import Schedule from "../../models/schedule.js";
+import { Op } from "sequelize";
 import Done from "../../models/done.js";
 
 export default new (class DailyRepository {
@@ -21,7 +22,7 @@ export default new (class DailyRepository {
         include: [
           {
             model: Tag,
-            attributes: ["tag_name"],
+            attributes: ["tag_name", "category"],
           },
         ],
       },
@@ -31,8 +32,8 @@ export default new (class DailyRepository {
 
   checkSchedule = async (user_id) => {
     const newcheck = await Schedule.findAll({
-      where: { user_id },
       attributes: ["user_tag_id"],
+      where: { user_id },
     });
     return newcheck;
   };
@@ -42,7 +43,7 @@ export default new (class DailyRepository {
       where: { user_id },
       include: {
         model: Tag,
-        attributes: ["tag_name"],
+        attributes: ["tag_name", "category"],
       },
     });
     return myTagList;
@@ -62,8 +63,8 @@ export default new (class DailyRepository {
     await UserTag.update({ start_date, end_date }, { where: { user_tag_id } });
   };
 
-  schedule = async (user_tag_id, time_cycle, week_cycle) => {
-    await Schedule.create({ user_tag_id, time_cycle, week_cycle });
+  schedule = async (user_tag_id, user_id, time_cycle, week_cycle) => {
+    await Schedule.create({ user_tag_id, user_id, time_cycle, week_cycle });
   };
 
   scheduleInOf = async (schedule_id) => {
