@@ -7,7 +7,7 @@ import Done from "../../models/done.js";
 export default new (class DailyRepository {
   doneSchedule = async (todayDate) => {
     const doneSchedules = await Done.findAll({
-      where: { date: { [Op.like]: `%${todayDate}%` } },
+      where: { date: { [Op.lte]: `${todayDate}` } },
       attributes: ["user_tag_id"],
     });
     return doneSchedules;
@@ -60,7 +60,7 @@ export default new (class DailyRepository {
     return userTag;
   };
 
-  scheduleDate = async (user_tag_id, start_date, end_date) => {
+  startDateUpdate = async (user_tag_id, start_date, end_date) => {
     await UserTag.update({ start_date, end_date }, { where: { user_tag_id } });
   };
 

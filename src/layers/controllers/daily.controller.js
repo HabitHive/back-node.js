@@ -80,15 +80,17 @@ export default new (class Dailycontroller {
   scheduleUpdate = async (req, res, next) => {
     try {
       const { userId } = res.locals;
-      const { scheduleId } = req.params;
-      const { timeCycle, weekCycle, todayDate } = req.bady;
-      // todayDate는 언제 부터 스케줄을 변경 할 것인지
+      // const userId = 2;
+      const { userTagId } = req.params;
+      const { startTime, endTime, weekCycle, startDate } = req.body;
+
       const date = await DailyService.scheduleUpdate(
         userId,
-        scheduleId,
-        timeCycle,
+        userTagId,
+        startTime,
+        endTime,
         weekCycle,
-        todayDate
+        startDate
       );
 
       return res
