@@ -69,5 +69,10 @@ export default class User extends Sequelize.Model {
       onDelete: "cascade",
       onUpdate: "cascade",
     });
+    db.User.hasMany(db.Schedule, {
+      foreignKey: { name: "user_id", allowNull: false },
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    });
   }
 }

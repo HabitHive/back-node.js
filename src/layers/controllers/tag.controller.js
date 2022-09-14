@@ -6,6 +6,7 @@ export default new (class TagController {
       const { userId } = res.locals;
       // const userId = 1;
       const date = await TagService.buyPage(userId);
+
       return res
         .status(date.status)
         .json({ result: date.result, message: date.message });
@@ -19,11 +20,9 @@ export default new (class TagController {
     try {
       const { userId } = res.locals;
       // const userId = 2;
-      const { tagId } = req.params;
-      // 파라미터로 꺼내면 문자형이에요
-      const { period } = req.body;
+      const { tagId, period } = req.body;
 
-      const date = await TagService.tagBuy(userId, tagId / 1, period);
+      const date = await TagService.tagBuy(userId, tagId, period);
       return res
         .status(date.status)
         .json({ result: date.result, message: date.message });

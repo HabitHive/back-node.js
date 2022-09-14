@@ -71,10 +71,8 @@ export default async (req, res, next) => {
 
     // res.loclas로 user_id 넘겨줌
     res.locals.userId = user.key1 - parseInt(process.env.SUM);
-
     next();
   } catch (error) {
-    console.log(error);
     res.status(401).json({ message: error.name });
     return;
   }
