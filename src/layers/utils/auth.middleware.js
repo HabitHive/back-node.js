@@ -27,7 +27,7 @@ export default async (req, res, next) => {
       error.name = "wrong token";
       throw error;
     }
-    
+
     // user에 user_id값이 없다면 에러 throw
     if (user.key1 === undefined) {
       const error = new Error("Token error");
@@ -39,7 +39,7 @@ export default async (req, res, next) => {
     res.locals.userId = user.key1 - parseInt(process.env.SUM);
     next();
   } catch (error) {
-    res.status(401).json({ message: error.name });
+    res.status(401).json({ name: error.name, message: error.message });
     return;
   }
 };

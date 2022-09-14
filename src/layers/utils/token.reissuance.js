@@ -49,6 +49,6 @@ export default async (req, res, next) => {
 
     res.status(201).json({ token: newAccessToken });
   } catch (error) {
-    res.status(403).json({ message: error.name });
+    res.status(403).json({ name: error.name, message: error.message });
   }
 };
