@@ -8,11 +8,9 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import session from "express-session";
 import MySQLStoreCreator from "express-mysql-session";
-import * as mysql2 from "mysql2/promise";
 import mysql from "mysql";
 import passport from "passport";
 import passportConfig from "./passport/index.js";
-import flash from "connect-flash";
 
 dotenv.config();
 
@@ -61,8 +59,6 @@ app.use(
 );
 
 app.use(cookieParser());
-
-app.use(flash()); // passport 사용 시 1회성으로 명시적 메시지 출력
 
 //! express-session에 의존하므로 뒤에 위치해야 함
 app.use(passport.initialize()); // 요청 객체에 passport 설정을 심음
