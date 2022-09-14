@@ -32,10 +32,5 @@
     "prettier": "^2.7.1",
     "sequelize": "^6.21.4",
     "sequelize-cli": "^6.4.1"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.19.0",
-    "@babel/node": "^7.18.10",
-    "@babel/preset-env": "^7.19.0"
   }
 }
