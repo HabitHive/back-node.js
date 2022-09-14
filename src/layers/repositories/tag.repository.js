@@ -77,9 +77,9 @@ export default new (class TagRepository {
     return scheduleList;
   };
 
-  dailyPage = async (userId, todayDate) => {
+  dailyPage = async (user_id, todayDate) => {
     const myDailyPage = await UserTag.findAll({
-      where: { user_id: userId },
+      where: { user_id },
       include: [
         {
           model: Tag,
@@ -94,9 +94,9 @@ export default new (class TagRepository {
     return myDailyPage;
   };
 
-  tagList = async (userId) => {
+  tagList = async (user_id) => {
     const myTagList = await UserTag.findAll({
-      where: { user_id: userId },
+      where: { user_id },
       include: {
         model: Tag,
         attributes: ["tag_name"],
@@ -124,7 +124,7 @@ export default new (class TagRepository {
   };
 
   schedule = async (user_id, user_tag_id, time_cycle, week_cycle) => {
-    await Schedule.create({ user_tag_id, time_cycle, week_cycle });
+    await Schedule.craete({ user_tag_id, time_cycle, week_cycle });
   };
 
   findSchedule = async (schedule_id) => {
@@ -151,5 +151,12 @@ export default new (class TagRepository {
       time_cycle,
     });
     return result;
+  };
+
+  // 임시 태그 생성 메소드
+  input = async (req, res) => {
+    const { tag_name, category } = req.body;
+    await Tag.create({ tag_name, category });
+    res.send("완료");
   };
 })();

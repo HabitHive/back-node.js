@@ -27,7 +27,7 @@ export default async (req, res, next) => {
       error.name = "wrong token";
       throw error;
     }
-
+    
     // user에 user_id값이 없다면 에러 throw
     if (user.key1 === undefined) {
       const error = new Error("Token error");

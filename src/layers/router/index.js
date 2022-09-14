@@ -45,7 +45,7 @@ router.get("/user/logout", UserController.logOut); //로그 아웃
 router.put("/user/interest", authMiddleware, UserController.interest); //관심사 설정
 
 router.get("/user/mypage/info", authMiddleware, UserController.myInfo); //유저정보
-router.get("/user/mypage/tag", authMiddleware, UserController.myTagList); //유저 습관 전적
+router.put("/user/mypage/tag", authMiddleware, UserController.myTagList); //유저 습관 전적
 
 /* /api/tag */
 router.get("/tag/list", authMiddleware, TagController.buyPage);
@@ -63,9 +63,13 @@ router.post(
   authMiddleware,
   DailyController.schedule
 );
+router.get("/tag/monthly/:date", authMiddleware, TagController.monthly);
 
 /* /api/pet */
 router.get("/pet", authMiddleware, PetController.getPetInfo);
 router.post("/pet", authMiddleware, PetController.buyingPetExp);
+
+import TagRepository from "../repositories/tag.repository.js";
+router.post("/input/tag", TagRepository.input);
 
 export default router;

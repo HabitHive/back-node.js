@@ -32,9 +32,23 @@ export default new (class TagController {
     }
   };
 
+  invalid = (res) => {
+    res.status(400).json({ message: "필수 입력값이 비어 있습니다." });
+  };
+
+  monthly = async (req, res) => {
+    const { userId } = res.locals;
+    const { date } = req.query;
+    if (!date) return this.invalid(res);
+
+    const receive = await TagService.monthDone(userId, date);
+    return res.status(receive.status).json(receive.message);
+  };
+
   doneTag = async (req, res) => {
     const { userId } = res.locals;
     const { scheduleId, date } = req.body;
+    if (!scheduleId || !date) return this.invalid(res);
 
     const receive = await TagService.done(userId, scheduleId, date);
     return res.status(receive.status).json(receive.message, receive.result);
