@@ -1,12 +1,12 @@
 import passport from "passport";
-import GoogleStrategy from "passport-google-oauth2";
+import Google from "passport-google-oauth2";
 import User from "../models/user.js";
 
-const GoogleLogin = GoogleStrategy.Strategy;
+const GoogleStrategy = Google.Strategy;
 
 export default () => {
   passport.use(
-    new GoogleLogin(
+    new GoogleStrategy(
       {
         clientID: process.env.GOOGLE_ID,
         clientSecret: process.env.GOOGLE_SECRET,
@@ -25,10 +25,10 @@ export default () => {
             },
             raw: true,
           });
-          // 이미 가입된 구글 프로필이면 성공 덤으로 구글 닉네임 업데이트
+          // 이미 가입된 구글 프로필이면 구글 닉네임 업데이트
           if (exUser) {
             await User.update(
-              { nickname: profile._json.kakao_account.profile.nickname },
+              { nickname: profile._json.name },
               { where: { user_id: exUser.user_id } }
             );
             done(null, exUser.user_id); // 로그인 인증 완료
@@ -54,7 +54,6 @@ export default () => {
             done(null, newUser.user_id); // 회원가입하고 로그인 인증 완료
           }
         } catch (error) {
-          console.error(error);
           done(error);
         }
       }
