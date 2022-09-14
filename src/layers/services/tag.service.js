@@ -3,6 +3,7 @@ import UserRepository from "../repositories/user.repository.js";
 
 export default new (class TagService {
   result = async (status, message, result) => {
+    console.log(status);
     return { status, message, result };
   };
 
@@ -143,20 +144,29 @@ export default new (class TagService {
   };
 
   monthDone = async (userId, strDate) => {
-    const yearMonth = strDate.split("-").pop().join("-");
-    const date = new Date(yearMonth + "-1");
-    const lastDate = new Date(strDate);
+    const splitDate = strDate.split("-");
+    const lastDate = new Date(splitDate[0] / 1, splitDate[1] / 1, 0);
+    const thisMonth = new Date(splitDate[0] / 1, splitDate[1] - 1, 1);
+    const nextMonth = new Date(splitDate[0] / 1, splitDate[1] / 1, 1);
 
-    const history = await UserRepository.colorHistory(userId, yearMonth);
+    const history = await UserRepository.colorHistory(
+      userId,
+      thisMonth,
+      nextMonth
+    );
 
-    while (date <= lastDate) {
-      let count = 0;
-      history.map((h) => {
-        if (h.date == date) {
-          count++;
-        }
-      });
+    let month = [null];
+    const lastNum = lastDate.getDate();
+    for (let i = 1; i <= lastNum; i++) month.push(0);
+
+    if (history == []) return this.result(200, "데이터 없음", month);
+    for (let h in history) {
+      const doneDate = new Date(h.date);
+      month[doneDate.getDate()]++;
     }
+    for (let i = 1; i <= lastNum; i++) if (month[i] > 4) month[i] = 4;
+
+    return this.result(200, "일별 색상", month);
   };
 
   /**

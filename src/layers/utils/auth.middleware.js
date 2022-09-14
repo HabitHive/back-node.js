@@ -15,7 +15,6 @@ export default async (req, res, next) => {
       raw: true,
     });
     const refreshToken = sessionData.data.a1; // 리프레쉬 토큰값
-    console.log(sessionData.data.cookie);
     const user = jwt.verify(tokenValue, process.env.ACCESS_TOKEN_SECRET); // 받아온 엑세스 토큰 값을 검증
     const verifyUser = jwt.verify(
       refreshToken,
@@ -73,6 +72,7 @@ export default async (req, res, next) => {
     res.locals.userId = user.key1 - parseInt(process.env.SUM);
     next();
   } catch (error) {
+    console.log(error);
     res.status(401).json({ message: error.name });
     return;
   }

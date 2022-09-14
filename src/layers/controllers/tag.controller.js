@@ -31,6 +31,11 @@ export default new (class TagController {
       res.status(400).send(error.message);
     }
   };
+  response = (res, receive) => {
+    res
+      .status(receive.status)
+      .json({ message: receive.message, result: receive.result });
+  };
 
   invalid = (res) => {
     res.status(400).json({ message: "필수 입력값이 비어 있습니다." });
@@ -38,11 +43,11 @@ export default new (class TagController {
 
   monthly = async (req, res) => {
     const { userId } = res.locals;
-    const { date } = req.query;
+    const date = req.params.date;
     if (!date) return this.invalid(res);
 
     const receive = await TagService.monthDone(userId, date);
-    return res.status(receive.status).json(receive.message);
+    return this.response(res, receive);
   };
 
   doneTag = async (req, res) => {
@@ -51,6 +56,6 @@ export default new (class TagController {
     if (!scheduleId || !date) return this.invalid(res);
 
     const receive = await TagService.done(userId, scheduleId, date);
-    return res.status(receive.status).json(receive.message, receive.result);
+    return this.response(res, receive);
   };
 })();

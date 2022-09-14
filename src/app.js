@@ -38,8 +38,8 @@ const corsOptions = {
 };
 app.use(
   cors(
-    // corsOptions
-    { origin: true, credentials: true }
+    corsOptions
+    // { origin: true, credentials: true }
   )
 );
 
@@ -52,7 +52,7 @@ const options = {
   database: process.env.DEV_DB,
   clearExpired: true, // 만료된 세션 자동 확인 및 지우기 여부
   checkExpirationInterval: 3000, //3 seconds, 만료된 세션이 지워지는 빈도; milliseconds
-  expiration: 30000, //30 sesonds
+  expiration: 30 * 60 * 1000, //30 sesonds / 30 minute
   createDatabaseTable: false, // 세션 데이터베이스 테이블 생성 여부(아직 존재하지 않는 경우)
 };
 
@@ -66,7 +66,7 @@ app.use(
     saveUninitialized: false,
     store: sessionStore,
     secret: process.env.SESSION_SECRET,
-    cookie: { httpOnly: true, maxAge: 30000 },
+    cookie: { httpOnly: true, maxAge: 30 * 60 * 1000 },
   })
 );
 
