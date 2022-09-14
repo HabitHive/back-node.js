@@ -6,14 +6,13 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon -r dotenv/config ./src/app.js "
+    "start": "nodemon -r dotenv/config ./src/app.js --exec babel-node"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.0.1",
     "chalk": "^5.0.1",
-    "connect-flash": "^0.1.1",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.0.1",
@@ -23,6 +22,7 @@
     "joi": "^17.6.0",
     "jsonwebtoken": "^8.5.1",
     "morgan": "^1.10.0",
+    "mysql": "^2.18.1",
     "mysql2": "^2.3.3",
     "nodemon": "^2.0.19",
     "passport": "^0.6.0",
@@ -32,5 +32,15 @@
     "prettier": "^2.7.1",
     "sequelize": "^6.21.4",
     "sequelize-cli": "^6.4.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.19.0",
+    "@babel/node": "^7.18.10",
+    "@babel/preset-env": "^7.19.0"
+  },
+  "babel": {
+    "presets": [
+      "@babel/env"
+    ]
   }
 }
