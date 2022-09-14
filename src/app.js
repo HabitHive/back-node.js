@@ -8,10 +8,9 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import session from "express-session";
 import MySQLStoreCreator from "express-mysql-session";
-import * as mysql2 from "mysql2/promise";
+import mysql from "mysql";
 import passport from "passport";
 import passportConfig from "./passport/index.js";
-import flash from "connect-flash";
 
 dotenv.config();
 
@@ -27,24 +26,26 @@ sequelize
 
 app.use(
   cors({
-    origin: process.env.CLIENT_HOST,
-    credentials: process.env.ENABLE_CORS,
+    origin: true,
+    credentials: true,
   })
 );
-
-app.use(cookieParser());
 
 //session store
 const options = {
   host: process.env.DEV_DB_HOST,
-  port: process.env.RDS_PORT,
+  port: 3306,
   user: process.env.DEV_DB_ID,
   password: process.env.DEV_DB_PW,
   database: process.env.DEV_DB,
+  clearExpired: true, // 만료된 세션 자동 확인 및 지우기 여부
+  checkExpirationInterval: 3000, //3 seconds, 만료된 세션이 지워지는 빈도; milliseconds
+  expiration: 30000, //30 sesonds
+  createDatabaseTable: false, // 세션 데이터베이스 테이블 생성 여부(아직 존재하지 않는 경우)
 };
 
 const MySQLStore = MySQLStoreCreator(session);
-const connection = mysql2.createPool(options);
+const connection = mysql.createConnection(options);
 const sessionStore = new MySQLStore({}, connection);
 
 app.use(
@@ -52,16 +53,12 @@ app.use(
     resave: false,
     saveUninitialized: false,
     store: sessionStore,
-    key: process.env.SESSION_KEY,
     secret: process.env.SESSION_SECRET,
-    cookie: {
-      httpOnly: true,
-      secure: false,
-    },
+    cookie: { httpOnly: true, maxAge: 30000 },
   })
 );
 
-app.use(flash()); // passport 사용 시 1회성으로 명시적 메시지 출력
+app.use(cookieParser());
 
 //! express-session에 의존하므로 뒤에 위치해야 함
 app.use(passport.initialize()); // 요청 객체에 passport 설정을 심음

@@ -1,4 +1,5 @@
 import User from "../../models/user.js";
+import Session from "../../models/session.js";
 import Point from "../../models/point.js";
 
 class UserRepository {
@@ -28,6 +29,19 @@ class UserRepository {
   logIn = async (email) => {
     const findUser = await User.findOne({ where: { email }, raw: true });
     return findUser;
+  };
+
+  //로그 아웃             /api/user/logout
+  logOut = async (session_id) => {
+    await Session.destroy({ where: { session_id } });
+  };
+
+  session = async (session_id) => {
+    const findSession = await Session.findOne({
+      where: { session_id },
+      raw: true,
+    });
+    return findSession;
   };
 
   //관심사 설정           /api/user/interest
