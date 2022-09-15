@@ -45,8 +45,7 @@ export default async (req, res, next) => {
     res.locals.userId = user.key1 - parseInt(process.env.SUM);
     next();
   } catch (error) {
-    console.log(error.name);
-    res.status(401).json({ message: error.name });
+    res.status(401).json({ name: error.name, message: error.message });
     return;
   }
 };

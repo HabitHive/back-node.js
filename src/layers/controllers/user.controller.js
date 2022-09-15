@@ -15,10 +15,12 @@ class UserController {
       }
     } catch (error) {
       if (error.status) {
-        res.status(error.status).json({ message: error.name });
+        res
+          .status(error.status)
+          .json({ name: error.name, message: error.message });
         return;
       }
-      res.status(400).json({ message: error.name });
+      res.status(400).json({ name: error.name, message: error.message });
     }
   };
 
@@ -33,10 +35,12 @@ class UserController {
       res.status(201).json({ token: token, session: req.sessionID });
     } catch (error) {
       if (error.status) {
-        res.status(error.status).json({ message: error.name });
+        res
+          .status(error.status)
+          .json({ name: error.name, message: error.message });
         return;
       }
-      res.status(400).json({ message: error.name });
+      res.status(400).json({ name: error.name, message: error.message });
     }
   };
 
@@ -47,10 +51,12 @@ class UserController {
       res.status(200).json({});
     } catch (error) {
       if (error.status) {
-        res.status(error.status).json({ message: error.name });
+        res
+          .status(error.status)
+          .json({ name: error.name, message: error.message });
         return;
       }
-      res.status(400).json({ message: error.name });
+      res.status(400).json({ name: error.name, message: error.message });
     }
   };
 
@@ -61,10 +67,12 @@ class UserController {
       res.status(201).json({});
     } catch (error) {
       if (error.status) {
-        res.status(error.status).json({ message: error.name });
+        res
+          .status(error.status)
+          .json({ name: error.name, message: error.message });
         return;
       }
-      res.status(400).json({ message: error.name });
+      res.status(400).json({ name: error.name, message: error.message });
     }
   };
 

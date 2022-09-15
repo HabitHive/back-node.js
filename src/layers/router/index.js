@@ -4,36 +4,11 @@ import UserController from "../controllers/user.controller.js";
 import DailyController from "../controllers/daily.controller.js";
 import TagController from "../controllers/tag.controller.js";
 import PetController from "../controllers/pet.controller.js";
-import SocailLogin from "../controllers/sociallogin.controller.js";
 
 import authMiddleware from "../utils/auth.middleware.js";
 import reissuance from "../utils/token.reissuance.js";
 
 const router = express.Router();
-
-/* /api/naver */
-router.get("/naver", SocailLogin.Naver);
-router.get(
-  "/naver/callback",
-  SocailLogin.NaverCallBack,
-  SocailLogin.ResponseToken
-);
-
-/* /api/google */
-router.get("/google", SocailLogin.Google);
-router.get(
-  "/google/callback",
-  SocailLogin.GoogleCallBack,
-  SocailLogin.ResponseToken
-);
-
-/* /api/kakao */
-router.get("/kakao", SocailLogin.Kakao);
-router.get(
-  "/kakao/callback",
-  SocailLogin.KakaoCallBack,
-  SocailLogin.ResponseToken
-);
 
 /* /api/token */
 router.get("/token", reissuance); //엑세스 토큰 재발급

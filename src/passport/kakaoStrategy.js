@@ -9,7 +9,7 @@ export default () => {
     new KakaoStrategy(
       {
         clientID: process.env.KAKAO_ID, // 카카오 로그인에서 발급받은 REST API 키
-        callbackURL: "http://43.200.163.13/api/kakao/callback", // 카카오 로그인 Redirect URI 경로
+        callbackURL: process.env.KAKAO_URL, // 카카오 로그인 Redirect URI 경로
         // session: true,
         // passReqToCallback: true,
       },
