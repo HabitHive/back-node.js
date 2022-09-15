@@ -19,7 +19,6 @@ export default new (class TagController {
   tagBuy = async (req, res, next) => {
     try {
       const { userId } = res.locals;
-      // const userId = 2;
       const { tagId, period } = req.body;
 
       const date = await TagService.tagBuy(userId, tagId, period);

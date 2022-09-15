@@ -126,6 +126,7 @@ export default new (class TagService {
 
   tagBuy = async (userId, tagId, period) => {
     // 같은 태그를 구매하나? 테이블 만들 때 찾으면서 만드느 것 있던 데 (x)
+    console.log(userId, period);
     const userInfo = await TagRepository.interest(userId);
     const fixPoint = period * 10; // 포인트는 어떡게 만들어나...
     const point = userInfo.point - fixPoint;
@@ -136,6 +137,7 @@ export default new (class TagService {
         message: "보유한 포인트가 부족합니다.",
       };
     }
+    console.log(point);
 
     const result = await TagRepository.tagBuy(userId, tagId, period, point);
 
@@ -155,7 +157,6 @@ export default new (class TagService {
     const lastDate = new Date(year, month, 0);
     const thisMonth = new Date(year, month - 1, 1);
     const nextMonth = new Date(year, month, 1);
-    console.log(thisMonth, nextMonth);
 
     const history = await UserRepository.colorHistory(
       userId,
