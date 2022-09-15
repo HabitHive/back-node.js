@@ -87,7 +87,6 @@ export default new (class TagService {
           category: allList.category.split("#"),
         }; // 태그의 키와 값의 형태 정리
       });
-      console.log(tagCategoryList);
       // 태그가 수가 부족하면 무한 로딩에 걸릴 수있다...
       // 카테고리로 찾는 경우에는 특정 카테고리에 대해서 다 사고 찾을 때 개수가 3개보다 부족할 수 있다.
       let count = 0;
