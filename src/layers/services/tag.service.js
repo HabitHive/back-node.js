@@ -23,11 +23,9 @@ export default new (class TagService {
     }
 
     const userInterest = userInfo.interest.split("#").slice(1);
-    userInterest.pop();
-    // 관심사를 #으로 자르고 배열로 만든다.
+    userInterest.pop(); // 관심사를 #으로 자르고 배열로 만든다.
 
-    const categoryCount = userInterest.length;
-    // 관심사의 개수
+    const categoryCount = userInterest.length; // 관심사의 개수
 
     if (3 < categoryCount) {
       // 관심 개수가 3개 보다 많을때
@@ -44,21 +42,15 @@ export default new (class TagService {
     const buyLists = await TagRepository.userBuyList(userId);
     // 구매한 태그들
 
-    const tagIdBuyList = [];
-    // 산 태그 리스트 목록 배열로(tagId만)
-    for (let i = 0; i < buyLists.length; i++) {
-      buyLists.map((buyList) => {
-        tagIdBuyList.push(buyList.tag_id);
-      });
-    }
+    const tagIdBuyList = buyLists.map((tag) => tag.tag_id);
+    // 구매한 태그 리스트 목록 배열로(tagId만)
 
     const tagAllLists = await TagRepository.tagAllList();
     // 태그 전체 목록 리스트
 
-    const tagAllFilterList = tagAllLists.filter((allList) => {
-      // 전체 태그 리스트 중에서 구매한 태그들 필터
-      return !tagIdBuyList.includes(allList.tag_id);
-    });
+    const tagAllFilterList = tagAllLists.filter(
+      (tag) => !tagIdBuyList.includes(tag.tag_id)
+    ); // 전체 태그 리스트 중에서 구매한 태그들 필터
 
     const tagAllList = tagAllFilterList.map((allList) => {
       // 태그의 키와 값의 형태 정리
@@ -110,25 +102,13 @@ export default new (class TagService {
         }
         count += 1;
       }
-      if (randomTagList.length < 3) {
-        // 우연히 또는 카태고리에 연관된 태그의 개수가 적을때 전체 태그에서 가져온다.
-        while (randomTagList.length != 3) {
-          let randomNum = Math.floor(Math.random() * tagAllList.length);
-          if (!randomCount.includes(randomNum)) {
-            randomTagList.push(tagAllList[randomNum]);
-            randomCount.push(randomNum);
-          }
-        }
-      }
-    } else {
-      // 관심사 없을 때
-      while (randomTagList.length != 3) {
-        //전체 태그들 중에서 중복 되지 않게 3개의 태그를 배열로 만든다.
-        let randomNum = Math.floor(Math.random() * tagAllList.length);
-        if (!randomCount.includes(randomNum)) {
-          randomTagList.push(tagAllList[randomNum]);
-          randomCount.push(randomNum);
-        }
+    }
+    while (randomTagList.length != 3) {
+      //전체 태그들 중에서 중복 되지 않게 3개의 태그를 배열로 만든다.
+      let randomNum = Math.floor(Math.random() * tagAllList.length);
+      if (!randomCount.includes(randomNum)) {
+        randomTagList.push(tagAllList[randomNum]);
+        randomCount.push(randomNum);
       }
     }
 
