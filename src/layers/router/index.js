@@ -63,10 +63,15 @@ router.post(
   authMiddleware,
   DailyController.schedule
 );
-router.post(
+router.patch(
   "/tag/schedule/update/:scheduleId",
   authMiddleware,
   DailyController.scheduleUpdate
+);
+router.delete(
+  "/tag/schedule/delete/:scheduleId",
+  authMiddleware,
+  DailyController.scheduleDelete
 );
 router.get("/tag/monthly/:date", authMiddleware, TagController.monthly);
 

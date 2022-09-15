@@ -85,4 +85,9 @@ export default new (class DailyRepository {
       { where: { schedule_id } }
     );
   };
+
+  scheduleDelete = async (user_id, schedule_id) => {
+    await Schedule.destroy({ where: { user_id, schedule_id } });
+    return;
+  };
 })();

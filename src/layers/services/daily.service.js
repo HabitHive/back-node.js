@@ -211,4 +211,14 @@ export default new (class DailyService {
       message: "내 태그 스케줄 추가",
     };
   };
+
+  scheduleDelete = async (userId, scheduleId) => {
+    const result = await DailyRepository.scheduleDelete(userId, scheduleId);
+
+    return {
+      status: 200,
+      result: {},
+      message: "스케줄이 삭제되었습니다.",
+    };
+  };
 })();
