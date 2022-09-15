@@ -63,6 +63,11 @@ router.post(
   authMiddleware,
   DailyController.schedule
 );
+router.post(
+  "/tag/schedule/update/:scheduleId",
+  authMiddleware,
+  DailyController.scheduleUpdate
+);
 router.get("/tag/monthly/:date", authMiddleware, TagController.monthly);
 
 /* /api/pet */

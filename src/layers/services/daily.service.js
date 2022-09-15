@@ -168,7 +168,7 @@ export default new (class DailyService {
   scheduleUpdate = async (
     // 스케줄을 선택하고 수정할 때 원래 있던 스케줄 수정
     userId,
-    userTagId,
+    scheduleId,
     startTime,
     endTime,
     weekCycle,
@@ -176,10 +176,10 @@ export default new (class DailyService {
   ) => {
     // 스케줄 시간이 지난 후에 새로운 스케줄을 설정은?? 지금은 수정 X
 
-    const userTag = await DailyRepository.userTagInOf(userId, userTagId);
+    const schedule = await DailyRepository.scheduleInOf(userId, scheduleId);
     // 유저의가 선택한 태그의 정보
 
-    if (new Date() >= new Date(userTag.start_date)) {
+    if (new Date() >= new Date(schedule.UserTag.start_date)) {
       return {
         status: 403,
         result: {},
@@ -187,8 +187,10 @@ export default new (class DailyService {
       }; // 나중에 예약을 한 날짜보다 현재날짜를 자났나면 수정불가! (O)
     }
 
-    if (userTag.startDate != startDate) {
-      const period = userTag.period;
+    const userTagId = schedule.UserTag.user_tag_id;
+
+    if (schedule.UserTag.startDate != startDate) {
+      const period = schedule.userTag.period;
       let date = new Date(startDate);
       date.setDate(date.getDate() + period);
       let endDate = date
@@ -196,12 +198,12 @@ export default new (class DailyService {
         .split(". ")
         .join("-")
         .slice(0, -1);
-      await DailyRepository.scheduleDate(userTagId, startDate, endDate);
+      await DailyRepository.startDateUpdate(userTagId, startDate, endDate);
     }
 
     const timeCycle = startTime + "," + endTime;
 
-    await DailyRepository.schedule(userTagId, userId, timeCycle, weekCycle);
+    await DailyRepository.scheduleUpdate(scheduleId, timeCycle, weekCycle);
 
     return {
       status: 200,
