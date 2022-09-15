@@ -7,7 +7,7 @@ import Done from "../../models/done.js";
 export default new (class DailyRepository {
   doneSchedule = async (todayDate) => {
     const doneSchedules = await Done.findAll({
-      where: { date: { [Op.like]: `%${todayDate}%` } },
+      where: { date: { [Op.lte]: todayDate } },
       attributes: ["user_tag_id"],
     });
     return doneSchedules;
@@ -60,7 +60,7 @@ export default new (class DailyRepository {
     return userTag;
   };
 
-  scheduleDate = async (user_tag_id, start_date, end_date) => {
+  startDateUpdate = async (user_tag_id, start_date, end_date) => {
     await UserTag.update({ start_date, end_date }, { where: { user_tag_id } });
   };
 
@@ -68,8 +68,21 @@ export default new (class DailyRepository {
     await Schedule.create({ user_tag_id, user_id, time_cycle, week_cycle });
   };
 
-  scheduleInOf = async (schedule_id) => {
-    const schedule = await Schedule.findOne({ where: { schedule_id } });
+  scheduleInOf = async (user_id, schedule_id) => {
+    const schedule = await Schedule.findOne({
+      where: { user_id, schedule_id },
+      include: {
+        model: UserTag,
+        attributes: ["user_tag_id", "start_date", "period"],
+      },
+    });
     return schedule;
+  };
+
+  scheduleUpdate = async (schedule_id, time_cycle, week_cycle) => {
+    await Schedule.update(
+      { time_cycle, week_cycle },
+      { where: { schedule_id } }
+    );
   };
 })();
