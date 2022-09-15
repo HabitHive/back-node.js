@@ -102,4 +102,22 @@ export default new (class Dailycontroller {
       res.status(400).send(error.message);
     }
   };
+
+  scheduleDelete = async (req, res, next) => {
+    // 스케줄의 삭제 할때
+    try {
+      const { userId } = res.locals;
+      // const userId = 2;
+      const { scheduleId } = req.params;
+
+      const date = await DailyService.scheduleDelete(userId, scheduleId);
+
+      return res
+        .status(date.status)
+        .json({ result: date.result, message: date.message });
+    } catch (error) {
+      console.log(error);
+      res.status(400).send(error.message);
+    }
+  };
 })();
