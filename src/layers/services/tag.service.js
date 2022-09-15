@@ -6,60 +6,76 @@ export default new (class TagService {
     return { status, message, result };
   };
 
-  buyPage = async (userId) => {
+  tagBuyPage = async (userId) => {
     // 구매한 태그는 찾지 않게 만들기 (O)
     // TagId의 고유 값을 선택한 횟수 관심회 한 태그들의 목록 으로 추천 알고리즘 만들기 (XXX)
 
-    const userInfo = await TagRepository.interest(userId);
+    const userInfo = await TagRepository.userInterest(userId);
     // 관심사 선택을 아무 것도 안했을 경우 #만 넘어온다. if 문으로 잡아라
-    const userInterest = userInfo.interest.split("#");
-    // 관심사를 #으로 자르고 배열로 만든다.
 
-    // 잘못 저장 되었던 관심목록에 대한것 중 ( 3개이상의 요소 거나, 없을 때 )
-    const categoryList = userInterest.length;
-
-    if (categoryList > 5 || categoryList < 2) {
+    if (userInfo.interest == null) {
+      // 관심목록이 비었을때
       return {
         status: 400,
-        result: userInterest,
+        result: userInfo.interest,
         message: "관심 목록 설정이 잘못 되었는데",
       };
     }
-    // 포인트 찾아서 보내기 (O)
-    const userPoint = userInfo.point;
 
+    const userInterest = userInfo.interest.split("#").slice(1);
+    userInterest.pop();
+    // 관심사를 #으로 자르고 배열로 만든다.
+
+    const categoryCount = userInterest.length;
+    // 관심사의 개수
+
+    if (3 < categoryCount) {
+      // 관심 개수가 3개 보다 많을때
+      return {
+        status: 400,
+        result: userInfo.interest,
+        message: "관심 목록 개수가 많은데?",
+      };
+    }
+
+    const userPoint = userInfo.point;
+    // 포인트 찾아서 보내기 {객체 이름 정한것}
+
+    const buyLists = await TagRepository.userBuyList(userId);
     // 구매한 태그들
-    const BuyLists = await TagRepository.tagBuyList(userId);
-    // 산 태그 리스트 목록
-    const BuyTagIdList = [];
-    for (let i = 0; i < BuyLists.length; i++) {
-      BuyLists.map((allList) => {
-        BuyTagIdList.push(allList.tag_id);
+
+    const tagIdBuyList = [];
+    // 산 태그 리스트 목록 배열로(tagId만)
+    for (let i = 0; i < buyLists.length; i++) {
+      buyLists.map((buyList) => {
+        tagIdBuyList.push(buyList.tag_id);
       });
     }
 
-    const tagLists = await TagRepository.buyPage();
-    // 전체 목록 리스트 = > 목록 중에서 구매한 태그는 제거(O)
-    const tagListsFilter = tagLists.map((allList) => {
-      if (!BuyTagIdList.includes(allList.tag_id)) {
-        return {
-          tagId: allList.tag_id,
-          tagName: allList.tag_name,
-          category: allList.category.split("#"),
-        };
-      }
-    });
-    // 전체 태그 리스트에서 구매한 리스트 부분 배열 null로 만들고 정리
-    const tagList = tagListsFilter.filter(function (check) {
-      return check !== undefined;
+    const tagAllLists = await TagRepository.tagAllList();
+    // 태그 전체 목록 리스트
+
+    const tagAllFilterList = tagAllLists.filter(function (allList) {
+      // 전체 태그 리스트 중에서 구매한 태그들 필터
+      return !tagIdBuyList.includes(allList.tag_id);
     });
 
-    // 랜덤 요소를 위한 선언
+    const tagAllList = tagAllFilterList.map((allList) => {
+      // 태그의 키와 값의 형태 정리
+      return {
+        tagId: allList.tag_id,
+        tagName: allList.tag_name,
+        category: allList.category.split("#"),
+      };
+    });
+
     let randomTagList = [];
     let randomCount = [];
+    // 랜덤 요소를 위한 선언
 
-    //관심목록을 설정을 안했을 경우 (O)
-    if (categoryList != 2) {
+    console.log(categoryCount);
+    if (categoryCount != 0) {
+      //관심목록을 설정을 안했을 경우 (O)
       const recommendedList = await TagRepository.recommended(
         categoryList,
         userInterest
