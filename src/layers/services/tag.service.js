@@ -55,7 +55,7 @@ export default new (class TagService {
     const tagAllLists = await TagRepository.tagAllList();
     // 태그 전체 목록 리스트
 
-    const tagAllFilterList = tagAllLists.filter(function (allList) {
+    const tagAllFilterList = tagAllLists.filter((allList) => {
       // 전체 태그 리스트 중에서 구매한 태그들 필터
       return !tagIdBuyList.includes(allList.tag_id);
     });
@@ -73,59 +73,27 @@ export default new (class TagService {
     let randomCount = [];
     // 랜덤 요소를 위한 선언
 
-    console.log(categoryCount);
     if (categoryCount != 0) {
-      //관심목록을 설정을 안했을 경우 (O)
+      //관심목록을 설정을 했을 경우
+
       const recommendedList = await TagRepository.recommended(
-        categoryList,
+        categoryCount,
         userInterest
-      );
-      //관심 목록이 있을때 => 목록 중에서 구매한 태그는 제거(X))
+      ); // 관심 목록의 태그들을 배열로 가져옴
 
-      const number = Math.floor(Math.random() * (categoryList - 2));
-      // let algorithmScores = [];
-      // if (number == 1) {
-      //   algorithmScores = recommendedList.tagList1.map((allList) => {
-      //     if (!BuyTagIdList.includes(allList.tag_id)) {
-      //       return {
-      //         tagId: allList.tag_id,
-      //         tagName: allList.tag_name,
-      //         category: allList.category.split("#"),
-      //       };
-      //     }
-      //   });
-      // } else if (number == 2) {
-      //   algorithmScores = recommendedList.tagList2.map((allList) => {
-      //     if (!BuyTagIdList.includes(allList.tag_id)) {
-      //       return {
-      //         tagId: allList.tag_id,
-      //         tagName: allList.tag_name,
-      //         category: allList.category.split("#"),
-      //       };
-      //     }
-      //   });
-      // } else if (number == 3) {
-      //   algorithmScores = recommendedList.tagList3.map((allList) => {
-      //     if (!BuyTagIdList.includes(allList.tag_id)) {
-      //       return {
-      //         tagId: allList.tag_id,
-      //         tagName: allList.tag_name,
-      //         category: allList.category.split("#"),
-      //       };
-      //     }
-      //   });
-      // }
-      //=================================================================
-      const algorithmScores = recommendedList[number].filter((tag) =>
-        BuyTagIdList.includes(tag.tag_id)
-      );
+      const number = Math.floor(Math.random() * categoryCount);
+      // 어떤 카태고리의 태그를 고를지 랜덤
 
-      const algorithmScore = algorithmScores.map((tag) => {
+      const tagFilterLists = recommendedList[number].filter((tagCategory) => {
+        return tagIdBuyList.includes(tagCategory.tag_id);
+      }); // 선택된 카태고리 중에 구매한 태그들을 필터
+
+      const tagCategoryList = tagFilterLists.map((tagCategory) => {
         return {
-          tagId: tag.tag_id,
-          tagName: allList.tag_name,
-          category: allList.category.split("#"),
-        };
+          tagId: tagCategory.tag_id,
+          tagName: tagCategory.tag_name,
+          category: tagCategory.category.split("#"),
+        }; // 태그의 키와 값의 형태 정리
       });
 
       // 태그가 수가 부족하면 무한 로딩에 걸릴 수있다...
@@ -134,50 +102,47 @@ export default new (class TagService {
       // 관심 목록의 수가 부족할 때 반복 횟수를 제한하는 용도
 
       while (randomTagList.length != 3 && count != 30) {
-        let randomNum = Math.floor(Math.random() * algorithmScore.length);
+        // 태그들 중에서 중복 되지 않게 3개의 태그를 배열로 만든다.
+        let randomNum = Math.floor(Math.random() * tagCategoryList.length);
         if (!randomCount.includes(randomNum)) {
-          randomTagList.push(algorithmScore[randomNum]);
+          randomTagList.push(tagCategoryList[randomNum]);
           randomCount.push(randomNum);
         }
         count += 1;
       }
-      if (tagList.length < 3) {
-        return {
-          status: 400,
-          result: { randomTagList, tagList, userPoint },
-          message: "태그의 수가 부족해서 randomTagList의 수가 작다",
-        };
-      }
-      while (randomTagList.length != 3) {
-        let randomNum = Math.floor(Math.random() * tagList.length);
-        if (!randomCount.includes(randomNum)) {
-          randomTagList.push(tagList[randomNum]);
-          randomCount.push(randomNum);
+      if (randomTagList.length < 3) {
+        // 우연히 또는 카태고리에 연관된 태그의 개수가 적을때 전체 태그에서 가져온다.
+        while (randomTagList.length != 3) {
+          let randomNum = Math.floor(Math.random() * tagAllList.length);
+          if (!randomCount.includes(randomNum)) {
+            randomTagList.push(tagAllList[randomNum]);
+            randomCount.push(randomNum);
+          }
         }
       }
     } else {
       // 관심사 없을 때
-      while (randomTagList.length != 3 && count != 30) {
-        let randomNum = Math.floor(Math.random() * tagList.length);
+      while (randomTagList.length != 3) {
+        //전체 태그들 중에서 중복 되지 않게 3개의 태그를 배열로 만든다.
+        let randomNum = Math.floor(Math.random() * tagAllList.length);
         if (!randomCount.includes(randomNum)) {
-          randomTagList.push(tagList[randomNum]);
+          randomTagList.push(tagAllList[randomNum]);
           randomCount.push(randomNum);
         }
-        count += 1;
       }
     }
 
     return {
       status: 200,
-      result: { randomTagList, tagList, userPoint },
+      result: { randomTagList, tagAllList, userPoint },
       message: "습관 목록 불러오기 성공",
-    };
+    }; // 추천의 랜덤 3개, 구매하지 않은 전체 테그들, 유저가 가지고있는 포인트
   };
 
   tagBuy = async (userId, tagId, period) => {
     // 같은 태그를 구매하나? 테이블 만들 때 찾으면서 만드느 것 있던 데 (x)
-    console.log(userId, period);
-    const userInfo = await TagRepository.interest(userId);
+
+    const userInfo = await TagRepository.userInterest(userId);
     const fixPoint = period * 10; // 포인트는 어떡게 만들어나...
     const point = userInfo.point - fixPoint;
     if (point < 0) {
@@ -187,7 +152,6 @@ export default new (class TagService {
         message: "보유한 포인트가 부족합니다.",
       };
     }
-    console.log(point);
 
     const result = await TagRepository.tagBuy(userId, tagId, period, point);
 

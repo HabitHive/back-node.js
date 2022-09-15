@@ -24,39 +24,9 @@ export default new (class TagRepository {
     return await Tag.findAll();
   };
 
-  recommended = async (categoryList, userInterest) => {
-    // if (categoryList == 2) {
-    // } // 관심사 없을 때
-    // if (categoryList == 3) {
-    //   const tagList1 = await Tag.findAll({
-    //     where: { category: { [Op.like]: `%${userInterest[1]}%` } },
-    //   });
-    //   return { tagList1 };
-    // }
-    // if (categoryList == 4) {
-    //   const tagList1 = await Tag.findAll({
-    //     where: { category: { [Op.like]: `%${userInterest[1]}%` } },
-    //   });
-    //   const tagList2 = await Tag.findAll({
-    //     where: { category: { [Op.like]: `%${userInterest[2]}%` } },
-    //   });
-    //   return { tagList1, tagList2 };
-    // }
-    // if (categoryList == 5) {
-    //   const tagList1 = await Tag.findAll({
-    //     where: { category: { [Op.like]: `%${userInterest[1]}%` } },
-    //   });
-    //   const tagList2 = await Tag.findAll({
-    //     where: { category: { [Op.like]: `%${userInterest[2]}%` } },
-    //   });
-    //   const tagList3 = await Tag.findAll({
-    //     where: { category: { [Op.like]: `%${userInterest[3]}%` } },
-    //   });
-    //   return { tagList1, tagList2, tagList3 };
-    // }
-    // =====================================================
+  recommended = async (categoryCount, userInterest) => {
     let tagList = [];
-    for (let i = 1; i <= categoryList; i++) {
+    for (let i = 0; i < categoryCount; i++) {
       const list = await Tag.findAll({
         where: { category: { [Op.like]: `%${userInterest[i]}%` } },
       });
