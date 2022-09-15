@@ -17,7 +17,7 @@ export default new (class TagService {
       return {
         status: 400,
         result: userInfo.interest,
-        message: "관심 목록 설정이 잘못 되었는데",
+        message: "관심 목록 설정이 잘못 되었습니다.",
       };
     } // 관심목록이 설정이 안됌
 
@@ -30,7 +30,7 @@ export default new (class TagService {
       return {
         status: 400,
         result: userInfo.interest,
-        message: "관심 목록 개수가 많은데?",
+        message: "관심 목록 개수가 정해진 양보다 많습니다.",
       };
     } // 관심 개수가 3개 보다 많을때
 
