@@ -22,7 +22,7 @@ export default new (class TagService {
       };
     }
 
-    const userInterest = userInfo.interest.split("#").slice(1);
+    let userInterest = userInfo.interest.split("#").slice(1);
     userInterest.pop(); // 관심사를 #으로 자르고 배열로 만든다.
 
     const categoryCount = userInterest.length; // 관심사의 개수
@@ -52,12 +52,12 @@ export default new (class TagService {
       (tag) => !tagIdBuyList.includes(tag.tag_id)
     ); // 전체 태그 리스트 중에서 구매한 태그들 필터
 
-    const tagAllList = tagAllFilterList.map((allList) => {
+    const tagAllList = tagAllFilterList.map((tag) => {
       // 태그의 키와 값의 형태 정리
       return {
-        tagId: allList.tag_id,
-        tagName: allList.tag_name,
-        category: allList.category.split("#"),
+        tagId: tag.tag_id,
+        tagName: tag.tag_name,
+        category: tag.category.split("#"),
       };
     });
 
@@ -80,11 +80,11 @@ export default new (class TagService {
         return !tagIdBuyList.includes(tagCategory.tag_id);
       }); // 선택된 카태고리 중에 구매한 태그들을 필터
 
-      const tagCategoryList = tagFilterLists.map((allList) => {
+      const tagCategoryList = tagFilterLists.map((tag) => {
         return {
-          tagId: allList.tag_id,
-          tagName: allList.tag_name,
-          category: allList.category.split("#"),
+          tagId: tag.tag_id,
+          tagName: tag.tag_name,
+          category: tag.category.split("#"),
         }; // 태그의 키와 값의 형태 정리
       });
       // 태그가 수가 부족하면 무한 로딩에 걸릴 수있다...
@@ -92,16 +92,17 @@ export default new (class TagService {
       let count = 0;
       // 관심 목록의 수가 부족할 때 반복 횟수를 제한하는 용도
 
-      while (randomTagList.length != 3 && count != 30) {
+      while (randomTagList.length != 3 && count != tagCategoryList.length) {
         // 태그들 중에서 중복 되지 않게 3개의 태그를 배열로 만든다.
         let randomNum = Math.floor(Math.random() * tagCategoryList.length);
         if (!randomCount.includes(randomNum)) {
           randomTagList.push(tagCategoryList[randomNum]);
           randomCount.push(randomNum);
+          count++;
         }
-        count += 1;
       }
     }
+
     while (randomTagList.length != 3) {
       //전체 태그들 중에서 중복 되지 않게 3개의 태그를 배열로 만든다.
       let randomNum = Math.floor(Math.random() * tagAllList.length);
