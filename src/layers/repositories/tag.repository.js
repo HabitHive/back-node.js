@@ -6,9 +6,22 @@ import User from "../../models/user.js";
 import Done from "../../models/done.js";
 
 export default new (class TagRepository {
-  interest = async (user_id) => {
-    const userInfo = await User.findOne({ where: { user_id } });
-    return userInfo;
+  userInterest = async (user_id) => {
+    return await User.findOne({
+      attributes: ["interest", "point"],
+      where: { user_id },
+    });
+  };
+
+  userBuyList = async (user_id) => {
+    return await UserTag.findAll({
+      attributes: ["tag_id"],
+      where: { user_id },
+    });
+  };
+
+  tagAllList = async () => {
+    return await Tag.findAll();
   };
 
   recommended = async (categoryList, userInterest) => {
@@ -49,16 +62,6 @@ export default new (class TagRepository {
       });
       tagList.push(list);
     }
-    return tagList;
-  };
-
-  tagBuyList = async (user_id) => {
-    const BuyList = await UserTag.findAll({ where: { user_id } });
-    return BuyList;
-  };
-
-  buyPage = async () => {
-    const tagList = await Tag.findAll();
     return tagList;
   };
 

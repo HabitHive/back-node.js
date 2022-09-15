@@ -48,7 +48,7 @@ router.get("/user/mypage/info", authMiddleware, UserController.myInfo); //유저
 router.put("/user/mypage/tag", authMiddleware, UserController.myTagList); //유저 습관 전적
 
 /* /api/tag */
-router.get("/tag/list", authMiddleware, TagController.buyPage);
+router.get("/tag/list", authMiddleware, TagController.tagBuyPage);
 router.post("/tag/buy", authMiddleware, TagController.tagBuy);
 router.get("/tag/daily", authMiddleware, DailyController.dailyPage);
 router.get("/tag/daily/list", authMiddleware, DailyController.tagList);
