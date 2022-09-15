@@ -17,6 +17,7 @@ export default new (class TagService {
 
     // 잘못 저장 되었던 관심목록에 대한것 중 ( 3개이상의 요소 거나, 없을 때 )
     const categoryList = userInterest.length;
+
     if (
       categoryList != 2 &&
       categoryList != 3 &&
@@ -29,6 +30,8 @@ export default new (class TagService {
         message: "관심 목록 설정이 잘못 되었는데",
       };
     }
+    // 포인트 찾아서 보내기 (O)
+    const userPoint = userInfo.point;
 
     // 구매한 태그들
     const BuyLists = await TagRepository.tagBuyList(userId);
@@ -69,39 +72,49 @@ export default new (class TagService {
       //관심 목록이 있을때 => 목록 중에서 구매한 태그는 제거(X))
 
       const number = Math.floor(Math.random() * (categoryList - 2)) + 1;
-      let algorithmScore = [];
+      let algorithmScores = [];
       if (number == 1) {
-        algorithmScore = recommendedList.tagList1.map((point) => {
-          return {
-            tagId: point.tag_id,
-            tagName: point.tag_name,
-            category: point.category.split("#"),
-          };
+        algorithmScores = recommendedList.tagList1.map((allList) => {
+          if (!BuyTagIdList.includes(allList.tag_id)) {
+            return {
+              tagId: allList.tag_id,
+              tagName: allList.tag_name,
+              category: allList.category.split("#"),
+            };
+          }
         });
       }
       if (number == 2) {
-        algorithmScore = recommendedList.tagList2.map((point) => {
-          return {
-            tagId: point.tag_id,
-            tagName: point.tag_name,
-            category: point.category.split("#"),
-          };
+        algorithmScores = recommendedList.tagList2.map((allList) => {
+          if (!BuyTagIdList.includes(allList.tag_id)) {
+            return {
+              tagId: allList.tag_id,
+              tagName: allList.tag_name,
+              category: allList.category.split("#"),
+            };
+          }
         });
       }
       if (number == 3) {
-        algorithmScore = recommendedList.tagList3.map((point) => {
-          return {
-            tagId: point.tag_id,
-            tagName: point.tag_name,
-            category: point.category.split("#"),
-          };
+        algorithmScores = recommendedList.tagList3.map((allList) => {
+          if (!BuyTagIdList.includes(allList.tag_id)) {
+            return {
+              tagId: allList.tag_id,
+              tagName: allList.tag_name,
+              category: allList.category.split("#"),
+            };
+          }
         });
       }
+      const algorithmScore = algorithmScores.filter(function (check) {
+        return check !== undefined;
+      });
 
       // 태그가 수가 부족하면 무한 로딩에 걸릴 수있다...
       // 카테고리로 찾는 경우에는 특정 카테고리에 대해서 다 사고 찾을 때 개수가 3개보다 부족할 수 있다.
       var count = 0;
       // 관심 목록의 수가 부족할 때 반복 횟수를 제한하는 용도
+
       while (randomTagList.length != 3 && count != 30) {
         let randomNum = Math.floor(Math.random() * algorithmScore.length);
         if (!randomCount.includes(randomNum)) {
@@ -109,6 +122,20 @@ export default new (class TagService {
           randomCount.push(randomNum);
         }
         count += 1;
+      }
+      if (tagList.length < 3) {
+        return {
+          status: 400,
+          result: { randomTagList, tagList, userPoint },
+          message: "태그의 수가 부족해서 randomTagList의 수가 작다",
+        };
+      }
+      while (randomTagList.length != 3) {
+        let randomNum = Math.floor(Math.random() * tagList.length);
+        if (!randomCount.includes(randomNum)) {
+          randomTagList.push(tagList[randomNum]);
+          randomCount.push(randomNum);
+        }
       }
     } else {
       // 관심사 없을 때
@@ -121,8 +148,7 @@ export default new (class TagService {
         count += 1;
       }
     }
-    // 포인트 찾아서 보내기 (O)
-    const userPoint = userInfo.point;
+
     return {
       status: 200,
       result: { randomTagList, tagList, userPoint },
