@@ -7,6 +7,7 @@ export default new (class TagService {
   };
 
   tagBuyPage = async (userId) => {
+    userId = 6;
     // 구매한 태그는 찾지 않게 만들기 (O)
     // TagId의 고유 값을 선택한 횟수 관심회 한 태그들의 목록 으로 추천 알고리즘 만들기 (XXX)
 
@@ -23,11 +24,9 @@ export default new (class TagService {
     }
 
     const userInterest = userInfo.interest.split("#").slice(1);
-    userInterest.pop();
-    // 관심사를 #으로 자르고 배열로 만든다.
+    userInterest.pop(); // 관심사를 #으로 자르고 배열로 만든다.
 
-    const categoryCount = userInterest.length;
-    // 관심사의 개수
+    const categoryCount = userInterest.length; // 관심사의 개수
 
     if (3 < categoryCount) {
       // 관심 개수가 3개 보다 많을때
@@ -38,27 +37,21 @@ export default new (class TagService {
       };
     }
 
-    const userPoint = userInfo.point;
-    // 포인트 찾아서 보내기 {객체 이름 정한것}
+    const userPoint = userInfo.point; // 포인트 찾아서 보내기 {객체 이름 정한것}
+    const buyLists = await TagRepository.userBuyList(userId); // 구매한 태그들
+    const tagIdBuyList = buyLists.map((tag) => tag.tag_id);
+    console.log(tagIdBuyList);
 
-    const buyLists = await TagRepository.userBuyList(userId);
-    // 구매한 태그들
+    // for (let i = 0; i < buyLists.length; i++) {
+    //   buyLists.map((buyList) => {
+    //     tagIdBuyList.push(buyList.tag_id);
+    //   });
+    // }
 
-    const tagIdBuyList = [];
-    // 산 태그 리스트 목록 배열로(tagId만)
-    for (let i = 0; i < buyLists.length; i++) {
-      buyLists.map((buyList) => {
-        tagIdBuyList.push(buyList.tag_id);
-      });
-    }
-
-    const tagAllLists = await TagRepository.tagAllList();
-    // 태그 전체 목록 리스트
-
-    const tagAllFilterList = tagAllLists.filter(function (allList) {
-      // 전체 태그 리스트 중에서 구매한 태그들 필터
-      return !tagIdBuyList.includes(allList.tag_id);
-    });
+    const tagAllLists = await TagRepository.tagAllList(); // 태그 전체 목록 리스트
+    const tagAllFilterList = tagAllLists.filter(
+      (tag) => !tagIdBuyList.includes(tag.tag_id)
+    ); // 전체 태그 리스트 중에서 구매한 태그들 필터
 
     const tagAllList = tagAllFilterList.map((allList) => {
       // 태그의 키와 값의 형태 정리
@@ -73,16 +66,15 @@ export default new (class TagService {
     let randomCount = [];
     // 랜덤 요소를 위한 선언
 
-    console.log(categoryCount);
     if (categoryCount != 0) {
       //관심목록을 설정을 안했을 경우 (O)
       const recommendedList = await TagRepository.recommended(
-        categoryList,
+        categoryCount,
         userInterest
       );
       //관심 목록이 있을때 => 목록 중에서 구매한 태그는 제거(X))
 
-      const number = Math.floor(Math.random() * (categoryList - 2));
+      const number = Math.floor(Math.random() * categoryCount);
       // let algorithmScores = [];
       // if (number == 1) {
       //   algorithmScores = recommendedList.tagList1.map((allList) => {
@@ -120,55 +112,45 @@ export default new (class TagService {
         BuyTagIdList.includes(tag.tag_id)
       );
 
+      console.log(algorithmScores);
+
       const algorithmScore = algorithmScores.map((tag) => {
         return {
           tagId: tag.tag_id,
-          tagName: allList.tag_name,
-          category: allList.category.split("#"),
+          tagName: tag.tag_name,
+          category: tag.category.split("#"),
         };
       });
 
-      // 태그가 수가 부족하면 무한 로딩에 걸릴 수있다...
-      // 카테고리로 찾는 경우에는 특정 카테고리에 대해서 다 사고 찾을 때 개수가 3개보다 부족할 수 있다.
-      let count = 0;
-      // 관심 목록의 수가 부족할 때 반복 횟수를 제한하는 용도
+      // // 태그가 수가 부족하면 무한 로딩에 걸릴 수있다...
+      // // 카테고리로 찾는 경우에는 특정 카테고리에 대해서 다 사고 찾을 때 개수가 3개보다 부족할 수 있다.
+      // let count = 0;
+      // // 관심 목록의 수가 부족할 때 반복 횟수를 제한하는 용도
 
-      while (randomTagList.length != 3 && count != 30) {
+      let count = 0;
+
+      while (randomTagList.length != 3 && count != algorithmScore.length) {
         let randomNum = Math.floor(Math.random() * algorithmScore.length);
         if (!randomCount.includes(randomNum)) {
           randomTagList.push(algorithmScore[randomNum]);
           randomCount.push(randomNum);
-        }
-        count += 1;
-      }
-      if (tagList.length < 3) {
-        return {
-          status: 400,
-          result: { randomTagList, tagList, userPoint },
-          message: "태그의 수가 부족해서 randomTagList의 수가 작다",
-        };
-      }
-      while (randomTagList.length != 3) {
-        let randomNum = Math.floor(Math.random() * tagList.length);
-        if (!randomCount.includes(randomNum)) {
-          randomTagList.push(tagList[randomNum]);
-          randomCount.push(randomNum);
-        }
-      }
-    } else {
-      // 관심사 없을 때
-      while (randomTagList.length != 3) {
-        let randomNum = Math.floor(Math.random() * tagList.length);
-        if (!randomCount.includes(randomNum)) {
-          randomTagList.push(tagList[randomNum]);
-          randomCount.push(randomNum);
+          count++;
         }
       }
     }
+    while (randomTagList.length != 3) {
+      let randomNum = Math.floor(Math.random() * tagAllList.length);
+      if (!randomCount.includes(randomNum)) {
+        randomTagList.push(tagAllList[randomNum]);
+        randomCount.push(randomNum);
+      }
+    }
+
+    console.log(randomTagList);
 
     return {
       status: 200,
-      result: { randomTagList, tagList, userPoint },
+      result: { randomTagList, tagAllList, userPoint },
       message: "습관 목록 불러오기 성공",
     };
   };
