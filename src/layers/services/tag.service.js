@@ -118,7 +118,7 @@ export default new (class TagService {
         result: period,
         message: "period 값이 없습니다.",
       };
-    }
+    } // period 값이 없으면
 
     const userInfo = await TagRepository.userInterest(userId);
     const fixPoint = period * 10; // 포인트는 날짜의 *10
