@@ -78,15 +78,16 @@ export default new (class Dailycontroller {
   };
 
   scheduleUpdate = async (req, res, next) => {
+    // 스케줄 자체의 업데이트의경우
     try {
       const { userId } = res.locals;
       // const userId = 2;
-      const { userTagId } = req.params;
+      const { scheduleId } = req.params;
       const { startTime, endTime, weekCycle, startDate } = req.body;
 
       const date = await DailyService.scheduleUpdate(
         userId,
-        userTagId,
+        scheduleId,
         startTime,
         endTime,
         weekCycle,
