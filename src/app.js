@@ -24,7 +24,10 @@ sequelize
   .then(() => console.log("db connect"))
   .catch((err) => console.error(err));
 
-const whitelist = ["http://localhost:3000"];
+const whitelist = [
+  "http://localhost:3000",
+  "http://habit-rabbit-front.s3-website.ap-northeast-2.amazonaws.com/",
+];
 
 const corsOptions = {
   origin: function (origin, callback) {
