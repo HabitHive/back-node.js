@@ -77,17 +77,16 @@ export default new (class TagService {
       // 어떤 카태고리의 태그를 고를지 랜덤
 
       const tagFilterLists = recommendedList[number].filter((tagCategory) => {
-        return tagIdBuyList.includes(tagCategory.tag_id);
+        return !tagIdBuyList.includes(tagCategory.tag_id);
       }); // 선택된 카태고리 중에 구매한 태그들을 필터
 
-      const tagCategoryList = tagFilterLists.map((tagCategory) => {
+      const tagCategoryList = tagFilterLists.map((allList) => {
         return {
-          tagId: tagCategory.tag_id,
-          tagName: tagCategory.tag_name,
-          category: tagCategory.category.split("#"),
+          tagId: allList.tag_id,
+          tagName: allList.tag_name,
+          category: allList.category.split("#"),
         }; // 태그의 키와 값의 형태 정리
       });
-
       // 태그가 수가 부족하면 무한 로딩에 걸릴 수있다...
       // 카테고리로 찾는 경우에는 특정 카테고리에 대해서 다 사고 찾을 때 개수가 3개보다 부족할 수 있다.
       let count = 0;
@@ -111,7 +110,6 @@ export default new (class TagService {
         randomCount.push(randomNum);
       }
     }
-
     return {
       status: 200,
       result: { randomTagList, tagAllList, userPoint },
