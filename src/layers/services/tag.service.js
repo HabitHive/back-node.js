@@ -141,13 +141,12 @@ export default new (class TagService {
       }
     } else {
       // 관심사 없을 때
-      while (randomTagList.length != 3 && count != 30) {
+      while (randomTagList.length != 3) {
         let randomNum = Math.floor(Math.random() * tagList.length);
         if (!randomCount.includes(randomNum)) {
           randomTagList.push(tagList[randomNum]);
           randomCount.push(randomNum);
         }
-        count += 1;
       }
     }
 
