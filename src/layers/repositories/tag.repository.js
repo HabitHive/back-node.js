@@ -24,7 +24,7 @@ export default new (class TagRepository {
     return await Tag.findAll();
   };
 
-  recommended = async (categoryList, userInterest) => {
+  recommended = async (categoryCount, userInterest) => {
     // if (categoryList == 2) {
     // } // 관심사 없을 때
     // if (categoryList == 3) {
@@ -56,7 +56,7 @@ export default new (class TagRepository {
     // }
     // =====================================================
     let tagList = [];
-    for (let i = 1; i <= categoryList; i++) {
+    for (let i = 0; i < categoryCount; i++) {
       const list = await Tag.findAll({
         where: { category: { [Op.like]: `%${userInterest[i]}%` } },
       });
