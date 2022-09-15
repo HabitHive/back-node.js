@@ -3,7 +3,6 @@ import UserRepository from "../repositories/user.repository.js";
 
 export default new (class TagService {
   result = async (status, message, result) => {
-    console.log(status);
     return { status, message, result };
   };
 
@@ -145,9 +144,18 @@ export default new (class TagService {
 
   monthDone = async (userId, strDate) => {
     const splitDate = strDate.split("-");
-    const lastDate = new Date(splitDate[0] / 1, splitDate[1] / 1, 0);
-    const thisMonth = new Date(splitDate[0] / 1, splitDate[1] - 1, 1);
-    const nextMonth = new Date(splitDate[0] / 1, splitDate[1] / 1, 1);
+    const year = splitDate[0] / 1;
+    const month = splitDate[1] / 1;
+
+    if (!Number.isInteger(year) || !Number.isInteger(month))
+      return this.result(400, "monthly/yyyy-mm(-dd) 형식을 지켜주세요.");
+    if (year > 2500 || year < 1900 || month > 12 || month < 0)
+      return this.result(400, "검색 범주를 벗어난 날짜입니다.");
+
+    const lastDate = new Date(year, month, 0);
+    const thisMonth = new Date(year, month - 1, 1);
+    const nextMonth = new Date(year, month, 1);
+    console.log(thisMonth, nextMonth);
 
     const history = await UserRepository.colorHistory(
       userId,
@@ -155,18 +163,19 @@ export default new (class TagService {
       nextMonth
     );
 
-    let month = [null];
+    let color = [null];
     const lastNum = lastDate.getDate();
-    for (let i = 1; i <= lastNum; i++) month.push(0);
+    for (let i = 1; i <= lastNum; i++) color.push(0);
 
-    if (history == []) return this.result(200, "데이터 없음", month);
+    if (history.length == 0) return this.result(200, "데이터 없음", color);
+
     for (let h in history) {
       const doneDate = new Date(h.date);
-      month[doneDate.getDate()]++;
+      color[doneDate.getDate()]++;
     }
-    for (let i = 1; i <= lastNum; i++) if (month[i] > 4) month[i] = 4;
+    for (let i = 1; i <= lastNum; i++) if (color[i] > 4) color[i] = 4;
 
-    return this.result(200, "일별 색상", month);
+    return this.result(200, "일별 색상", color);
   };
 
   /**
