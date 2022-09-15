@@ -7,6 +7,12 @@ export default async (req, res, next) => {
   try {
     // 요청 헤더에서 토큰 값을 가지고 옴
     const { authorization } = req.headers; // 구조분해 할당
+    if (!authorization) {
+      const error = new Error("Undefined authorization");
+      error.name = "can not find authorization";
+      throw error;
+    }
+
     const [tokenType, tokenValue] = (authorization || "").split(" ");
     const user = jwt.verify(tokenValue, process.env.ACCESS_TOKEN_SECRET); // 받아온 엑세스 토큰 값을 검증
 

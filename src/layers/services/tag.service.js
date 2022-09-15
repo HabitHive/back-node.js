@@ -17,18 +17,16 @@ export default new (class TagService {
 
     // 잘못 저장 되었던 관심목록에 대한것 중 ( 3개이상의 요소 거나, 없을 때 )
     const categoryList = userInterest.length;
-    if (
-      categoryList != 2 &&
-      categoryList != 3 &&
-      categoryList != 4 &&
-      categoryList != 5
-    ) {
+
+    if (categoryList > 5 || categoryList < 2) {
       return {
         status: 400,
         result: userInterest,
         message: "관심 목록 설정이 잘못 되었는데",
       };
     }
+    // 포인트 찾아서 보내기 (O)
+    const userPoint = userInfo.point;
 
     // 구매한 태그들
     const BuyLists = await TagRepository.tagBuyList(userId);
@@ -42,7 +40,7 @@ export default new (class TagService {
 
     const tagLists = await TagRepository.buyPage();
     // 전체 목록 리스트 = > 목록 중에서 구매한 태그는 제거(O)
-    const tagsFilter = tagLists.map((allList) => {
+    const tagListsFilter = tagLists.map((allList) => {
       if (!BuyTagIdList.includes(allList.tag_id)) {
         return {
           tagId: allList.tag_id,
@@ -52,7 +50,7 @@ export default new (class TagService {
       }
     });
     // 전체 태그 리스트에서 구매한 리스트 부분 배열 null로 만들고 정리
-    const tagList = tagsFilter.filter(function (check) {
+    const tagList = tagListsFilter.filter(function (check) {
       return check !== undefined;
     });
 
@@ -60,53 +58,80 @@ export default new (class TagService {
     let randomTagList = [];
     let randomCount = [];
 
-    //관심목록을 설정을 안했을 경우 (O) => 목록 중에서 구매한 태그는 제거(O)
+    //관심목록을 설정을 안했을 경우 (O)
     if (categoryList != 2) {
       const recommendedList = await TagRepository.recommended(
         categoryList,
         userInterest
       );
-      const number = Math.floor(Math.random() * (categoryList - 2)) + 1;
-      let algorithmScore = [];
-      if (number == 1) {
-        algorithmScore = recommendedList.tagList1.map((point) => {
-          return {
-            tagId: point.tag_id,
-            tagName: point.tag_name,
-            category: point.category.split("#"),
-          };
-        });
-      }
-      if (number == 2) {
-        algorithmScore = recommendedList.tagList2.map((point) => {
-          return {
-            tagId: point.tag_id,
-            tagName: point.tag_name,
-            category: point.category.split("#"),
-          };
-        });
-      }
-      if (number == 3) {
-        algorithmScore = recommendedList.tagList3.map((point) => {
-          return {
-            tagId: point.tag_id,
-            tagName: point.tag_name,
-            category: point.category.split("#"),
-          };
-        });
-      }
+      //관심 목록이 있을때 => 목록 중에서 구매한 태그는 제거(X))
+
+      const number = Math.floor(Math.random() * (categoryList - 2));
+      // let algorithmScores = [];
+      // if (number == 1) {
+      //   algorithmScores = recommendedList.tagList1.map((allList) => {
+      //     if (!BuyTagIdList.includes(allList.tag_id)) {
+      //       return {
+      //         tagId: allList.tag_id,
+      //         tagName: allList.tag_name,
+      //         category: allList.category.split("#"),
+      //       };
+      //     }
+      //   });
+      // } else if (number == 2) {
+      //   algorithmScores = recommendedList.tagList2.map((allList) => {
+      //     if (!BuyTagIdList.includes(allList.tag_id)) {
+      //       return {
+      //         tagId: allList.tag_id,
+      //         tagName: allList.tag_name,
+      //         category: allList.category.split("#"),
+      //       };
+      //     }
+      //   });
+      // } else if (number == 3) {
+      //   algorithmScores = recommendedList.tagList3.map((allList) => {
+      //     if (!BuyTagIdList.includes(allList.tag_id)) {
+      //       return {
+      //         tagId: allList.tag_id,
+      //         tagName: allList.tag_name,
+      //         category: allList.category.split("#"),
+      //       };
+      //     }
+      //   });
+      // }
+      //=================================================================
+      const algorithmScores = recommendedList[number].filter((tag) =>
+        BuyTagIdList.includes(tag.tag_id)
+      );
+
+      const algorithmScore = algorithmScores.map((tag) => {
+        return {
+          tagId: tag.tag_id,
+          tagName: allList.tag_name,
+          category: allList.category.split("#"),
+        };
+      });
+
       // 태그가 수가 부족하면 무한 로딩에 걸릴 수있다...
       // 카테고리로 찾는 경우에는 특정 카테고리에 대해서 다 사고 찾을 때 개수가 3개보다 부족할 수 있다.
-      // 보안 필요
-      while (randomTagList.length != 3) {
+      let count = 0;
+      // 관심 목록의 수가 부족할 때 반복 횟수를 제한하는 용도
+
+      while (randomTagList.length != 3 && count != 30) {
         let randomNum = Math.floor(Math.random() * algorithmScore.length);
         if (!randomCount.includes(randomNum)) {
           randomTagList.push(algorithmScore[randomNum]);
           randomCount.push(randomNum);
         }
+        count += 1;
       }
-    } else {
-      // 관심사 없을 때
+      if (tagList.length < 3) {
+        return {
+          status: 400,
+          result: { randomTagList, tagList, userPoint },
+          message: "태그의 수가 부족해서 randomTagList의 수가 작다",
+        };
+      }
       while (randomTagList.length != 3) {
         let randomNum = Math.floor(Math.random() * tagList.length);
         if (!randomCount.includes(randomNum)) {
@@ -114,9 +139,18 @@ export default new (class TagService {
           randomCount.push(randomNum);
         }
       }
+    } else {
+      // 관심사 없을 때
+      while (randomTagList.length != 3 && count != 30) {
+        let randomNum = Math.floor(Math.random() * tagList.length);
+        if (!randomCount.includes(randomNum)) {
+          randomTagList.push(tagList[randomNum]);
+          randomCount.push(randomNum);
+        }
+        count += 1;
+      }
     }
-    // 포인트 찾아서 보내기 (O)
-    const userPoint = userInfo.point;
+
     return {
       status: 200,
       result: { randomTagList, tagList, userPoint },
@@ -126,6 +160,7 @@ export default new (class TagService {
 
   tagBuy = async (userId, tagId, period) => {
     // 같은 태그를 구매하나? 테이블 만들 때 찾으면서 만드느 것 있던 데 (x)
+    console.log(userId, period);
     const userInfo = await TagRepository.interest(userId);
     const fixPoint = period * 10; // 포인트는 어떡게 만들어나...
     const point = userInfo.point - fixPoint;
@@ -136,6 +171,7 @@ export default new (class TagService {
         message: "보유한 포인트가 부족합니다.",
       };
     }
+    console.log(point);
 
     const result = await TagRepository.tagBuy(userId, tagId, period, point);
 
@@ -143,20 +179,38 @@ export default new (class TagService {
   };
 
   monthDone = async (userId, strDate) => {
-    const yearMonth = strDate.split("-").pop().join("-");
-    const date = new Date(yearMonth + "-1");
-    const lastDate = new Date(strDate);
+    const splitDate = strDate.split("-");
+    const year = splitDate[0] / 1;
+    const month = splitDate[1] / 1;
 
-    const history = await UserRepository.colorHistory(userId, yearMonth);
+    if (!Number.isInteger(year) || !Number.isInteger(month))
+      return this.result(400, "monthly/yyyy-mm(-dd) 형식을 지켜주세요.");
+    if (year > 2500 || year < 1900 || month > 12 || month < 0)
+      return this.result(400, "검색 범주를 벗어난 날짜입니다.");
 
-    while (date <= lastDate) {
-      let count = 0;
-      history.map((h) => {
-        if (h.date == date) {
-          count++;
-        }
-      });
+    const lastDate = new Date(year, month, 0);
+    const thisMonth = new Date(year, month - 1, 1);
+    const nextMonth = new Date(year, month, 1);
+
+    const history = await UserRepository.colorHistory(
+      userId,
+      thisMonth,
+      nextMonth
+    );
+
+    let color = [null];
+    const lastNum = lastDate.getDate();
+    for (let i = 1; i <= lastNum; i++) color.push(0);
+
+    if (history.length == 0) return this.result(200, "데이터 없음", color);
+
+    for (let h in history) {
+      const doneDate = new Date(h.date);
+      color[doneDate.getDate()]++;
     }
+    for (let i = 1; i <= lastNum; i++) if (color[i] > 4) color[i] = 4;
+
+    return this.result(200, "일별 색상", color);
   };
 
   /**
