@@ -9,15 +9,14 @@ export default new (class DailyRepository {
     let lastDate = new Date(toDate);
     new Date(lastDate.setDate(lastDate.getDate() - 1)); // 정시인 00시에서 1일 지난 00시 만들기
 
-    const doneSchedules = await Done.findAll({
+    return await Done.findAll({
       where: { date: { [Op.lte]: toDate, [Op.gt]: lastDate } }, // toDate =< date , date =< lastDate
       attributes: ["user_tag_id"],
     });
-    return doneSchedules;
   };
 
   dailyPage = async (user_id, toDate) => {
-    const dailyTagLists = await Schedule.findAll({
+    return await Schedule.findAll({
       where: { user_id },
       include: {
         model: UserTag,
@@ -33,15 +32,13 @@ export default new (class DailyRepository {
         ],
       },
     });
-    return dailyTagLists;
   };
 
   checkSchedule = async (user_id) => {
-    const newcheck = await Schedule.findAll({
+    return await Schedule.findAll({
       attributes: ["user_tag_id"],
       where: { user_id },
     });
-    return newcheck;
   };
 
   tagList = async (user_id) => {

@@ -46,14 +46,13 @@ export default new (class DailyService {
   };
 
   tagList = async (userId) => {
-    // 시간 순서대로 배열 (X)
-    const check = await DailyRepository.checkSchedule(userId);
+    const notNew = await DailyRepository.checkSchedule(userId);
     // 배열로 스케줄들의 user_tag_id가 배열로써 나오게 (O)
-    const checkList = [];
-    check.map((list) => {
-      checkList.push(list.user_tag_id);
+    console.log(notNew);
+    const notNewList = notNew.map((check) => {
+      return check.user_tag_id;
     });
-
+    console.log(notNewList);
     // 유저의 UserTag 모두 가져오기
     const result = await DailyRepository.tagList(userId);
     const tagLists = result.map((list) => {
@@ -62,7 +61,7 @@ export default new (class DailyService {
           userTagId: list.user_tag_id,
           tagName: list.Tag.tag_name,
           period: list.period,
-          new: !checkList.includes(list.user_tag_id),
+          new: !notNewList.includes(list.user_tag_id),
           category: list.Tag.category.split("#"),
           date: list.start_date,
         };
