@@ -70,7 +70,7 @@ app.use(express.urlencoded({ extended: true }));
 // 소셜 로그인 라우터
 app.use("/api", social);
 
-const whitelist = ["http://localhost:3000"];
+const whitelist = ["http://localhost:3000", process.env.CLIENT];
 const corsOptions = {
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) !== -1) {
