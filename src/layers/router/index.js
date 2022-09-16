@@ -26,7 +26,7 @@ router.put("/user/mypage/tag", authMiddleware, UserController.myTagList); //유�
 router.get("/tag/list", authMiddleware, TagController.tagBuyPage);
 router.post("/tag/buy", authMiddleware, TagController.tagBuy);
 router.get("/tag/daily", authMiddleware, DailyController.dailyPage);
-router.get("/tag/daily/list", authMiddleware, DailyController.tagList);
+router.get("/tag/daily/list", authMiddleware, DailyController.dailyTagList);
 router.post("/tag/done", authMiddleware, TagController.doneTag); //습관 완료
 router.get(
   "/tag/schedule/add/:userTagId",
