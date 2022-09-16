@@ -1,4 +1,5 @@
 import DailyRepository from "../repositories/daily.repository.js";
+import translation from "../utils/translation.category.js";
 
 export default new (class DailyService {
   result = async (status, message, result) => {
@@ -28,12 +29,14 @@ export default new (class DailyService {
     // 해당 날짜의 스케줄 중에 완료된 것들 목록 (배열로) (O)
 
     const dailyTagLists = dailyTagList.map((schedule) => {
+      const categoryArr = schedule["Tag.category"].split("#");
+      const category = translation(categoryArr, 1);
       return {
         scheduleId: schedule.schedule_id,
         userTagId: schedule.user_tag_id,
         weekCycle: schedule.time_cycle,
-        tagName: schedule.UserTag.Tag.tag_name,
-        category: schedule.UserTag.Tag.category.split("#"),
+        tagName: schedule["Tag.tag_name"],
+        category,
         done: doneScheduleList.includes(schedule.user_tag_id),
       }; // 데일리 페이지에 전달한 키와 값 정리
     });
@@ -56,22 +59,24 @@ export default new (class DailyService {
     // 유저의 UserTag 모두 가져오기
     const result = await DailyRepository.tagList(userId);
     const tagLists = result.map((list) => {
+      const categoryArr = list["Tag.category"].split("#");
+      const category = translation(categoryArr, 1);
       if (list.start_date == null) {
         return {
           userTagId: list.user_tag_id,
-          tagName: list.Tag.tag_name,
+          tagName: list["Tag.tag_name"],
           period: list.period,
           new: !notNewList.includes(list.user_tag_id),
-          category: list.Tag.category.split("#"),
+          category,
           date: list.start_date,
         };
       } else {
         return {
           userTagId: list.user_tag_id,
-          tagName: list.Tag.tag_name,
+          tagName: list["Tag.tag_name"],
           period: list.period,
           new: !checkList.includes(list.user_tag_id),
-          category: list.Tag.category.split("#"),
+          category,
           date:
             list.start_date.split(" ")[0] + " ~ " + list.end_date.split(" ")[0],
         };
