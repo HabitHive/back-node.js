@@ -59,7 +59,7 @@ export default new (class Dailycontroller {
 
       const date = await DailyService.schedule(
         userId,
-        userTagId,
+        userTagId / 1,
         startTime,
         endTime,
         weekCycle,

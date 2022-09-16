@@ -114,13 +114,9 @@ export default new (class DailyService {
 
     if (userTag.start_date == null) {
       const period = userTag.period;
-      let date = new Date(startDate);
-      date.setDate(date.getDate() + period);
-      let endDate = date
-        .toLocaleDateString()
-        .split(". ")
-        .join("-")
-        .slice(0, -1);
+      let endDate = new Date(startDate);
+      startDate = new Date(startDate);
+      endDate.setDate(endDate.getDate() + period);
       await DailyRepository.startDateUpdate(userTagId, startDate, endDate);
     } else {
       if (new Date() >= new Date(userTag.start_date)) {

@@ -17,8 +17,6 @@ class UserRepository {
         email,
         password,
         nickname,
-        interest: "#",
-        point: 0,
         social: false,
         provider: null,
       });

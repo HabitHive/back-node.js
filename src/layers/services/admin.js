@@ -8,8 +8,8 @@ export default new (class adminService {
     const listSplit = list.split("/");
     let allTags = [];
     listSplit.map((tagInfo) => {
-      let categoryArr = tagInfo.split(" ");
-      const tagName = splitInfo.shift();
+      let categoryArr = tagInfo.split(",");
+      const tagName = categoryArr.shift();
       console.log(tagName, categoryArr);
       const categoryList = translation(categoryArr, 0);
       if (categoryList.length == 0) {

@@ -119,7 +119,6 @@ export default new (class TagRepository {
       { success },
       { where: { user_tag_id } }
     );
-    console.log(result);
     return result;
   };
 

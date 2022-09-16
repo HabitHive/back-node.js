@@ -31,7 +31,6 @@ export default (categoryArr, option) => {
   let category = [];
 
   if (option === 0) {
-    console.log(str);
     categoryArr.map((str) => {
       const indexNum = ko.indexOf(str);
       if (indexNum == -1) {
