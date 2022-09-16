@@ -72,7 +72,7 @@ app.use("/api", social);
 
 const whitelist = [
   "http://localhost:3000",
-  "http://habit-rabbit-front.s3-website.ap-northeast-2.amazonaws.com",
+  "http://habit-rabbit-front.s3-website.ap-northeast-2.amazonaws.com/",
 ];
 
 const corsOptions = {

@@ -12,7 +12,8 @@ class SocialLogin {
   // router.get("/kakao/callback", passport.authenticate("kakao",{option}));
   KakaoCallBack = passport.authenticate("kakao", {
     // successRedirect: "/", // kakaoStrategy에서 성공한다면 이 주소로 이동
-    failureRedirect: "http://localhost:3000", // kakaoStrategy에서 실패한다면 이 주소로 이동
+    failureRedirect:
+      "http://habit-rabbit-front.s3-website.ap-northeast-2.amazonaws.com/", // kakaoStrategy에서 실패한다면 이 주소로 이동
     // successFlash: "성공적", // 성공시 플래시 메시지 출력
     // failureFlash: true, //실패시 플래시 메시지 출력여부
   });
@@ -21,7 +22,8 @@ class SocialLogin {
 
   GoogleCallBack = passport.authenticate("google", {
     // successRedirect: "/", // kakaoStrategy에서 성공한다면 이 주소로 이동
-    failureRedirect: "http://localhost:3000", // kakaoStrategy에서 실패한다면 이 주소로 이동
+    failureRedirect:
+      "http://habit-rabbit-front.s3-website.ap-northeast-2.amazonaws.com/", // kakaoStrategy에서 실패한다면 이 주소로 이동
     // successFlash: "성공적", // 성공시 플래시 메시지 출력
     // failureFlash: true, //실패시 플래시 메시지 출력여부
   });
@@ -30,7 +32,8 @@ class SocialLogin {
 
   NaverCallBack = passport.authenticate("naver", {
     // successRedirect: "/", // kakaoStrategy에서 성공한다면 이 주소로 이동
-    failureRedirect: "http://localhost:3000", // kakaoStrategy에서 실패한다면 이 주소로 이동
+    failureRedirect:
+      "http://habit-rabbit-front.s3-website.ap-northeast-2.amazonaws.com/", // kakaoStrategy에서 실패한다면 이 주소로 이동
     // successFlash: "성공적", // 성공시 플래시 메시지 출력
     // failureFlash: true, //실패시 플래시 메시지 출력여부
   });
@@ -51,11 +54,13 @@ class SocialLogin {
       req.session.a1 = refreshToken;
       req.session.save();
       res.redirect(
-        `http://localhost:3000?token=${accessToken}&session=${req.sessionID}`
+        `http://habit-rabbit-front.s3-website.ap-northeast-2.amazonaws.com/?token=${accessToken}&session=${req.sessionID}`
       );
       return;
     }
-    res.redirect("http://localhost:3000");
+    res.redirect(
+      "http://habit-rabbit-front.s3-website.ap-northeast-2.amazonaws.com/"
+    );
   };
 }
 
