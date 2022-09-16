@@ -1,5 +1,6 @@
 import TagRepository from "../repositories/tag.repository.js";
 import UserRepository from "../repositories/user.repository.js";
+import translation from "../utils/translation.category.js";
 
 export default new (class TagService {
   result = async (status, message, result) => {
@@ -49,10 +50,13 @@ export default new (class TagService {
     ); // 전체 태그 리스트 중에서 구매한 태그들 필터
 
     const tagAllList = tagAllFilterList.map((tag) => {
+      // 태그의 키와 값의 형태 정리
+      const categoryArr = tag.category.split("#");
+      const category = translation(categoryArr, 1);
       return {
         tagId: tag.tag_id,
         tagName: tag.tag_name,
-        category: tag.category.split("#"),
+        category,
       };
     }); // 태그의 키와 값의 형태 정리
 
@@ -75,10 +79,12 @@ export default new (class TagService {
       }); // 선택된 카태고리 중에 구매한 태그들을 필터
 
       const tagCategoryList = tagFilterLists.map((tag) => {
+        const categoryArr = tag.category.split("#");
+        const category = translation(categoryArr, 1);
         return {
           tagId: tag.tag_id,
           tagName: tag.tag_name,
-          category: tag.category.split("#"),
+          category,
         }; // 태그의 키와 값의 형태 정리
       });
       // 태그가 수가 부족하면 무한 로딩에 걸릴 수있다...
@@ -96,12 +102,15 @@ export default new (class TagService {
       }
     }
 
-    while (randomTagList.length != 3) {
+    let count = 0;
+    while (randomTagList.length != 3 && count != tagAllList.length) {
+      //전체 태그들 중에서 중복 되지 않게 3개의 태그를 배열로 만든다.
       let randomNum = Math.floor(Math.random() * tagAllList.length);
       if (!randomCount.includes(randomNum)) {
         randomTagList.push(tagAllList[randomNum]);
         randomCount.push(randomNum);
-      } //전체 태그들 중에서 중복 되지 않게 3개의 태그를 배열로 만든다.
+        count++;
+      }
     }
 
     return {
@@ -200,7 +209,6 @@ export default new (class TagService {
       date,
       schedule.time_cycle
     );
-    console.log(done);
 
     const exist = await UserRepository.existHistory(userTagId, date);
     const fisrt = exist ? false : true; // 이미 기록이 존재한다면 포인트 X
