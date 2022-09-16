@@ -70,10 +70,7 @@ app.use(express.urlencoded({ extended: true }));
 // 소셜 로그인 라우터
 app.use("/api", social);
 
-const whitelist = [
-  "http://localhost:3000",
-  "http://habit-rabbit-front.s3-website.ap-northeast-2.amazonaws.com",
-];
+const whitelist = ["http://localhost:3000", process.env.CLIENT];
 
 const corsOptions = {
   origin: function (origin, callback) {
