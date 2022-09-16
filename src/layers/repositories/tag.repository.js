@@ -45,6 +45,7 @@ export default new (class TagRepository {
       where: { user_id },
       order: [["end_date", "DESC"]],
       include: [{ model: Tag, attributes: ["tag_name"] }],
+      raw: true,
     });
     return myTags;
   };
@@ -105,10 +106,6 @@ export default new (class TagRepository {
     await UserTag.update({ start_date, end_date }, { where: { user_tag_id } });
   };
 
-  schedule = async (user_id, user_tag_id, time_cycle, week_cycle) => {
-    await Schedule.craete({ user_tag_id, time_cycle, week_cycle });
-  };
-
   findSchedule = async (schedule_id) => {
     const schedule = await Schedule.findOne({
       where: { schedule_id },
@@ -122,6 +119,7 @@ export default new (class TagRepository {
       { success },
       { where: { user_tag_id } }
     );
+    console.log(result);
     return result;
   };
 
@@ -135,10 +133,48 @@ export default new (class TagRepository {
     return result;
   };
 
-  // 임시 태그 생성 메소드
+  // 태그 생성 메소드
   input = async (req, res) => {
     const { tag_name, category } = req.body;
-    await Tag.create({ tag_name, category });
+    const ko = [
+      "운동",
+      "공부",
+      "취미",
+      "다이어트",
+      "청소",
+      "건강",
+      "자기개발",
+      "시험",
+      "요리",
+      "자격증",
+      "독서",
+      "기타",
+    ];
+    const en = [
+      "workout",
+      "study",
+      "hobby",
+      "diet",
+      "cleaning",
+      "wellness",
+      "self-development",
+      "test",
+      "cook",
+      "certificate",
+      "book",
+      "etc",
+    ];
+    let categoryArr = [];
+    category.map((str) => {
+      console.log(str);
+      const indexNum = ko.indexOf(str);
+      if (indexNum == -1) return res.send("오타남");
+      categoryArr.push(en[indexNum]);
+    });
+
+    const categoryStr = categoryArr.join("#");
+
+    await Tag.create({ tag_name, category: categoryStr });
     res.send("완료");
   };
 })();

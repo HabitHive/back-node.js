@@ -34,6 +34,7 @@ export default new (class DailyRepository {
     const newcheck = await Schedule.findAll({
       attributes: ["user_tag_id"],
       where: { user_id },
+      raw: true,
     });
     return newcheck;
   };
@@ -46,6 +47,7 @@ export default new (class DailyRepository {
         model: Tag,
         attributes: ["tag_name", "category"],
       },
+      raw: true,
     });
     return myTagList;
   };

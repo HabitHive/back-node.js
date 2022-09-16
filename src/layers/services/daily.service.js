@@ -1,4 +1,5 @@
 import DailyRepository from "../repositories/daily.repository.js";
+import translation from "../utils/translation.category.js";
 
 export default new (class DailyService {
   result = async (status, message, result) => {
@@ -34,16 +35,19 @@ export default new (class DailyService {
           new Date(todayDate) <= new Date(list.UserTag.end_date)
         ) {
           //현재 날짜의 대해 유효기간안에 있고 (startDate > 현재날짜 < endDate)
-          if (list.week_cycle.includes(week))
+          if (list.week_cycle.includes(week)) {
             // 현재 날짜의 요일이 weekCycle에 (있으면 보여주거나),(없을면 제거하거나)
+            const categoryArr = list["Tag.category"].split("#");
+            const category = translation(categoryArr, 1);
             return {
               scheduleId: list.schedule_id,
               userTagId: list.user_tag_id,
               weekCycle: list.time_cycle,
-              tagName: list.UserTag.Tag.tag_name,
-              category: list.UserTag.Tag.category.split("#"),
+              tagName: list["Tag.tag_name"],
+              category,
               done: doneSchedules.includes(list.user_tag_id),
             };
+          }
         }
       }
     });
@@ -71,22 +75,24 @@ export default new (class DailyService {
     // 유저의 UserTag 모두 가져오기
     const result = await DailyRepository.tagList(userId);
     const tagLists = result.map((list) => {
+      const categoryArr = list["Tag.category"].split("#");
+      const category = translation(categoryArr, 1);
       if (list.start_date == null) {
         return {
           userTagId: list.user_tag_id,
-          tagName: list.Tag.tag_name,
+          tagName: list["Tag.tag_name"],
           period: list.period,
           new: !checkList.includes(list.user_tag_id),
-          category: list.Tag.category.split("#"),
+          category,
           date: list.start_date,
         };
       } else {
         return {
           userTagId: list.user_tag_id,
-          tagName: list.Tag.tag_name,
+          tagName: list["Tag.tag_name"],
           period: list.period,
           new: !checkList.includes(list.user_tag_id),
-          category: list.Tag.category.split("#"),
+          category,
           date:
             list.start_date.split(" ")[0] + " ~ " + list.end_date.split(" ")[0],
         };
