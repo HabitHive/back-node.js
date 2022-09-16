@@ -18,11 +18,11 @@ export default new (class DailyService {
     } // 날짜형식이 아니면 걸린다.
 
     let dailyTagList = await DailyRepository.dailyPage(userId, toDate);
-    // 스케줄의 시작날짜 마지막 날짜안에 todayDate가 있는지 확인하고 가져온다.(O)
+    // 스케줄의 시작날짜 마지막 날짜안에 todayDate가 있는지 확인하고 가져온다.(O)-
 
-    dailyTagList = dailyTagList.filter((check) =>
-      check.week_cycle.includes(week)
-    ); // 날짜에 맞추어 들고온 스케줄의 요알에 맞는지 필터 (O)
+    dailyTagList = dailyTagList.filter((check) => {
+      return check.week_cycle.includes(week);
+    }); // 날짜에 맞추어 들고온 스케줄의 요알에 맞는지 필터 (O)
 
     const doneSchedule = await DailyRepository.doneSchedule(toDate);
     const doneScheduleList = doneSchedule.map((done) => done.user_tag_id);
@@ -91,7 +91,7 @@ export default new (class DailyService {
 
   schedulePage = async (userId, userTagId) => {
     const result = await DailyRepository.schedulePage(userId, userTagId);
-    let date = `${result.startDate}~${result.endDate}`;
+    let date = `${result.start_date}~${result.end_date}`;
 
     return {
       status: 200,
@@ -111,35 +111,27 @@ export default new (class DailyService {
   ) => {
     // 스케줄 시간이 지난 후에 새로운 스케줄을 설정은?? 지금은 수정 X
     const userTag = await DailyRepository.userTagInOf(userId, userTagId);
+    const startDateStr = startDate;
+    startDate = new Date(startDateStr);
 
-    if (userTag.start_date == null) {
+    if (startDateStr == undefined) {
+    } else if (userTag.start_date == null) {
       const period = userTag.period;
-      let endDate = new Date(startDate);
-      startDate = new Date(startDate);
-      endDate.setDate(endDate.getDate() + period);
+      const endDate = new Date(startDateStr);
+      endDate.setDate(startDate.getDate() + period);
       await DailyRepository.startDateUpdate(userTagId, startDate, endDate);
-    } else {
-      if (new Date() >= new Date(userTag.start_date)) {
-        return {
-          status: 403,
-          result: {},
-          message: "이미 예약한 시간 이후 인데",
-        }; // 나중에 예약을 한 날짜보다 현재날짜를 자났나면 수정불가! (O)
-      }
-
-      if (userTag.startDate != startDate) {
-        const period = userTag.period;
-        let date = new Date(startDate);
-        date.setDate(date.getDate() + period);
-        let endDate = date
-          .toLocaleDateString()
-          .split(". ")
-          .join("-")
-          .slice(0, -1);
-        await DailyRepository.startDateUpdate(userTagId, startDate, endDate);
-      }
+    } else if (new Date() >= new Date(userTag.start_date)) {
+      return {
+        status: 403,
+        result: {},
+        message: "이미 시작된 습관",
+      }; // 나중에 예약을 한 날짜보다 현재날짜를 지났나면 수정불가! (O)
+    } else if (userTag.start_date != startDate) {
+      const period = userTag.period;
+      const endDate = new Date(startDateStr);
+      endDate.setDate(startDate.getDate() + period);
+      await DailyRepository.startDateUpdate(userTagId, startDate, endDate);
     }
-
     const timeCycle = startTime + "," + endTime;
 
     await DailyRepository.schedule(userTagId, userId, timeCycle, weekCycle);
@@ -164,6 +156,10 @@ export default new (class DailyService {
 
     const schedule = await DailyRepository.scheduleInOf(userId, scheduleId);
     // 유저의가 선택한 태그의 정보
+    console.log("이 아래에 찍히는 스케줄 데이터 보시고 아래 로직 바꾸셔요.");
+    console.log(schedule);
+
+    const userTagId = schedule.UserTag.user_tag_id;
 
     if (new Date() >= new Date(schedule.UserTag.start_date)) {
       return {
@@ -172,8 +168,6 @@ export default new (class DailyService {
         message: "이미 예약한 시간 이후 인데",
       }; // 나중에 예약을 한 날짜보다 현재날짜를 자났나면 수정불가! (O)
     }
-
-    const userTagId = schedule.UserTag.user_tag_id;
 
     if (schedule.UserTag.startDate != startDate) {
       const period = schedule.userTag.period;
