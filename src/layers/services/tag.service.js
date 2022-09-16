@@ -12,16 +12,15 @@ export default new (class TagService {
     // TagId의 고유 값을 선택한 횟수 관심회 한 태그들의 목록 으로 추천 알고리즘 만들기 (XXX)
 
     const userInfo = await TagRepository.userInterest(userId);
-    // 관심사 선택을 아무 것도 안했을 경우 #만 넘어온다. if 문으로 잡아라
+    // 유저 ID로 유저의 정보를 가져온다.
 
     if (userInfo.interest == null) {
-      // 관심목록이 비었을때
       return {
         status: 400,
         result: userInfo.interest,
-        message: "관심 목록 설정이 잘못 되었는데",
+        message: "관심 목록 설정이 잘못 되었습니다.",
       };
-    }
+    } // 관심목록이 설정이 안됌
 
     let userInterest = userInfo.interest.split("#").slice(1);
     userInterest.pop(); // 관심사를 #으로 자르고 배열로 만든다.
@@ -29,20 +28,17 @@ export default new (class TagService {
     const categoryCount = userInterest.length; // 관심사의 개수
 
     if (3 < categoryCount) {
-      // 관심 개수가 3개 보다 많을때
       return {
         status: 400,
         result: userInfo.interest,
-        message: "관심 목록 개수가 많은데?",
+        message: "관심 목록 개수가 정해진 양보다 많습니다.",
       };
-    }
+    } // 관심 개수가 3개 보다 많을때
 
     const userPoint = userInfo.point;
     // 포인트 찾아서 보내기 {객체 이름 정한것}
 
     const buyLists = await TagRepository.userBuyList(userId);
-    // 구매한 태그들
-
     const tagIdBuyList = buyLists.map((tag) => tag.tag_id);
     // 구매한 태그 리스트 목록 배열로(tagId만)
 
@@ -62,11 +58,10 @@ export default new (class TagService {
         tagName: tag.tag_name,
         category,
       };
-    });
+    }); // 태그의 키와 값의 형태 정리
 
     let randomTagList = [];
-    let randomCount = [];
-    // 랜덤 요소를 위한 선언
+    let randomCount = []; // 랜덤 요소를 위한 선언
 
     if (categoryCount != 0) {
       //관심목록을 설정을 했을 경우
@@ -98,13 +93,12 @@ export default new (class TagService {
       // 관심 목록의 수가 부족할 때 반복 횟수를 제한하는 용도
 
       while (randomTagList.length != 3 && count != tagCategoryList.length) {
-        // 태그들 중에서 중복 되지 않게 3개의 태그를 배열로 만든다.
         let randomNum = Math.floor(Math.random() * tagCategoryList.length);
         if (!randomCount.includes(randomNum)) {
           randomTagList.push(tagCategoryList[randomNum]);
           randomCount.push(randomNum);
           count++;
-        }
+        } // 태그들 중에서 중복 되지 않게 3개의 태그를 배열로 만든다.
       }
     }
 
@@ -118,6 +112,7 @@ export default new (class TagService {
         count++;
       }
     }
+
     return {
       status: 200,
       result: { randomTagList, tagAllList, userPoint },
@@ -126,10 +121,16 @@ export default new (class TagService {
   };
 
   tagBuy = async (userId, tagId, period) => {
-    // 같은 태그를 구매하나? 테이블 만들 때 찾으면서 만드느 것 있던 데 (x)
+    if (!period) {
+      return {
+        status: 400,
+        result: period,
+        message: "period 값이 없습니다.",
+      };
+    } // period 값이 없으면
 
     const userInfo = await TagRepository.userInterest(userId);
-    const fixPoint = period * 10; // 포인트는 어떡게 만들어나...
+    const fixPoint = period * 10; // 포인트는 날짜의 *10
     const point = userInfo.point - fixPoint;
     if (point < 0) {
       return {
@@ -137,9 +138,9 @@ export default new (class TagService {
         result: point,
         message: "보유한 포인트가 부족합니다.",
       };
-    }
+    } // 포인트를 개산해서 포인트가 부족하면 실행안함
 
-    const result = await TagRepository.tagBuy(userId, tagId, period, point);
+    await TagRepository.tagBuy(userId, tagId, period, point);
 
     return { status: 200, result: point, message: "내 습관 추가" };
   };

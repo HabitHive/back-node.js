@@ -7,58 +7,43 @@ export default new (class DailyService {
   };
 
   dailyPage = async (userId, todayDate) => {
-    // 완료된 스케줄 만들 요소 Done 만들기 (아직)
-    let week = new Date(todayDate).getDay();
+    let toDate = new Date(todayDate);
+    let week = toDate.getDay();
     if (isNaN(week)) {
       return {
         status: 400,
         result: todayDate,
         message: "날짜 형식이 맞아?",
       };
-    }
-    // 해당 날짜의 스케줄 중에 완료된 것들 목록
-    const doneSchedule = await DailyRepository.doneSchedule(todayDate);
-    // 에러가 난다. 작동은 하는 데 (라이크부분에서)
-    const doneSchedules = [];
-    // [배열로 user_tag_id가 넘오면 ] 나오게 해야한다. 아니면 다른 방법 찾기
-    doneSchedule.map((list) => {
-      doneSchedules.push(list.user_tag_id);
-    });
+    } // 날짜형식이 아니면 걸린다.
 
-    // 모든 userId의 스케줄을 다 들고온다. 비효율적임 나중에 해결하자 (X)
-    const result = await DailyRepository.dailyPage(userId);
+    let dailyTagList = await DailyRepository.dailyPage(userId, toDate);
+    // 스케줄의 시작날짜 마지막 날짜안에 todayDate가 있는지 확인하고 가져온다.(O)
 
-    const dailyTagLists = result.map((list) => {
-      if (list.UserTag.start_date != null) {
-        if (
-          new Date(list.UserTag.start_date) <= new Date(todayDate) &&
-          new Date(todayDate) <= new Date(list.UserTag.end_date)
-        ) {
-          //현재 날짜의 대해 유효기간안에 있고 (startDate > 현재날짜 < endDate)
-          if (list.week_cycle.includes(week)) {
-            // 현재 날짜의 요일이 weekCycle에 (있으면 보여주거나),(없을면 제거하거나)
-            const categoryArr = list["Tag.category"].split("#");
-            const category = translation(categoryArr, 1);
-            return {
-              scheduleId: list.schedule_id,
-              userTagId: list.user_tag_id,
-              weekCycle: list.time_cycle,
-              tagName: list["Tag.tag_name"],
-              category,
-              done: doneSchedules.includes(list.user_tag_id),
-            };
-          }
-        }
-      }
-    });
+    dailyTagList = dailyTagList.filter((check) =>
+      check.week_cycle.includes(week)
+    ); // 날짜에 맞추어 들고온 스케줄의 요알에 맞는지 필터 (O)
 
-    const dailyTagList = dailyTagLists.filter(function (check) {
-      return check !== undefined;
+    const doneSchedule = await DailyRepository.doneSchedule(toDate);
+    const doneScheduleList = doneSchedule.map((done) => done.user_tag_id);
+    // 해당 날짜의 스케줄 중에 완료된 것들 목록 (배열로) (O)
+
+    const dailyTagLists = dailyTagList.map((schedule) => {
+      const categoryArr = list["Tag.category"].split("#");
+      const category = translation(categoryArr, 1);
+      return {
+        scheduleId: schedule.schedule_id,
+        userTagId: schedule.user_tag_id,
+        weekCycle: schedule.time_cycle,
+        tagName: list["Tag.tag_name"],
+        category,
+        done: doneScheduleList.includes(schedule.user_tag_id),
+      }; // 데일리 페이지에 전달한 키와 값 정리
     });
 
     return {
       status: 200,
-      result: dailyTagList,
+      result: dailyTagLists,
       message: "날짜에 맞는 태그 일정",
     };
   };
@@ -127,7 +112,7 @@ export default new (class DailyService {
   ) => {
     // 스케줄 시간이 지난 후에 새로운 스케줄을 설정은?? 지금은 수정 X
     const userTag = await DailyRepository.userTagInOf(userId, userTagId);
-    console.log(userTag.start_date);
+
     if (userTag.start_date == null) {
       const period = userTag.period;
       let date = new Date(startDate);
