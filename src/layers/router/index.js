@@ -54,7 +54,7 @@ router.get("/tag/monthly/:date", authMiddleware, TagController.monthly);
 router.get("/pet", authMiddleware, PetController.getPetInfo);
 router.post("/pet", authMiddleware, PetController.buyingPetExp);
 
-import TagRepository from "../repositories/tag.repository.js";
-router.post("/input/tag", TagRepository.input);
+import adminService from "../services/admin.js";
+router.post("/admin/input/tag", adminService.input);
 
 export default router;
