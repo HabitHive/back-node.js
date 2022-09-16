@@ -1,11 +1,10 @@
 import TagService from "../services/tag.service.js";
 
 export default new (class TagController {
-  buyPage = async (req, res, next) => {
+  tagBuyPage = async (req, res, next) => {
     try {
       const { userId } = res.locals;
-      // const userId = 1;
-      const date = await TagService.buyPage(userId);
+      const date = await TagService.tagBuyPage(userId);
 
       return res
         .status(date.status)

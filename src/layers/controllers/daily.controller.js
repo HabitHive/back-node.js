@@ -1,11 +1,9 @@
 import DailyService from "../services/daily.service.js";
 
 export default new (class Dailycontroller {
-  // 선택한 todayDate 에 대해서 스케줄을 가지고 있는 list을
   dailyPage = async (req, res, next) => {
     try {
       const { userId } = res.locals;
-      // const userId = 2;
       const { todayDate } = req.query;
 
       const date = await DailyService.dailyPage(userId, todayDate);
@@ -19,7 +17,7 @@ export default new (class Dailycontroller {
     }
   };
 
-  tagList = async (req, res, next) => {
+  dailyTagList = async (req, res, next) => {
     try {
       const { userId } = res.locals;
       // const userId = 2;
@@ -93,6 +91,24 @@ export default new (class Dailycontroller {
         weekCycle,
         startDate
       );
+
+      return res
+        .status(date.status)
+        .json({ result: date.result, message: date.message });
+    } catch (error) {
+      console.log(error);
+      res.status(400).send(error.message);
+    }
+  };
+
+  scheduleDelete = async (req, res, next) => {
+    // 스케줄의 삭제 할때
+    try {
+      const { userId } = res.locals;
+      // const userId = 2;
+      const { scheduleId } = req.params;
+
+      const date = await DailyService.scheduleDelete(userId, scheduleId);
 
       return res
         .status(date.status)

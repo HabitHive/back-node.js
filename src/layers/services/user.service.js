@@ -145,37 +145,36 @@ class UserService {
    * @returns stillTags: 종료되지 않은 습관 / successTags: 완주 성공 / failTags: 완주 실패
    */
   myTag = async (userId, today) => {
-    console.log("1", userId, "/", today);
     const tagLists = await TagRepository.myAllTagList(userId);
-    console.log("2", tagLists);
-    if (tagLists == [])
+    if (tagLists.length == 0) {
       return this.result(200, "습관 기록이 없습니다.", {
         stillTags: [],
         successTags: [],
         failTags: [],
       });
+    }
 
     let stillTags = [];
     let successTags = [];
     let failTags = [];
 
-    for (let tag in tagLists) {
-      console.log(tag);
-      if (tag.success === true) {
+    tagLists.map(async (tag) => {
+      if (tag.success === 1) {
         // 성공 습관
-        successTags.push(tag.Tag["tag_name"]);
-      } else if (tag.success === false) {
+        successTags.push(tag["Tag.tag_name"]);
+      } else if (tag.success === 0) {
         // 실패 습관
-        failTags.push(tag.Tag["tag_name"]);
+        failTags.push(tag["Tag.tag_name"]);
       } else if (tag.end_date === null) {
         // 예약되지 않은 습관
         stillTags.push({
-          tagName: tag.Tag["tag_name"],
+          tagName: tag["Tag.tag_name"],
           dDay: tag.period,
           week: [false, false, false, false, false, false, false],
         });
       } else {
         const endDate = new Date(tag.end_date);
+        console.log(endDate, today);
         if (endDate >= today) {
           // 진행 중이거나 진행 될 예정인 습관
 
@@ -196,32 +195,32 @@ class UserService {
 
           if (dDay > tag.period) {
             stillTags.push({
-              tagName: tag.Tag["tag_name"],
+              tagName: tag["Tag.tag_name"],
               dDay: tag.period,
               week,
             });
           } else {
-            stillTags.push({ tagName: tag.Tag["tag_name"], dDay, week });
+            stillTags.push({ tagName: tag["Tag.tag_name"], dDay, week });
           }
         } else {
           // 종료 된 습관
           const count = await UserRepository.countHistory(tag.user_tag_id);
           const boolean = count == tag.period;
+          console.log(boolean);
           const updateTag = await TagRepository.isSuccess(
             tag.user_tag_id,
             boolean
           );
           if (updateTag == [0]) return this.result(400, "알 수 없는 에러");
-          if (boolean) {
-            /* boolean이 true 라면 로직에 문제 있음으로 간주 #done*/
-            console.log("이 문장은 콘솔창에 찍히면 안 됩니다...");
-            successTags.push(tag.Tag["tag_name"]);
+          if (boolean == true) {
+            successTags.push(tag["Tag.tag_name"]);
           } else {
-            failTags.push(tag.Tag["tag_name"]);
+            console.log("왜 안 찍혀...");
+            failTags.push(tag["Tag.tag_name"]);
           }
         }
       }
-    }
+    });
 
     return this.result(200, "마이 태그", { stillTags, successTags, failTags });
   };

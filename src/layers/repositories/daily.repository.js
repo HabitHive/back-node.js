@@ -5,20 +5,26 @@ import { Op } from "sequelize";
 import Done from "../../models/done.js";
 
 export default new (class DailyRepository {
-  doneSchedule = async (todayDate) => {
+  doneSchedule = async (toDate) => {
+    let lastDate = new Date(toDate);
+    new Date(lastDate.setDate(lastDate.getDate() - 1)); // 정시인 00시에서 1일 지난 00시 만들기
+
     const doneSchedules = await Done.findAll({
-      where: { date: { [Op.lte]: todayDate } },
+      where: { date: { [Op.lte]: toDate, [Op.gt]: lastDate } }, // toDate =< date , date =< lastDate
       attributes: ["user_tag_id"],
     });
     return doneSchedules;
   };
 
-  dailyPage = async (user_id) => {
+  dailyPage = async (user_id, toDate) => {
     const dailyTagLists = await Schedule.findAll({
       where: { user_id },
       include: {
         model: UserTag,
-        attributes: ["start_date", "end_date"],
+        where: {
+          start_date: { [Op.lte]: toDate }, // start_date =< toDate
+          end_date: { [Op.gt]: toDate }, // toDate < end_date
+        },
         include: [
           {
             model: Tag,
@@ -34,6 +40,7 @@ export default new (class DailyRepository {
     const newcheck = await Schedule.findAll({
       attributes: ["user_tag_id"],
       where: { user_id },
+      raw: true,
     });
     return newcheck;
   };
@@ -46,6 +53,7 @@ export default new (class DailyRepository {
         model: Tag,
         attributes: ["tag_name", "category"],
       },
+      raw: true,
     });
     return myTagList;
   };
@@ -84,5 +92,10 @@ export default new (class DailyRepository {
       { time_cycle, week_cycle },
       { where: { schedule_id } }
     );
+  };
+
+  scheduleDelete = async (user_id, schedule_id) => {
+    await Schedule.destroy({ where: { user_id, schedule_id } });
+    return;
   };
 })();

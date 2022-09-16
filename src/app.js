@@ -71,6 +71,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api", social);
 
 const whitelist = ["http://localhost:3000", process.env.CLIENT];
+
 const corsOptions = {
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) !== -1) {

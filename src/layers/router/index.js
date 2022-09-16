@@ -23,10 +23,10 @@ router.get("/user/mypage/info", authMiddleware, UserController.myInfo); //유저
 router.put("/user/mypage/tag", authMiddleware, UserController.myTagList); //유저 습관 전적
 
 /* /api/tag */
-router.get("/tag/list", authMiddleware, TagController.buyPage);
+router.get("/tag/list", authMiddleware, TagController.tagBuyPage);
 router.post("/tag/buy", authMiddleware, TagController.tagBuy);
 router.get("/tag/daily", authMiddleware, DailyController.dailyPage);
-router.get("/tag/daily/list", authMiddleware, DailyController.tagList);
+router.get("/tag/daily/list", authMiddleware, DailyController.dailyTagList);
 router.post("/tag/done", authMiddleware, TagController.doneTag); //습관 완료
 router.get(
   "/tag/schedule/add/:userTagId",
@@ -38,10 +38,15 @@ router.post(
   authMiddleware,
   DailyController.schedule
 );
-router.post(
+router.patch(
   "/tag/schedule/update/:scheduleId",
   authMiddleware,
   DailyController.scheduleUpdate
+);
+router.delete(
+  "/tag/schedule/delete/:scheduleId",
+  authMiddleware,
+  DailyController.scheduleDelete
 );
 router.get("/tag/monthly/:date", authMiddleware, TagController.monthly);
 

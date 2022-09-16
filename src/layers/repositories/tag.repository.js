@@ -6,59 +6,32 @@ import User from "../../models/user.js";
 import Done from "../../models/done.js";
 
 export default new (class TagRepository {
-  interest = async (user_id) => {
-    const userInfo = await User.findOne({ where: { user_id } });
-    return userInfo;
+  userInterest = async (user_id) => {
+    return await User.findOne({
+      attributes: ["interest", "point"],
+      where: { user_id },
+    });
   };
 
-  recommended = async (categoryList, userInterest) => {
-    // if (categoryList == 2) {
-    // } // 관심사 없을 때
-    // if (categoryList == 3) {
-    //   const tagList1 = await Tag.findAll({
-    //     where: { category: { [Op.like]: `%${userInterest[1]}%` } },
-    //   });
-    //   return { tagList1 };
-    // }
-    // if (categoryList == 4) {
-    //   const tagList1 = await Tag.findAll({
-    //     where: { category: { [Op.like]: `%${userInterest[1]}%` } },
-    //   });
-    //   const tagList2 = await Tag.findAll({
-    //     where: { category: { [Op.like]: `%${userInterest[2]}%` } },
-    //   });
-    //   return { tagList1, tagList2 };
-    // }
-    // if (categoryList == 5) {
-    //   const tagList1 = await Tag.findAll({
-    //     where: { category: { [Op.like]: `%${userInterest[1]}%` } },
-    //   });
-    //   const tagList2 = await Tag.findAll({
-    //     where: { category: { [Op.like]: `%${userInterest[2]}%` } },
-    //   });
-    //   const tagList3 = await Tag.findAll({
-    //     where: { category: { [Op.like]: `%${userInterest[3]}%` } },
-    //   });
-    //   return { tagList1, tagList2, tagList3 };
-    // }
-    // =====================================================
+  userBuyList = async (user_id) => {
+    return await UserTag.findAll({
+      attributes: ["tag_id"],
+      where: { user_id },
+    });
+  };
+
+  tagAllList = async () => {
+    return await Tag.findAll();
+  };
+
+  recommended = async (categoryCount, userInterest) => {
     let tagList = [];
-    for (let i = 1; i <= categoryList; i++) {
+    for (let i = 0; i < categoryCount; i++) {
       const list = await Tag.findAll({
         where: { category: { [Op.like]: `%${userInterest[i]}%` } },
       });
       tagList.push(list);
     }
-    return tagList;
-  };
-
-  tagBuyList = async (user_id) => {
-    const BuyList = await UserTag.findAll({ where: { user_id } });
-    return BuyList;
-  };
-
-  buyPage = async () => {
-    const tagList = await Tag.findAll();
     return tagList;
   };
 
@@ -72,6 +45,7 @@ export default new (class TagRepository {
       where: { user_id },
       order: [["end_date", "DESC"]],
       include: [{ model: Tag, attributes: ["tag_name"] }],
+      raw: true,
     });
     return myTags;
   };
@@ -132,10 +106,6 @@ export default new (class TagRepository {
     await UserTag.update({ start_date, end_date }, { where: { user_tag_id } });
   };
 
-  schedule = async (user_id, user_tag_id, time_cycle, week_cycle) => {
-    await Schedule.craete({ user_tag_id, time_cycle, week_cycle });
-  };
-
   findSchedule = async (schedule_id) => {
     const schedule = await Schedule.findOne({
       where: { schedule_id },
@@ -149,6 +119,7 @@ export default new (class TagRepository {
       { success },
       { where: { user_tag_id } }
     );
+    console.log(result);
     return result;
   };
 
@@ -162,10 +133,48 @@ export default new (class TagRepository {
     return result;
   };
 
-  // 임시 태그 생성 메소드
+  // 태그 생성 메소드
   input = async (req, res) => {
     const { tag_name, category } = req.body;
-    await Tag.create({ tag_name, category });
+    const ko = [
+      "운동",
+      "공부",
+      "취미",
+      "다이어트",
+      "청소",
+      "건강",
+      "자기개발",
+      "시험",
+      "요리",
+      "자격증",
+      "독서",
+      "기타",
+    ];
+    const en = [
+      "workout",
+      "study",
+      "hobby",
+      "diet",
+      "cleaning",
+      "wellness",
+      "self-development",
+      "test",
+      "cook",
+      "certificate",
+      "book",
+      "etc",
+    ];
+    let categoryArr = [];
+    category.map((str) => {
+      console.log(str);
+      const indexNum = ko.indexOf(str);
+      if (indexNum == -1) return res.send("오타남");
+      categoryArr.push(en[indexNum]);
+    });
+
+    const categoryStr = categoryArr.join("#");
+
+    await Tag.create({ tag_name, category: categoryStr });
     res.send("완료");
   };
 })();
