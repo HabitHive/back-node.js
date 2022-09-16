@@ -31,16 +31,19 @@ export default (categoryArr, option) => {
   let category = [];
 
   if (option === 0) {
-    console.log(str);
     categoryArr.map((str) => {
       const indexNum = ko.indexOf(str);
-      if (indexNum == -1) return res.status(400).send("오타남");
+      if (indexNum == -1) {
+        console.log(str, "오타남");
+      }
       category.push(en[indexNum]);
     });
   } else if (option === 1) {
     categoryArr.map((str) => {
       const indexNum = en.indexOf(str);
-      if (indexNum == -1) return res.status(400).send("오타남");
+      if (indexNum == -1) {
+        console.log(str, "오타남");
+      }
       category.push(ko[indexNum]);
     });
   }

@@ -119,7 +119,6 @@ export default new (class TagRepository {
       { success },
       { where: { user_tag_id } }
     );
-    console.log(result);
     return result;
   };
 
@@ -131,50 +130,5 @@ export default new (class TagRepository {
       time_cycle,
     });
     return result;
-  };
-
-  // 태그 생성 메소드
-  input = async (req, res) => {
-    const { tag_name, category } = req.body;
-    const ko = [
-      "운동",
-      "공부",
-      "취미",
-      "다이어트",
-      "청소",
-      "건강",
-      "자기개발",
-      "시험",
-      "요리",
-      "자격증",
-      "독서",
-      "기타",
-    ];
-    const en = [
-      "workout",
-      "study",
-      "hobby",
-      "diet",
-      "cleaning",
-      "wellness",
-      "self-development",
-      "test",
-      "cook",
-      "certificate",
-      "book",
-      "etc",
-    ];
-    let categoryArr = [];
-    category.map((str) => {
-      console.log(str);
-      const indexNum = ko.indexOf(str);
-      if (indexNum == -1) return res.send("오타남");
-      categoryArr.push(en[indexNum]);
-    });
-
-    const categoryStr = categoryArr.join("#");
-
-    await Tag.create({ tag_name, category: categoryStr });
-    res.send("완료");
   };
 })();

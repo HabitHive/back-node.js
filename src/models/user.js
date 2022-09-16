@@ -25,7 +25,7 @@ export default class User extends Sequelize.Model {
         },
         interest: {
           type: Sequelize.STRING,
-          allowNull: true,
+          defaultValue: "#",
         },
         point: {
           type: Sequelize.INTEGER,

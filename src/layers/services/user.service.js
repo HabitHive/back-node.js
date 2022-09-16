@@ -64,7 +64,7 @@ class UserService {
       const accesstoken = jwt.sign(
         { key1: user.user_id + parseInt(process.env.SUM) },
         process.env.ACCESS_TOKEN_SECRET,
-        { expiresIn: "3h" }
+        { expiresIn: "12h" }
       );
       const refreshtoken = jwt.sign(
         { key2: accesstoken, key3: user.user_id },
@@ -174,7 +174,6 @@ class UserService {
         });
       } else {
         const endDate = new Date(tag.end_date);
-        console.log(endDate, today);
         if (endDate >= today) {
           // 진행 중이거나 진행 될 예정인 습관
 
@@ -182,12 +181,12 @@ class UserService {
           let week = [false, false, false, false, false, false, false];
 
           const scheduleList = await TagRepository.schedule(tag.user_tag_id);
-          for (let schedule in scheduleList) {
+          scheduleList.map((schedule) => {
             const numWeek = schedule.week_cycle.split(",");
             for (let w in numWeek) {
               week[w] = true;
             }
-          }
+          });
 
           /* 종료까지 남은 기간 == d-Day */
           const dDay =
@@ -206,7 +205,6 @@ class UserService {
           // 종료 된 습관
           const count = await UserRepository.countHistory(tag.user_tag_id);
           const boolean = count == tag.period;
-          console.log(boolean);
           const updateTag = await TagRepository.isSuccess(
             tag.user_tag_id,
             boolean
@@ -215,7 +213,6 @@ class UserService {
           if (boolean == true) {
             successTags.push(tag["Tag.tag_name"]);
           } else {
-            console.log("왜 안 찍혀...");
             failTags.push(tag["Tag.tag_name"]);
           }
         }
