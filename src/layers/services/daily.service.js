@@ -29,13 +29,13 @@ export default new (class DailyService {
     // 해당 날짜의 스케줄 중에 완료된 것들 목록 (배열로) (O)
 
     const dailyTagLists = dailyTagList.map((schedule) => {
-      const categoryArr = schedule["Tag.category"].split("#");
+      const categoryArr = schedule["UserTag.Tag.category"].split("#");
       const category = translation(categoryArr, 1);
       return {
         scheduleId: schedule.schedule_id,
         userTagId: schedule.user_tag_id,
         weekCycle: schedule.time_cycle,
-        tagName: schedule["Tag.tag_name"],
+        tagName: schedule["UserTag.Tag.tag_name"],
         category,
         done: doneScheduleList.includes(schedule.user_tag_id),
       }; // 데일리 페이지에 전달한 키와 값 정리
@@ -51,13 +51,13 @@ export default new (class DailyService {
   tagList = async (userId) => {
     const notNew = await DailyRepository.checkSchedule(userId);
     // 배열로 스케줄들의 user_tag_id가 배열로써 나오게 (O)
-    console.log(notNew);
+
     const notNewList = notNew.map((check) => {
       return check.user_tag_id;
-    });
-    console.log(notNewList);
-    // 유저의 UserTag 모두 가져오기
+    }); // 유저의 UserTag 모두 가져오기
+
     const result = await DailyRepository.tagList(userId);
+    // 구매한 태그들 가져옴
     const tagLists = result.map((list) => {
       const categoryArr = list["Tag.category"].split("#");
       const category = translation(categoryArr, 1);
@@ -69,17 +69,17 @@ export default new (class DailyService {
           new: !notNewList.includes(list.user_tag_id),
           category,
           date: list.start_date,
-        };
+        }; // start_date 이 생긴적이 있나 없나
       } else {
         return {
           userTagId: list.user_tag_id,
           tagName: list["Tag.tag_name"],
           period: list.period,
-          new: !checkList.includes(list.user_tag_id),
+          new: !notNewList.includes(list.user_tag_id),
           category,
           date:
             list.start_date.split(" ")[0] + " ~ " + list.end_date.split(" ")[0],
-        };
+        }; // 많은 정보를 보내주는 이유는 스케줄 패이지에 쓸 데이터까지 한번에 보내주는 것이다.
       }
     });
     return {

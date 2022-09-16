@@ -18,6 +18,7 @@ export default new (class DailyRepository {
   dailyPage = async (user_id, toDate) => {
     return await Schedule.findAll({
       where: { user_id },
+      raw: true,
       include: {
         model: UserTag,
         where: {
