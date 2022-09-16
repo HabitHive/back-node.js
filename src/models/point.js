@@ -30,7 +30,7 @@ export default class Point extends Sequelize.Model {
         },
         date: {
           type: Sequelize.DATE,
-          allowNull: false,
+          allowNull: true,
         },
       },
       {

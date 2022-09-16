@@ -12,6 +12,7 @@ export default new (class DailyRepository {
     return await Done.findAll({
       where: { date: { [Op.lte]: toDate, [Op.gt]: lastDate } }, // toDate =< date , date =< lastDate
       attributes: ["user_tag_id"],
+      raw: true,
     });
   };
 
@@ -57,12 +58,18 @@ export default new (class DailyRepository {
   };
 
   schedulePage = async (user_id, user_tag_id) => {
-    const tag = await UserTag.findOne({ where: { user_id, user_tag_id } });
+    const tag = await UserTag.findOne({
+      where: { user_id, user_tag_id },
+      raw: true,
+    });
     return tag;
   };
 
   userTagInOf = async (user_id, user_tag_id) => {
-    const userTag = await UserTag.findOne({ where: { user_id, user_tag_id } });
+    const userTag = await UserTag.findOne({
+      where: { user_id, user_tag_id },
+      raw: true,
+    });
     return userTag;
   };
 
