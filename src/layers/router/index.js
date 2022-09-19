@@ -31,7 +31,7 @@ router.post("/tag/done", authMiddleware, TagController.doneTag); //습관 완료
 router.get(
   "/tag/schedule/add/:userTagId",
   authMiddleware,
-  DailyController.schedulePage
+  DailyController.schedulePage // 지금 현재 필요없는 로직
 );
 router.post(
   "/tag/schedule/add/:userTagId",

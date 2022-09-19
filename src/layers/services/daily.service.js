@@ -90,6 +90,7 @@ module.exports = new (class DailyService {
   };
 
   schedulePage = async (userId, userTagId) => {
+    // 지금 현재 필요없는 로직
     const result = await DailyRepository.schedulePage(userId, userTagId);
     let date = `${result.start_date}~${result.end_date}`;
 
@@ -121,7 +122,7 @@ module.exports = new (class DailyService {
     startDate = startDate + " 00:00:00"; // startDate는 2022-09-20 00:00:00 형태
     startDateStr.setDate(startDateStr.getDate() + period);
     let endDate = startDateStr.toISOString().split("T")[0] + " 00:00:00"; // 2022-09-25 00:00:00 형태 반환
-    const timeCycle = startTime + "," + endTime; // startTime + "," + endTime;
+    const timeCycle = startTime + "~" + endTime; // startTime + "," + endTime;
 
     if (userTag.start_date == null) {
       await DailyRepository.startDateUpdate(userTagId, startDate, endDate); // 처음
@@ -166,7 +167,7 @@ module.exports = new (class DailyService {
     startDate = startDate + " 00:00:00"; // startDate는 2022-09-20 00:00:00 형태
     startDateStr.setDate(startDateStr.getDate() + period);
     let endDate = startDateStr.toISOString().split("T")[0] + " 00:00:00"; // 2022-09-25 00:00:00 형태 반환
-    const timeCycle = startTime + "," + endTime;
+    const timeCycle = startTime + "~" + endTime;
 
     if (schedule.UserTag.startDate == null) {
     } else if (!new Date() > new Date(schedule.UserTag.startDate)) {
