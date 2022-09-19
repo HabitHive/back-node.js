@@ -20,7 +20,6 @@ export default new (class Dailycontroller {
   dailyTagList = async (req, res, next) => {
     try {
       const { userId } = res.locals;
-      // const userId = 2;
       const date = await DailyService.tagList(userId);
 
       return res
@@ -36,7 +35,6 @@ export default new (class Dailycontroller {
   schedulePage = async (req, res, next) => {
     try {
       const { userId } = res.locals;
-      // const userId = 1;
       const { userTagId } = req.params;
 
       const date = await DailyService.schedulePage(userId, userTagId);
@@ -50,14 +48,13 @@ export default new (class Dailycontroller {
     }
   };
 
-  schedule = async (req, res, next) => {
+  scheduleCreate = async (req, res, next) => {
     try {
       const { userId } = res.locals;
-      // const userId = 2;
       const { userTagId } = req.params;
       const { startTime, endTime, weekCycle, startDate } = req.body;
 
-      const date = await DailyService.schedule(
+      const date = await DailyService.scheduleCreate(
         userId,
         userTagId / 1,
         startTime,

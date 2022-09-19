@@ -36,7 +36,7 @@ router.get(
 router.post(
   "/tag/schedule/add/:userTagId",
   authMiddleware,
-  DailyController.schedule
+  DailyController.scheduleCreate
 );
 router.patch(
   "/tag/schedule/update/:scheduleId",

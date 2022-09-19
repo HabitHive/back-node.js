@@ -101,7 +101,7 @@ export default new (class DailyService {
   };
   // 지금은 스케줄의 생성에 대한 로직만
 
-  schedule = async (
+  scheduleCreate = async (
     userId,
     userTagId,
     startTime,
@@ -109,36 +109,37 @@ export default new (class DailyService {
     weekCycle,
     startDate
   ) => {
-    // 스케줄 시간이 지난 후에 새로운 스케줄을 설정은?? 지금은 수정 X
+    // weekCycle는 1개이상 있어야 한다.
+    // startTime, endTime는 둘다 정해져서 와야 한다, (태스트 코드 조건 필요)
+    // startDate는 2022-09-20의 형태로 와야한다. (문자, 숫자, 안되고 정제되지 않아도 안됨)
+
     const userTag = await DailyRepository.userTagInOf(userId, userTagId);
-    const startDateStr = startDate;
-    startDate = new Date(startDateStr);
+    // userTag 에서 구매한 습관의 시작날짜, 지속날짜를 가져온다.
+    const period = userTag.period;
 
-    if (startDateStr == undefined) {
-    } else if (userTag.start_date == null) {
-      const period = userTag.period;
-      const endDate = new Date(startDateStr);
-      endDate.setDate(startDate.getDate() + period);
-      await DailyRepository.startDateUpdate(userTagId, startDate, endDate);
-    } else if (new Date() >= new Date(userTag.start_date)) {
+    const startDateStr = new Date(startDate);
+    startDate = startDate + " 00:00:00"; // startDate는 2022-09-20 00:00:00 형태
+    startDateStr.setDate(startDateStr.getDate() + period);
+    let endDate = startDateStr.toISOString().split("T")[0] + " 00:00:00"; // 2022-09-25 00:00:00 형태 반환
+    const timeCycle = startTime + "," + endTime; // startTime + "," + endTime;
+
+    if (userTag.start_date == null) {
+      await DailyRepository.startDateUpdate(userTagId, startDate, endDate); // 처음
+    } else if (!new Date() > new Date(userTag.start_date)) {
+      await DailyRepository.startDateUpdate(userTagId, startDate, endDate); // 시간이 되기전
+    } else {
+      // 스타트 시간이 지난 후에 새로운 스케줄을 설정은?? 지금은 수정 X
+      // 만들어지는는 스케줄이 달라야한다.? // 시작시간인 지난 뒤에
+      await DailyRepository.schedule(userTagId, userId, timeCycle, weekCycle);
       return {
-        status: 403,
-        result: {},
-        message: "이미 시작된 습관",
-      }; // 나중에 예약을 한 날짜보다 현재날짜를 지났나면 수정불가! (O)
-    } else if (userTag.start_date != startDate) {
-      const period = userTag.period;
-      const endDate = new Date(startDateStr);
-      endDate.setDate(startDate.getDate() + period);
-      await DailyRepository.startDateUpdate(userTagId, startDate, endDate);
+        status: 203,
+        message: "스케줄 생성됨 이미 스케줄 싱생된 이후임으로 날짜 수정 안됨",
+      };
     }
-    const timeCycle = startTime + "," + endTime;
-
     await DailyRepository.schedule(userTagId, userId, timeCycle, weekCycle);
 
     return {
       status: 200,
-      result: {},
       message: "내 태그 스케줄 추가",
     };
   };
@@ -152,6 +153,10 @@ export default new (class DailyService {
     weekCycle,
     startDate
   ) => {
+    // weekCycle는 1개이상 있어야 한다.
+    // startTime, endTime는 둘다 정해져서 와야 한다, (태스트 코드 조건 필요)
+    // startDate는 2022-09-20의 형태로 와야한다. (문자, 숫자, 안되고 정제되지 않아도 안됨)
+
     // 스케줄 시간이 지난 후에 새로운 스케줄을 설정은?? 지금은 수정 X
 
     const schedule = await DailyRepository.scheduleInOf(userId, scheduleId);
