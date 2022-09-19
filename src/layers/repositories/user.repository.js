@@ -8,10 +8,9 @@ class UserRepository {
   singUp = async (email, nickname, password) => {
     console.log(email, nickname, password);
     const exsistEmail = await User.findOne({
-      where: { email: "glory0824@naver.com" },
-      raw: true,
+      where: { email, social: false },
     });
-    if (exsistEmail !== null) {
+    if (exsistEmail) {
       const error = new Error("account error");
       error.name = "exsist email";
       error.status = 403;
