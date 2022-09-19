@@ -29,7 +29,10 @@ class UserRepository {
 
   //로그인                /api/user/login
   logIn = async (email) => {
-    const findUser = await User.findOne({ where: { email }, raw: true });
+    const findUser = await User.findOne({
+      where: { email, social: false },
+      raw: true,
+    });
     return findUser;
   };
 
