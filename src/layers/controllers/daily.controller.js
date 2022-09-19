@@ -76,7 +76,6 @@ export default new (class Dailycontroller {
     // 스케줄 자체의 업데이트의경우
     try {
       const { userId } = res.locals;
-      // const userId = 2;
       const { scheduleId } = req.params;
       const { startTime, endTime, weekCycle, startDate } = req.body;
 
@@ -102,7 +101,6 @@ export default new (class Dailycontroller {
     // 스케줄의 삭제 할때
     try {
       const { userId } = res.locals;
-      // const userId = 2;
       const { scheduleId } = req.params;
 
       const date = await DailyService.scheduleDelete(userId, scheduleId);

@@ -157,48 +157,40 @@ export default new (class DailyService {
     // startTime, endTime는 둘다 정해져서 와야 한다, (태스트 코드 조건 필요)
     // startDate는 2022-09-20의 형태로 와야한다. (문자, 숫자, 안되고 정제되지 않아도 안됨)
 
-    // 스케줄 시간이 지난 후에 새로운 스케줄을 설정은?? 지금은 수정 X
-
     const schedule = await DailyRepository.scheduleInOf(userId, scheduleId);
     // 유저의가 선택한 태그의 정보
-    console.log("이 아래에 찍히는 스케줄 데이터 보시고 아래 로직 바꾸셔요.");
-    console.log(schedule);
 
     const userTagId = schedule.UserTag.user_tag_id;
-
-    if (new Date() >= new Date(schedule.UserTag.start_date)) {
-      return {
-        status: 403,
-        result: {},
-        message: "이미 예약한 시간 이후 인데",
-      }; // 나중에 예약을 한 날짜보다 현재날짜를 자났나면 수정불가! (O)
-    }
-
-    if (schedule.UserTag.startDate != startDate) {
-      const period = schedule.userTag.period;
-      let date = new Date(startDate);
-      date.setDate(date.getDate() + period);
-      let endDate = date
-        .toLocaleDateString()
-        .split(". ")
-        .join("-")
-        .slice(0, -1);
-      await DailyRepository.startDateUpdate(userTagId, startDate, endDate);
-    }
-
+    const period = schedule.UserTag.period;
+    const startDateStr = new Date(startDate);
+    startDate = startDate + " 00:00:00"; // startDate는 2022-09-20 00:00:00 형태
+    startDateStr.setDate(startDateStr.getDate() + period);
+    let endDate = startDateStr.toISOString().split("T")[0] + " 00:00:00"; // 2022-09-25 00:00:00 형태 반환
     const timeCycle = startTime + "," + endTime;
 
-    await DailyRepository.scheduleUpdate(scheduleId, timeCycle, weekCycle);
+    if (schedule.UserTag.startDate == null) {
+    } else if (!new Date() > new Date(schedule.UserTag.startDate)) {
+      await DailyRepository.startDateUpdate(userTagId, startDate, endDate); // 시간이 되기전
+      await DailyRepository.scheduleUpdate(scheduleId, timeCycle, weekCycle);
+    } else {
+      // 스타트 시간이 지난 후에 새로운 스케줄을 설정은?? 지금은 수정 X
+      // 만들어지는는 스케줄이 달라야한다.? // 시작시간인 지난 뒤에
+      await DailyRepository.scheduleUpdate(scheduleId, timeCycle, weekCycle);
+      return {
+        status: 203,
+        message: "스케줄 생성됨 이미 스케줄 싱생된 이후임으로 날짜 수정 안됨",
+      };
+    }
 
     return {
       status: 200,
       result: {},
-      message: "내 태그 스케줄 추가",
+      message: "내 태그 스케줄 수정",
     };
   };
 
   scheduleDelete = async (userId, scheduleId) => {
-    const result = await DailyRepository.scheduleDelete(userId, scheduleId);
+    await DailyRepository.scheduleDelete(userId, scheduleId);
 
     return {
       status: 200,
