@@ -21,7 +21,7 @@ passportConfig();
 app.set("port", process.env.PORT || 3000);
 
 sequelize.sequelize
-  .sync({ force: true })
+  .sync({ force: false })
   .then(() => console.log("db connect"))
   .catch((err) => console.error(err));
 
@@ -83,6 +83,7 @@ const corsOptions = {
       callback(new Error("Not Allowed Origin!"));
     }
   },
+  credentials: true,
 };
 
 app.use(cors(corsOptions));
