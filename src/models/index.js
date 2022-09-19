@@ -6,7 +6,7 @@ const UserTag = require("./usertag");
 const Tag = require("./tag");
 const Point = require("./point");
 const Schedule = require("./schedule");
-const Done = require("./done.js");
+const Done = require("./done");
 const Session = require("./session");
 
 const db = {};
