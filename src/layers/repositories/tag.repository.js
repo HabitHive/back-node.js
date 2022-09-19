@@ -1,11 +1,11 @@
-import UserTag from "../../models/usertag.js";
-import Tag from "../../models/tag.js";
-import Schedule from "../../models/schedule.js";
-import { Op } from "sequelize";
-import User from "../../models/user.js";
-import Done from "../../models/done.js";
+const UserTag = require("../../models/usertag");
+const Tag = require("../../models/tag");
+const Schedule = require("../../models/schedule");
+const { Op } = require("sequelize");
+const User = require("../../models/user");
+const Done = require("../../models/done");
 
-export default new (class TagRepository {
+module.exports = new (class TagRepository {
   userInterest = async (user_id) => {
     return await User.findOne({
       attributes: ["interest", "point"],

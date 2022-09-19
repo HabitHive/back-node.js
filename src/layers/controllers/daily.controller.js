@@ -1,6 +1,6 @@
-import DailyService from "../services/daily.service.js";
+const DailyService = require("../services/daily.service");
 
-export default new (class Dailycontroller {
+module.exports = new (class Dailycontroller {
   dailyPage = async (req, res, next) => {
     try {
       const { userId } = res.locals;

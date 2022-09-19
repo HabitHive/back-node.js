@@ -1,9 +1,9 @@
-import jwt from "jsonwebtoken";
-import dotenv from "dotenv";
-import User from "../../models/user.js";
+const jwt = require("jsonwebtoken");
+const dotenv = require("dotenv");
+const User = require("../../models/user");
 dotenv.config();
 
-export default async (req, res, next) => {
+module.exports = async (req, res, next) => {
   try {
     // 요청 헤더에서 토큰 값을 가지고 옴
     const { authorization } = req.headers; // 구조분해 할당

@@ -1,4 +1,4 @@
-export default (categoryArr, option) => {
+module.exports = (categoryArr, option) => {
   const ko = [
     "운동",
     "공부",

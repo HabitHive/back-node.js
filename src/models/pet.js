@@ -1,7 +1,8 @@
-import Sequelize from "sequelize";
-import { sequelize } from "./sequelize.js";
+const Sequelize = require("sequelize");
 
-export default class Pet extends Sequelize.Model {
+const sequelize = require("./sequelize");
+
+module.exports = class Pet extends Sequelize.Model {
   static init(sequelize) {
     return super.init(
       {
@@ -33,4 +34,4 @@ export default class Pet extends Sequelize.Model {
       onUpdate: "cascade",
     });
   }
-}
+};

@@ -1,4 +1,4 @@
-import Pet from "../../models/pet.js";
+const Pet = require("../../models/pet");
 
 class PetRepository {
   /**
@@ -34,4 +34,4 @@ class PetRepository {
   };
 }
 
-export default new PetRepository();
+module.exports = new PetRepository();

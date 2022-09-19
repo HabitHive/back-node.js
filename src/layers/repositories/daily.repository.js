@@ -1,10 +1,10 @@
-import UserTag from "../../models/usertag.js";
-import Tag from "../../models/tag.js";
-import Schedule from "../../models/schedule.js";
-import { Op } from "sequelize";
-import Done from "../../models/done.js";
+const UserTag = require("../../models/usertag");
+const Tag = require("../../models/tag");
+const Schedule = require("../../models/schedule");
+const { Op } = require("sequelize");
+const Done = require("../../models/done");
 
-export default new (class DailyRepository {
+module.exports = new (class DailyRepository {
   doneSchedule = async (toDate) => {
     let lastDate = new Date(toDate);
     new Date(lastDate.setDate(lastDate.getDate() - 1)); // 정시인 00시에서 1일 지난 00시 만들기

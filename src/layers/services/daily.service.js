@@ -1,7 +1,7 @@
-import DailyRepository from "../repositories/daily.repository.js";
-import translation from "../utils/translation.category.js";
+const DailyRepository = require("../repositories/daily.repository");
+const translation = require("../utils/translation.category");
 
-export default new (class DailyService {
+module.exports = new (class DailyService {
   result = async (status, message, result) => {
     return { status, message, result };
   };

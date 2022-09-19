@@ -1,5 +1,5 @@
-import PetRepository from "../repositories/pet.repository.js";
-import UserRepository from "../repositories/user.repository.js";
+const PetRepository = require("../repositories/pet.repository");
+const UserRepository = require("../repositories/user.repository");
 
 class PetService {
   result = async (status, message, result) => {
@@ -62,4 +62,4 @@ class PetService {
   };
 }
 
-export default new PetService();
+module.exports = new PetService();

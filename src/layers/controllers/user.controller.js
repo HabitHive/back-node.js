@@ -1,4 +1,4 @@
-import UserService from "../services/user.service.js";
+const UserService = require("../services/user.service");
 
 class UserController {
   //회원가입              /api/user/signup
@@ -20,6 +20,7 @@ class UserController {
           .json({ name: error.name, message: error.message });
         return;
       }
+      console.log(error);
       res.status(400).json({ name: error.name, message: error.message });
     }
   };
@@ -106,4 +107,4 @@ class UserController {
   };
 }
 
-export default new UserController();
+module.exports = new UserController();

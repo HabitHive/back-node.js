@@ -1,17 +1,17 @@
-import express from "express";
-import dotenv from "dotenv";
-import router from "./layers/router/index.js";
-import social from "./layers/router/social.login.js";
-import morgan from "morgan";
-import chalk from "chalk";
-import { sequelize } from "./models/index.js";
-import cors from "cors";
-import cookieParser from "cookie-parser";
-import session from "express-session";
-import MySQLStoreCreator from "express-mysql-session";
-import mysql from "mysql";
-import passport from "passport";
-import passportConfig from "./passport/index.js";
+const express = require("express");
+const dotenv = require("dotenv");
+const router = require("./layers/router");
+const social = require("./layers/router/social.login");
+const morgan = require("morgan");
+const chalk = require("chalk");
+const sequelize = require("./models");
+const cors = require("cors");
+const cookieParser = require("cookie-parser");
+const session = require("express-session");
+const MySQLStore = require("express-mysql-session")(session);
+const mysql = require("mysql");
+const passport = require("passport");
+const passportConfig = require("./passport/index");
 
 dotenv.config();
 
@@ -20,8 +20,8 @@ passportConfig();
 
 app.set("port", process.env.PORT || 3000);
 
-sequelize
-  .sync({ force: false })
+sequelize.sequelize
+  .sync({ force: true })
   .then(() => console.log("db connect"))
   .catch((err) => console.error(err));
 
@@ -42,7 +42,6 @@ const options = {
   createDatabaseTable: false, //  세션 데이터베이스 테이블 생성 여부(아직 존재하지 않는 경우 기본값 true)
 };
 
-const MySQLStore = MySQLStoreCreator(session);
 const connection = mysql.createConnection(options);
 const sessionStore = new MySQLStore({}, connection);
 

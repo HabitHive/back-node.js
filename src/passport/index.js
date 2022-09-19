@@ -1,9 +1,9 @@
-import passport from "passport";
-import kakao from "./kakaoStrategy.js";
-import google from "./GoogleStrategy.js";
-import naver from "./NaverStrategy.js";
+const passport = require("passport");
+const kakao = require("./kakaoStrategy");
+const google = require("./GoogleStrategy");
+const naver = require("./NaverStrategy");
 
-export default () => {
+module.exports = () => {
   kakao(); // 카카오 등록
   google(); // 구글 등록
   naver(); // 네이버 등록

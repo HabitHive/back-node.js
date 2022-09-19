@@ -1,6 +1,6 @@
-import TagService from "../services/tag.service.js";
+const TagService = require("../services/tag.service");
 
-export default new (class TagController {
+module.exports = new (class TagController {
   tagBuyPage = async (req, res, next) => {
     try {
       const { userId } = res.locals;

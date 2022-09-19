@@ -1,8 +1,8 @@
-import Tag from "../../models/tag.js";
-import translation from "../utils/translation.category.js";
+const Tag = require("../../models/tag");
+const translation = require("../utils/translation.category");
 
 // 태그 생성 메소드... 파일 위치 옮길 예정
-export default new (class adminService {
+module.exports = new (class adminService {
   input = async (req, res) => {
     const { list } = req.body;
     const listSplit = list.split("/");
