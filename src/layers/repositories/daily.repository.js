@@ -45,7 +45,7 @@ export default new (class DailyRepository {
   };
 
   tagList = async (user_id) => {
-    const myTagList = await UserTag.findAll({
+    return await UserTag.findAll({
       order: [["createdAt", "desc"]], // 정렬할 컬럼명과 오름차순/내림차순 구분
       where: { user_id },
       include: {
@@ -54,23 +54,21 @@ export default new (class DailyRepository {
       },
       raw: true,
     });
-    return myTagList;
   };
 
   schedulePage = async (user_id, user_tag_id) => {
-    const tag = await UserTag.findOne({
+    return await UserTag.findOne({
       where: { user_id, user_tag_id },
       raw: true,
     });
-    return tag;
   };
 
   userTagInOf = async (user_id, user_tag_id) => {
-    const userTag = await UserTag.findOne({
+    return await UserTag.findOne({
+      attributes: ["start_date", "period"],
       where: { user_id, user_tag_id },
       raw: true,
     });
-    return userTag;
   };
 
   startDateUpdate = async (user_tag_id, start_date, end_date) => {
