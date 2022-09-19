@@ -1,5 +1,5 @@
-import express from "express";
-import SocialLogin from "../controllers/sociallogin.controller.js";
+const express = require("express");
+const SocialLogin = require("../controllers/sociallogin.controller");
 
 const router = express.Router();
 
@@ -27,4 +27,4 @@ router.get(
   SocialLogin.ResponseToken
 );
 
-export default router;
+module.exports = router;

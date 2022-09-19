@@ -1,14 +1,13 @@
-export * from "./sequelize.js";
-import sequelize from "./sequelize.js";
+const sequelize = require("./sequelize");
 
-import User from "./user.js";
-import Pet from "./pet.js";
-import UserTag from "./usertag.js";
-import Tag from "./tag.js";
-import Point from "./point.js";
-import Schedule from "./schedule.js";
-import Done from "./done.js";
-import Session from "./session.js";
+const User = require("./user");
+const Pet = require("./pet");
+const UserTag = require("./usertag");
+const Tag = require("./tag");
+const Point = require("./point");
+const Schedule = require("./schedule");
+const Done = require("./done");
+const Session = require("./session");
 
 const db = {};
 
@@ -40,4 +39,4 @@ Pet.associate(db);
 Done.associate(db);
 Session.associate(db);
 
-export { db };
+module.exports = { db, sequelize };

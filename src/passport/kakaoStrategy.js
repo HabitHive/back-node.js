@@ -1,10 +1,10 @@
-import passport from "passport";
-import Kakao from "passport-kakao";
-import User from "../models/user.js";
+const passport = require("passport");
+const Kakao = require("passport-kakao");
+const User = require("../models/user");
 
 const KakaoStrategy = Kakao.Strategy;
 
-export default () => {
+module.exports = () => {
   passport.use(
     new KakaoStrategy(
       {

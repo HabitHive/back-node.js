@@ -1,4 +1,4 @@
-import PetService from "../services/pet.service.js";
+const PetService = require("../services/pet.service");
 
 class PetController {
   response = (res, receive) => {
@@ -22,4 +22,4 @@ class PetController {
   getPetList = async (req, res, next) => {};
 }
 
-export default new PetController();
+module.exports = new PetController();

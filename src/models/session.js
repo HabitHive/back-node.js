@@ -1,8 +1,8 @@
-import Sequelize from "sequelize";
+const Sequelize = require("sequelize");
 
-import { sequelize } from "./sequelize.js";
+const sequelize = require("./sequelize");
 
-export default class Session extends Sequelize.Model {
+module.exports = class Session extends Sequelize.Model {
   static init(sequelize) {
     return super.init(
       {
@@ -30,4 +30,4 @@ export default class Session extends Sequelize.Model {
     );
   }
   static associate(db) {}
-}
+};

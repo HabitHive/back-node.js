@@ -1,12 +1,12 @@
-import express from "express";
+const express = require("express");
 
-import UserController from "../controllers/user.controller.js";
-import DailyController from "../controllers/daily.controller.js";
-import TagController from "../controllers/tag.controller.js";
-import PetController from "../controllers/pet.controller.js";
+const UserController = require("../controllers/user.controller");
+const DailyController = require("../controllers/daily.controller");
+const TagController = require("../controllers/tag.controller");
+const PetController = require("../controllers/pet.controller");
 
-import authMiddleware from "../utils/auth.middleware.js";
-import reissuance from "../utils/token.reissuance.js";
+const authMiddleware = require("../utils/auth.middleware");
+const reissuance = require("../utils/token.reissuance");
 
 const router = express.Router();
 
@@ -54,7 +54,7 @@ router.get("/tag/monthly/:date", authMiddleware, TagController.monthly);
 router.get("/pet", authMiddleware, PetController.getPetInfo);
 router.post("/pet", authMiddleware, PetController.buyingPetExp);
 
-import adminService from "../services/admin.js";
+const adminService = require("../services/admin");
 router.post("/admin/input/tag", adminService.input);
 
-export default router;
+module.exports = router;

@@ -1,8 +1,8 @@
-import TagRepository from "../repositories/tag.repository.js";
-import UserRepository from "../repositories/user.repository.js";
-import translation from "../utils/translation.category.js";
+const TagRepository = require("../repositories/tag.repository");
+const UserRepository = require("../repositories/user.repository");
+const translation = require("../utils/translation.category");
 
-export default new (class TagService {
+module.exports = new (class TagService {
   result = async (status, message, result) => {
     return { status, message, result };
   };

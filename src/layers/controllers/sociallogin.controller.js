@@ -1,6 +1,6 @@
-import passport from "passport";
-import jwt from "jsonwebtoken";
-import dotenv from "dotenv";
+const passport = require("passport");
+const jwt = require("jsonwebtoken");
+const dotenv = require("dotenv");
 dotenv.config();
 
 class SocialLogin {
@@ -64,4 +64,4 @@ class SocialLogin {
   };
 }
 
-export default new SocialLogin();
+module.exports = new SocialLogin();

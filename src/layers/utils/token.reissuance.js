@@ -1,10 +1,10 @@
-import jwt from "jsonwebtoken";
-import Session from "../../models/session.js";
-import dotenv from "dotenv";
+const jwt = require("jsonwebtoken");
+const Session = require("../../models/session");
+const dotenv = require("dotenv");
 
 dotenv.config();
 
-export default async (req, res, next) => {
+module.exports = async (req, res, next) => {
   try {
     const { session } = req.headers;
     const sessionData = await Session.findOne({

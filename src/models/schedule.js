@@ -1,8 +1,8 @@
-import Sequelize from "sequelize";
+const Sequelize = require("sequelize");
 
-import { sequelize } from "./sequelize.js";
+const sequelize = require("./sequelize");
 
-export default class Schedule extends Sequelize.Model {
+module.exports = class Schedule extends Sequelize.Model {
   static init(sequelize) {
     return super.init(
       {
@@ -52,4 +52,4 @@ export default class Schedule extends Sequelize.Model {
       onUpdate: "cascade",
     });
   }
-}
+};

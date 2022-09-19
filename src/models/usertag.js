@@ -1,8 +1,8 @@
-import Sequelize from "sequelize";
+const Sequelize = require("sequelize");
 
-import { sequelize } from "./sequelize.js";
+const sequelize = require("./sequelize");
 
-export default class UserTag extends Sequelize.Model {
+module.exports = class UserTag extends Sequelize.Model {
   static init(sequelize) {
     return super.init(
       {
@@ -66,4 +66,4 @@ export default class UserTag extends Sequelize.Model {
       onUpdate: "cascade",
     });
   }
-}
+};

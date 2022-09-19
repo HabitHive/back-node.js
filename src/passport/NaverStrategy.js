@@ -1,10 +1,10 @@
-import passport from "passport";
-import Naver from "passport-naver";
-import User from "../models/user.js";
+const passport = require("passport");
+const Naver = require("passport-naver");
+const User = require("../models/user");
 
 const NaverStrategy = Naver.Strategy;
 
-export default () => {
+module.exports = () => {
   passport.use(
     new NaverStrategy(
       {

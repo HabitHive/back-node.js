@@ -1,10 +1,10 @@
-import UserRepository from "../repositories/user.repository.js";
-import TagRepository from "../repositories/tag.repository.js";
-import PetRepository from "../repositories/pet.repository.js";
-import bcrypt from "bcrypt";
-import Joi from "joi";
-import dotenv from "dotenv";
-import jwt from "jsonwebtoken";
+const UserRepository = require("../repositories/user.repository");
+const TagRepository = require("../repositories/tag.repository");
+const PetRepository = require("../repositories/pet.repository");
+const bcrypt = require("bcrypt");
+const Joi = require("joi");
+const dotenv = require("dotenv");
+const jwt = require("jsonwebtoken");
 
 dotenv.config();
 
@@ -223,4 +223,4 @@ class UserService {
   };
 }
 
-export default new UserService();
+module.exports = new UserService();

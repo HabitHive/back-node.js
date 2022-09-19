@@ -1,13 +1,17 @@
-import User from "../../models/user.js";
-import Session from "../../models/session.js";
-import Point from "../../models/point.js";
-import { Op } from "sequelize";
+const User = require("../../models/user");
+const Session = require("../../models/session");
+const Point = require("../../models/point");
+const { Op } = require("sequelize");
 
 class UserRepository {
   //회원가입              /api/user/signup
   singUp = async (email, nickname, password) => {
-    const exsistEmail = await User.findOne({ where: { email, social: false } });
-    if (exsistEmail) {
+    console.log(email, nickname, password);
+    const exsistEmail = await User.findOne({
+      where: { email: "glory0824@naver.com" },
+      raw: true,
+    });
+    if (exsistEmail !== null) {
       const error = new Error("account error");
       error.name = "exsist email";
       error.status = 403;
@@ -95,4 +99,4 @@ class UserRepository {
   };
 }
 
-export default new UserRepository();
+module.exports = new UserRepository();
