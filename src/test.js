@@ -20,7 +20,7 @@ passportConfig();
 
 app.set("port", process.env.PORT || 3000);
 
-sequelize.sequelize
+sequelize.testSequelize
   .sync({ force: false })
   .then(() => console.log("db connect"))
   .catch((err) => console.error(err));
@@ -31,15 +31,15 @@ app.get("/", (req, res, next) => {
 
 //session store
 const options = {
-  host: process.env.DEV_DB_HOST,
+  host: process.env.TEST_DB_HOST,
   port: 3306,
-  user: process.env.DEV_DB_ID,
-  password: process.env.DEV_DB_PW,
-  database: process.env.DEV_DB,
+  user: process.env.TEST_DB_ID,
+  password: process.env.TEST_DB_PW,
+  database: process.env.TEST_DB,
   clearExpired: true, //  만료된 세션 자동 확인 및 지우기 여부
   checkExpirationInterval: 7 * 24 * 60 * 60 * 1000, //  (단위: milliseconds) 1000 = 1 seconds, 만료된 세션이 지워지는 빈도
   expiration: 30 * 24 * 60 * 60 * 1000, //  유효기간 1 month
-  createDatabaseTable: false, //  세션 데이터베이스 테이블 생성 여부(아직 존재하지 않는 경우 기본값 true)
+  createDatabaseTable: false, //  세션 데이터베이스 테이블 생성 여부(아직 존재하지 않는 경우 자동 기본값 true)
 };
 
 const connection = mysql.createConnection(options);
@@ -106,6 +106,4 @@ app.use((err, req, res, next) => {
   });
 });
 
-app.listen(app.get("port"), () =>
-  console.log(chalk.blueBright(app.get("port")) + " 포트로 열렸습니다")
-);
+module.exports = app;

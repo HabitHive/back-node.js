@@ -8,10 +8,9 @@ class UserRepository {
   singUp = async (email, nickname, password) => {
     console.log(email, nickname, password);
     const exsistEmail = await User.findOne({
-      where: { email: "glory0824@naver.com" },
-      raw: true,
+      where: { email, social: false },
     });
-    if (exsistEmail !== null) {
+    if (exsistEmail) {
       const error = new Error("account error");
       error.name = "exsist email";
       error.status = 403;
@@ -30,7 +29,10 @@ class UserRepository {
 
   //로그인                /api/user/login
   logIn = async (email) => {
-    const findUser = await User.findOne({ where: { email }, raw: true });
+    const findUser = await User.findOne({
+      where: { email, social: false },
+      raw: true,
+    });
     return findUser;
   };
 

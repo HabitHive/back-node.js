@@ -61,18 +61,8 @@ class UserService {
         error.status = 403;
         throw error;
       }
-      const accesstoken = jwt.sign(
-        { key1: user.user_id + parseInt(process.env.SUM) },
-        process.env.ACCESS_TOKEN_SECRET,
-        { expiresIn: "12h" }
-      );
-      const refreshtoken = jwt.sign(
-        { key2: accesstoken, key3: user.user_id },
-        process.env.REFRESH_TOKEN_SECRET,
-        { expiresIn: "7d" }
-      );
 
-      req.session.a1 = refreshtoken;
+      req.session.a1 = user.user_id;
       req.session.save((err) => {
         if (err) {
           const error = new Error("session save error");
@@ -81,7 +71,6 @@ class UserService {
           throw error;
         }
       });
-      return accesstoken;
     } else {
       const error = new Error("not exist User");
       error.name = "user not found";
