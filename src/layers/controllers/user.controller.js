@@ -21,7 +21,6 @@ class UserController {
           .json({ name: error.name, message: error.message });
         return;
       }
-      console.log(error);
       res.status(400).json({ name: error.name, message: error.message });
     }
   };
