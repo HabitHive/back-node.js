@@ -36,18 +36,18 @@ module.exports = new (class DailyRepository {
     });
   };
 
-  checkSchedule = async (user_id) => {
+  checkSchedule = async (user_id, date) => {
     return await Schedule.findAll({
       attributes: ["user_tag_id"],
-      where: { user_id },
+      where: { user_id, end_date: { [Op.lte]: date } }, // end_date <= date
       raw: true,
     });
   };
 
-  tagList = async (user_id) => {
+  tagList = async (user_id, date) => {
     return await UserTag.findAll({
       order: [["createdAt", "desc"]], // 정렬할 컬럼명과 오름차순/내림차순 구분
-      where: { user_id },
+      where: { user_id, end_date: { [Op.lte]: date } }, // end_date <= date
       include: {
         model: Tag,
         attributes: ["tag_name", "category"],

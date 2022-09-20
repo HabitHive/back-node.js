@@ -49,14 +49,15 @@ module.exports = new (class DailyService {
   };
 
   tagList = async (userId) => {
-    const notNew = await DailyRepository.checkSchedule(userId);
+    const date = new Date();
+    const notNew = await DailyRepository.checkSchedule(userId, date);
     // 배열로 스케줄들의 user_tag_id가 배열로써 나오게 (O)
 
     const notNewList = notNew.map((check) => {
       return check.user_tag_id;
     }); // 유저의 UserTag 모두 가져오기
 
-    const result = await DailyRepository.tagList(userId);
+    const result = await DailyRepository.tagList(userId, date);
     // 구매한 태그들 가져옴
     const tagLists = result.map((list) => {
       const categoryArr = list["Tag.category"].split("#");
