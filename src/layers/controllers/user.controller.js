@@ -12,7 +12,7 @@ class UserController {
           req
         );
         res.cookie("result", "success");
-        res.status(201).json({ token: token, session: req.sessionID });
+        res.status(201).json({ session: req.sessionID });
       }
     } catch (error) {
       if (error.status) {
@@ -29,13 +29,9 @@ class UserController {
   //로그인                /api/user/login
   logIn = async (req, res) => {
     try {
-      const token = await UserService.logIn(
-        req.body.email,
-        req.body.password,
-        req
-      );
+      await UserService.logIn(req.body.email, req.body.password, req);
       res.cookie("result", "success");
-      res.status(201).json({ token: token, session: req.sessionID });
+      res.status(201).json({ session: req.sessionID });
     } catch (error) {
       if (error.status) {
         res
