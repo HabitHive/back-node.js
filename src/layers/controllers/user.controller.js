@@ -11,7 +11,8 @@ class UserController {
           req.body.password,
           req
         );
-        res.status(201).json({ token: token, session: req.sessionID });
+        res.cookie("result", "success");
+        res.status(201).json({ session: req.sessionID });
       }
     } catch (error) {
       if (error.status) {
@@ -20,7 +21,6 @@ class UserController {
           .json({ name: error.name, message: error.message });
         return;
       }
-      console.log(error);
       res.status(400).json({ name: error.name, message: error.message });
     }
   };
@@ -28,12 +28,9 @@ class UserController {
   //로그인                /api/user/login
   logIn = async (req, res) => {
     try {
-      const token = await UserService.logIn(
-        req.body.email,
-        req.body.password,
-        req
-      );
-      res.status(201).json({ token: token, session: req.sessionID });
+      await UserService.logIn(req.body.email, req.body.password, req);
+      res.cookie("result", "success");
+      res.status(201).json({ session: req.sessionID });
     } catch (error) {
       if (error.status) {
         res

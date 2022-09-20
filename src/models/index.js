@@ -1,4 +1,5 @@
 const sequelize = require("./sequelize");
+const testSequelize = require("./testSequelize");
 
 const User = require("./user");
 const Pet = require("./pet");
@@ -12,6 +13,7 @@ const Session = require("./session");
 const db = {};
 
 db.sequelize = sequelize;
+db.testSequelize = testSequelize;
 db.User = User;
 db.Pet = Pet;
 db.UserTag = UserTag;
@@ -30,6 +32,15 @@ Pet.init(sequelize);
 Done.init(sequelize);
 Session.init(sequelize);
 
+User.init(testSequelize);
+UserTag.init(testSequelize);
+Tag.init(testSequelize);
+Point.init(testSequelize);
+Schedule.init(testSequelize);
+Pet.init(testSequelize);
+Done.init(testSequelize);
+Session.init(testSequelize);
+
 User.associate(db);
 UserTag.associate(db);
 Tag.associate(db);
@@ -39,4 +50,4 @@ Pet.associate(db);
 Done.associate(db);
 Session.associate(db);
 
-module.exports = { db, sequelize };
+module.exports = { db, sequelize, testSequelize };
