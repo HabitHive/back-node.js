@@ -13,10 +13,13 @@ module.exports = new (class TagRepository {
     });
   };
 
-  userBuyList = async (user_id) => {
+  userBuyList = async (user_id, date) => {
     return await UserTag.findAll({
       attributes: ["tag_id"],
-      where: { user_id },
+      where: {
+        user_id,
+        end_date: { [Op.or]: { [Op.gt]: date, [Op.eq]: null } },
+      },
     });
   };
 

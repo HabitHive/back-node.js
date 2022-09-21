@@ -49,6 +49,7 @@ module.exports = new (class DailyService {
   };
 
   tagList = async (userId) => {
+    const date = new Date();
     const notNew = await DailyRepository.checkSchedule(userId);
     // 배열로 스케줄들의 user_tag_id가 배열로써 나오게 (O)
 
@@ -56,8 +57,8 @@ module.exports = new (class DailyService {
       return check.user_tag_id;
     }); // 유저의 UserTag 모두 가져오기
 
-    const result = await DailyRepository.tagList(userId);
-    // 구매한 태그들 가져옴
+    const result = await DailyRepository.tagList(userId, date);
+    // 구매한 태그들 가져옴 //
     const tagLists = result.map((list) => {
       const categoryArr = list["Tag.category"].split("#");
       const category = translation(categoryArr, 1);
@@ -90,6 +91,7 @@ module.exports = new (class DailyService {
   };
 
   schedulePage = async (userId, userTagId) => {
+    // 지금 현재 필요없는 로직
     const result = await DailyRepository.schedulePage(userId, userTagId);
     let date = `${result.start_date}~${result.end_date}`;
 
@@ -121,7 +123,7 @@ module.exports = new (class DailyService {
     startDate = startDate + " 00:00:00"; // startDate는 2022-09-20 00:00:00 형태
     startDateStr.setDate(startDateStr.getDate() + period);
     let endDate = startDateStr.toISOString().split("T")[0] + " 00:00:00"; // 2022-09-25 00:00:00 형태 반환
-    const timeCycle = startTime + "," + endTime; // startTime + "," + endTime;
+    const timeCycle = startTime + "~" + endTime; // startTime + "," + endTime;
 
     if (userTag.start_date == null) {
       await DailyRepository.startDateUpdate(userTagId, startDate, endDate); // 처음
@@ -166,7 +168,7 @@ module.exports = new (class DailyService {
     startDate = startDate + " 00:00:00"; // startDate는 2022-09-20 00:00:00 형태
     startDateStr.setDate(startDateStr.getDate() + period);
     let endDate = startDateStr.toISOString().split("T")[0] + " 00:00:00"; // 2022-09-25 00:00:00 형태 반환
-    const timeCycle = startTime + "," + endTime;
+    const timeCycle = startTime + "~" + endTime;
 
     if (schedule.UserTag.startDate == null) {
     } else if (!new Date() > new Date(schedule.UserTag.startDate)) {
