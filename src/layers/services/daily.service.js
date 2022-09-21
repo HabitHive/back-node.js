@@ -127,7 +127,7 @@ module.exports = new (class DailyService {
 
     if (userTag.start_date == null) {
       await DailyRepository.startDateUpdate(userTagId, startDate, endDate); // 처음
-    } else if (!new Date() > new Date(userTag.start_date)) {
+    } else if (new Date() < new Date(userTag.start_date)) {
       await DailyRepository.startDateUpdate(userTagId, startDate, endDate); // 시간이 되기전
     } else {
       // 스타트 시간이 지난 후에 새로운 스케줄을 설정은?? 지금은 수정 X
@@ -171,7 +171,11 @@ module.exports = new (class DailyService {
     const timeCycle = startTime + "~" + endTime;
 
     if (schedule.UserTag.startDate == null) {
-    } else if (!new Date() > new Date(schedule.UserTag.startDate)) {
+      return {
+        status: 400,
+        message: "스케줄이 생성된적이 없는 태그를 수정하려고함",
+      };
+    } else if (new Date() < new Date(schedule.UserTag.startDate)) {
       await DailyRepository.startDateUpdate(userTagId, startDate, endDate); // 시간이 되기전
       await DailyRepository.scheduleUpdate(scheduleId, timeCycle, weekCycle);
     } else {
