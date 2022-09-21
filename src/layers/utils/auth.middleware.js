@@ -14,7 +14,13 @@ module.exports = async (req, res, next) => {
       error.name = "session error";
       throw error;
     }
-    const userId = sessionData.data.a1;
+    //  sessionData.data이 문자열로 올때가 있고 객체로 올때가 있다 왜???
+    let userId = "";
+    if (typeof sessionData.data == "string") {
+      userId = JSON.parse(sessionData.data).a1;
+    } else {
+      userId = sessionData.data.a1;
+    }
 
     // res.loclas로 user_id 넘겨줌
     res.locals.userId = userId;
