@@ -13,7 +13,7 @@ module.exports = new (class DailyService {
       return {
         status: 400,
         result: todayDate,
-        message: "날짜 형식이 맞아?",
+        message: "날짜 형식이 잘못 되었습니다.",
       };
     } // 날짜형식이 아니면 걸린다.
 

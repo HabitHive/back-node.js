@@ -51,7 +51,11 @@ app.use(
     saveUninitialized: false,
     store: sessionStore,
     secret: process.env.SESSION_SECRET,
-    cookie: { httpOnly: true, maxAge: 30 * 24 * 60 * 60 * 1000 },
+    cookie: {
+      domain: ".com",
+      httpOnly: true,
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+    },
   })
 );
 
