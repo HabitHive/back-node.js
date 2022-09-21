@@ -37,8 +37,8 @@ module.exports = new (class TagService {
 
     const userPoint = userInfo.point;
     // 포인트 찾아서 보내기 {객체 이름 정한것}
-
-    const buyLists = await TagRepository.userBuyList(userId);
+    const date = new Date();
+    const buyLists = await TagRepository.userBuyList(userId, date);
     const tagIdBuyList = buyLists.map((tag) => tag.tag_id);
     // 구매한 태그 리스트 목록 배열로(tagId만)
 
