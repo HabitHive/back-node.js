@@ -133,7 +133,13 @@ class UserService {
    * @param {string} today 오늘 날짜
    * @returns stillTags: 종료되지 않은 습관 / successTags: 완주 성공 / failTags: 완주 실패
    */
-  myTag = async (userId, today) => {
+  myTag = async (userId) => {
+    const now = new Date();
+    const today = new Date(
+      [now.getFullYear(), now.getMonth() + 1, now.getDate()].join("-") +
+        " 09:00:00"
+    );
+
     const tagLists = await TagRepository.myAllTagList(userId);
     if (tagLists.length == 0) {
       return this.result(200, "습관 기록이 없습니다.", {
@@ -147,13 +153,15 @@ class UserService {
     let successTags = [];
     let failTags = [];
 
-    tagLists.map(async (tag) => {
+    for (let i in tagLists) {
+      const tag = tagLists[i];
       if (tag.success === 1) {
         // 성공 습관
         successTags.push(tag["Tag.tag_name"]);
       } else if (tag.success === 0) {
         // 실패 습관
         failTags.push(tag["Tag.tag_name"]);
+        // await TagRepository.isNull(tag.user_tag_id);
       } else if (tag.end_date === null) {
         // 예약되지 않은 습관
         stillTags.push({
@@ -172,9 +180,9 @@ class UserService {
           const scheduleList = await TagRepository.schedule(tag.user_tag_id);
           scheduleList.map((schedule) => {
             const numWeek = schedule.week_cycle.split(",");
-            for (let w in numWeek) {
+            numWeek.map((w) => {
               week[w] = true;
-            }
+            });
           });
 
           /* 종료까지 남은 기간 == d-Day */
@@ -206,7 +214,7 @@ class UserService {
           }
         }
       }
-    });
+    }
 
     return this.result(200, "마이 태그", { stillTags, successTags, failTags });
   };
