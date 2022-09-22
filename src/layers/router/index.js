@@ -12,7 +12,7 @@ const router = express.Router();
 /* /api/user */
 router.post("/user/signup", UserController.singUp); //회원가입
 router.post("/user/login", UserController.logIn); //로그인
-router.get("/user/logout", UserController.logOut); //로그 아웃
+router.delete("/user/logout", UserController.logOut); //로그 아웃
 router.put("/user/interest", authMiddleware, UserController.interest); //관심사 설정
 
 router.get("/user/mypage/info", authMiddleware, UserController.myInfo); //유저정보
