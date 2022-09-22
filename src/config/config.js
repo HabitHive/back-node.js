@@ -10,14 +10,10 @@ const development = {
   dialect: "mysql",
   logging: false,
   timezone: "+09:00",
-  dialectOptions: {
-    dateStrings: true,
-    typeCast: true,
-  },
-  define: {
-    timestamps: true,
-  },
+  dialectOptions: { dateStrings: true, typeCast: true },
+  define: { timestamps: true },
 };
+
 const test = {
   username: process.env.TEST_DB_ID,
   password: process.env.TEST_DB_PW,
@@ -26,14 +22,10 @@ const test = {
   dialect: "mysql",
   logging: false,
   timezone: "+09:00",
-  dialectOptions: {
-    dateStrings: true,
-    typeCast: true,
-  },
-  define: {
-    timestamps: true,
-  },
+  dialectOptions: { dateStrings: true, typeCast: true },
+  define: { timestamps: true },
 };
+
 const production = {
   username: process.env.PRO_DB_ID,
   password: process.env.PRO_DB_PW,
@@ -42,13 +34,8 @@ const production = {
   dialect: "mysql",
   logging: false,
   timezone: "+09:00",
-  dialectOptions: {
-    dateStrings: true,
-    typeCast: true,
-  },
-  define: {
-    timestamps: true,
-  },
+  dialectOptions: { dateStrings: true, typeCast: true },
+  define: { timestamps: true },
 };
 
 module.exports = { development, test, production };

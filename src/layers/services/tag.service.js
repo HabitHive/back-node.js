@@ -188,10 +188,12 @@ module.exports = new (class TagService {
    * @returns first : 첫 완료 여부 / bonus : 보너스 여부 / bonusPoint
    */
   done = async (userId, scheduleId, strDate) => {
+    console.log(userId);
     /* 일정 정보 불러오기 */
     const schedule = await TagRepository.findSchedule(scheduleId);
+    console.log(schedule);
     if (!schedule) return this.result(400, "존재하지 않는 일정입니다.");
-    else if (schedule.User["user_id"] !== userId)
+    else if (schedule.user_id !== userId)
       return this.result(401, "본인의 일정이 아닙니다.");
 
     const userTagId = schedule.user_tag_id;
@@ -211,12 +213,12 @@ module.exports = new (class TagService {
     );
 
     const exist = await UserRepository.existHistory(userTagId, date);
-    const fisrt = exist ? false : true; // 이미 기록이 존재한다면 포인트 X
+    const first = exist ? false : true; // 이미 기록이 존재한다면 포인트 X
     let bonus = false;
     let bonusPoint = 0;
 
     /* 첫 완료*/
-    if (fisrt && date != endDate) {
+    if (first && date != endDate) {
       const userPoint = await UserRepository.findPoint(userId);
       const increase = await UserRepository.updatePoint(userId, userPoint + 20);
       if (increase == [0]) return this.result(400, "알 수 없는 에러");
@@ -225,7 +227,7 @@ module.exports = new (class TagService {
     }
 
     /* 첫 완료 + 마지막 날 */
-    if (fisrt && date == endDate) {
+    if (first && date == endDate) {
       const count = await UserRepository.countHistory(userTagId);
       bonus = count == tag.period; // 일정 내내 성공했다면 보너스 true
       if (bonus) {
