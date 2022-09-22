@@ -113,6 +113,7 @@ module.exports = new (class TagRepository {
     const schedule = await Schedule.findOne({
       where: { schedule_id },
       include: [{ model: UserTag, attributes: ["user_id"] }],
+      raw: true,
     });
     return schedule;
   };
