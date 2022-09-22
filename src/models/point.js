@@ -1,6 +1,5 @@
 const Sequelize = require("sequelize");
 
-const sequelize = require("./sequelize");
 const UserTag = require("./usertag");
 
 module.exports = class Point extends Sequelize.Model {

@@ -1,8 +1,6 @@
 const Sequelize = require("sequelize");
 
-const sequelize = require("./sequelize");
-
-module.exports = class Session extends Sequelize.Model {
+module.exports = class Refresh extends Sequelize.Model {
   static init(sequelize) {
     return super.init(
       {
@@ -22,8 +20,8 @@ module.exports = class Session extends Sequelize.Model {
         timestamps: false,
         paranoid: false,
         underscored: false,
-        modelName: "Session",
-        tableName: "sessions",
+        modelName: "Refresh",
+        tableName: "refreshs",
         charset: "utf8",
         collate: "utf8_general_ci",
       }
