@@ -59,6 +59,7 @@ module.exports = new (class DailyService {
 
     const result = await DailyRepository.tagList(userId, date);
     // 구매한 태그들 가져옴 //
+    console.log(result);
     const tagLists = result.map((list) => {
       const categoryArr = list["Tag.category"].split("#");
       const category = translation(categoryArr, 1);

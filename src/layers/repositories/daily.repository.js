@@ -56,10 +56,6 @@ module.exports = new (class DailyRepository {
           model: Tag,
           attributes: ["tag_name", "category"],
         },
-        {
-          model: Schedule,
-          attributes: ["user_tag_id"],
-        },
       ],
       raw: true,
     });
