@@ -21,7 +21,7 @@ passportConfig();
 app.set("port", process.env.PORT || 3000);
 
 sequelize.sequelize
-  .sync({ force: false })
+  .sync({ alter: false })
   .then(() => console.log("db connect"))
   .catch((err) => console.error(err));
 
@@ -73,10 +73,7 @@ app.use(express.urlencoded({ extended: true }));
 // 소셜 로그인 라우터
 app.use("/api", social);
 
-const whitelist = [
-  "http://localhost:3000",
-  "http://habit-rabbit-front.s3-website.ap-northeast-2.amazonaws.com",
-];
+const whitelist = ["https://localhost:3000", "https://habitrabbit.vercel.app"];
 
 const corsOptions = {
   origin: function (origin, callback) {

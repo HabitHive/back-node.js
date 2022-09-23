@@ -50,7 +50,7 @@ router.get("/tag/monthly/:date", authMiddleware, TagController.monthly);
 router.get("/pet", authMiddleware, PetController.getPetInfo);
 router.post("/pet", authMiddleware, PetController.buyingPetExp);
 
-const adminService = require("../services/admin");
-router.post("/admin/input/tag", adminService.input);
+// const adminService = require("../services/admin");
+// router.post("/admin/input/tag", adminService.input);
 
 module.exports = router;

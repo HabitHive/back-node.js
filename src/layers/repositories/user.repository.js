@@ -6,7 +6,6 @@ const { Op } = require("sequelize");
 class UserRepository {
   //회원가입              /api/user/signup
   singUp = async (email, nickname, password) => {
-    console.log(email, nickname, password);
     const exsistEmail = await User.findOne({
       where: { email, social: false },
     });
