@@ -1,32 +1,32 @@
 const User = require("../../models/user");
-const Session = require("../../models/session");
+const Refresh = require("../../models/refresh");
 const Point = require("../../models/point");
-const { Op } = require("sequelize");
+const { Op, where } = require("sequelize");
 
 class UserRepository {
-  //회원가입              /api/user/signup
+  //회원가입              /api/user/signup        (singUp, createAccount)
   singUp = async (email, nickname, password) => {
     const exsistEmail = await User.findOne({
       where: { email, social: false },
     });
     if (exsistEmail) {
-      const error = new Error("account error");
-      error.name = "exsist email";
-      error.status = 403;
-      throw error;
+      return 1;
     } else {
-      await User.create({
-        email,
-        password,
-        nickname,
-        social: false,
-        provider: null,
-      });
-      return true;
+      return 0;
     }
   };
 
-  //로그인                /api/user/login
+  createAccount = async (email, nickname, password) => {
+    await User.create({
+      email,
+      password,
+      nickname,
+      social: false,
+      provider: null,
+    });
+  };
+
+  //로그인                /api/user/login       (logIn, refresh)
   logIn = async (email) => {
     const findUser = await User.findOne({
       where: { email, social: false },
@@ -35,20 +35,21 @@ class UserRepository {
     return findUser;
   };
 
-  //로그 아웃             /api/user/logout
-  logOut = async (session_id) => {
-    await Session.destroy({ where: { session_id } });
+  refresh = async (refresh_token) => {
+    const refresh = await Refresh.create({ refresh_token });
+
+    return refresh.dataValues.refresh_id;
   };
 
-  session = async (session_id) => {
-    const findSession = await Session.findOne({
-      where: { session_id },
-      raw: true,
-    });
-    return findSession;
+  //로그 아웃             /api/user/logout      (logOut)
+  logOut = async (refresh_id) => {
+    const refresh = await Refresh.findOne({ where: { refresh_id } });
+    if (refresh) return 1;
+    await Refresh.destroy({ where: { refresh_id } });
+    return 0;
   };
 
-  //관심사 설정           /api/user/interest
+  //관심사 설정           /api/user/interest    (interest)
   interest = async (interest, user_id) => {
     await User.update({ interest }, { where: { user_id } });
   };

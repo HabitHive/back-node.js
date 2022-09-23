@@ -8,8 +8,6 @@ const sequelize = require("./models");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
-const MySQLStore = require("express-mysql-session")(session);
-const mysql = require("mysql");
 const passport = require("passport");
 const passportConfig = require("./passport/index");
 
@@ -29,33 +27,11 @@ app.get("/", (req, res, next) => {
   res.send("기본페이지~다~~ 이 말이야!");
 });
 
-//session store
-const options = {
-  host: process.env.DEV_DB_HOST,
-  port: 3306,
-  user: process.env.DEV_DB_ID,
-  password: process.env.DEV_DB_PW,
-  database: process.env.DEV_DB,
-  clearExpired: true, //  만료된 세션 자동 확인 및 지우기 여부
-  checkExpirationInterval: 7 * 24 * 60 * 60 * 1000, //  (단위: milliseconds) 1000 = 1 seconds, 만료된 세션이 지워지는 빈도
-  expiration: 30 * 24 * 60 * 60 * 1000, //  유효기간 1 month
-  createDatabaseTable: false, //  세션 데이터베이스 테이블 생성 여부(아직 존재하지 않는 경우 기본값 true)
-};
-
-const connection = mysql.createConnection(options);
-const sessionStore = new MySQLStore({}, connection);
-
 app.use(
   session({
     resave: false,
     saveUninitialized: false,
-    store: sessionStore,
     secret: process.env.SESSION_SECRET,
-    cookie: {
-      domain: ".com",
-      httpOnly: true,
-      maxAge: 30 * 24 * 60 * 60 * 1000,
-    },
   })
 );
 
@@ -83,8 +59,7 @@ const corsOptions = {
       console.log(origin);
       callback(new Error("Not Allowed Origin!"));
     }
-  },
-  credentials: true,
+  }
 };
 
 app.use(cors(corsOptions));

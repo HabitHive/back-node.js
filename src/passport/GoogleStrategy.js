@@ -34,7 +34,7 @@ module.exports = () => {
             done(null, exUser.user_id); // 로그인 인증 완료
           } else {
             // 가입되지 않는 유저면 회원가입 시키고 로그인을 시킨다
-            await User.create({
+            const newUser = await User.create({
               email: profile._json.email,
               nickname: profile._json.name,
               interest: "#",
@@ -42,16 +42,7 @@ module.exports = () => {
               social: true,
               provider: "google",
             });
-            // 방금 가입한 유저 찾기
-            const newUser = await User.findOne({
-              where: {
-                email: profile._json.email,
-                social: true,
-                provider: "google",
-              },
-              raw: true,
-            });
-            done(null, newUser.user_id); // 회원가입하고 로그인 인증 완료
+            done(null, newUser.dataValues.user_id); // 회원가입하고 로그인 인증 완료
           }
         } catch (error) {
           done(error);

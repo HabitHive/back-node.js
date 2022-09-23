@@ -42,12 +42,21 @@ class UserService {
     const { email, nickname, password } = body;
     const salt = await bcrypt.genSalt(10); // 기본이 10번이고 숫자가 올라갈수록 연산 시간과 보안이 높아진다.
     const hashedpassword = await bcrypt.hash(password, salt); // hashedpassword를 데이터베이스에 저장한다.
-    const repository_result = await UserRepository.singUp(
+    const repositoryResult = await UserRepository.singUp(
       email,
       nickname,
       hashedpassword
     );
-    if (repository_result) return true;
+
+    if (repositoryResult) {
+      const error = new Error("already exsist email");
+      error.name = "Account error";
+      error.status = 403;
+      throw error;
+    } else {
+      await UserRepository.createAccount(email, nickname, hashedpassword);
+      return 1;
+    }
   };
 
   //로그인                /api/user/login
@@ -56,24 +65,33 @@ class UserService {
     if (user) {
       const validPassword = await bcrypt.compare(password, user.password);
       if (!validPassword) {
-        const error = new Error("Mismatched password");
-        error.name = "wrong password";
+        const error = new Error("wrong password");
+        error.name = "Account error";
         error.status = 403;
         throw error;
       }
 
-      req.session.a1 = user.user_id;
-      req.session.save((err) => {
-        if (err) {
-          const error = new Error("session save error");
-          error.name = "can not create session";
-          error.status = 500;
-          throw error;
-        }
-      });
+      const accessToken = jwt.sign(
+        { key1: user.user_id + parseInt(process.env.SUM) },
+        process.env.ACCESS_TOKEN_SECRET,
+        { expiresIn: "12h" }
+      );
+      const refreshToken = jwt.sign(
+        { key2: user.user_id },
+        process.env.REFRESH_TOKEN_SECRET,
+        { expiresIn: "7d" }
+      );
+
+      console.log(refreshToken);
+      const refreshId = await UserRepository.refresh(refreshToken);
+
+      return {
+        accessToken: accessToken,
+        refreshToken: refreshId + parseInt(process.env.SUM2),
+      };
     } else {
       const error = new Error("not exist User");
-      error.name = "user not found";
+      error.name = "Account error";
       error.status = 403;
       throw error;
     }
@@ -81,14 +99,12 @@ class UserService {
 
   //로그 아웃             /api/user/logout
   logOut = async (req) => {
-    const { session } = req.headers;
-    const sessionData = await UserRepository.session(session);
-    if (sessionData) {
-      await UserRepository.logOut(session);
-    } else {
-      const error = new Error("not exist session");
-      error.name = "session not found";
-      error.status = 500;
+    const { refresh } = req.headers;
+    const refreshId = parseInt(refresh) - parseInt(process.env.SUM2);
+    const result = await UserRepository.logOut(refreshId);
+    if (result) {
+      const error = new Error("not exist logindata");
+      error.name = "Login error";
       throw error;
     }
   };

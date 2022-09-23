@@ -1,20 +1,17 @@
 const Sequelize = require("sequelize");
 
-const sequelize = require("./sequelize");
-
-module.exports = class Session extends Sequelize.Model {
+module.exports = class Refresh extends Sequelize.Model {
   static init(sequelize) {
     return super.init(
       {
-        session_id: {
-          type: Sequelize.STRING,
+        refresh_id: {
+          type: Sequelize.INTEGER,
+          autoIncrement: true,
           primaryKey: true,
         },
-        expires: {
-          type: Sequelize.INTEGER,
-        },
-        data: {
-          type: Sequelize.JSON,
+        refresh_token: {
+          type: Sequelize.STRING(1500),
+          allowNull: false,
         },
       },
       {
@@ -22,8 +19,8 @@ module.exports = class Session extends Sequelize.Model {
         timestamps: false,
         paranoid: false,
         underscored: false,
-        modelName: "Session",
-        tableName: "sessions",
+        modelName: "Refresh",
+        tableName: "refreshs",
         charset: "utf8",
         collate: "utf8_general_ci",
       }

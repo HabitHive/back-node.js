@@ -1,7 +1,5 @@
 const Sequelize = require("sequelize");
 
-const sequelize = require("./sequelize");
-
 module.exports = class Schedule extends Sequelize.Model {
   static init(sequelize) {
     return super.init(
