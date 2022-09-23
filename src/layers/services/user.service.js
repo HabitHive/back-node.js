@@ -105,6 +105,7 @@ class UserService {
     if (result) {
       const error = new Error("not exist logindata");
       error.name = "Login error";
+      error.status = 403;
       throw error;
     }
   };
