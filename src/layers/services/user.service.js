@@ -42,12 +42,21 @@ class UserService {
     const { email, nickname, password } = body;
     const salt = await bcrypt.genSalt(10); // 기본이 10번이고 숫자가 올라갈수록 연산 시간과 보안이 높아진다.
     const hashedpassword = await bcrypt.hash(password, salt); // hashedpassword를 데이터베이스에 저장한다.
-    const repository_result = await UserRepository.singUp(
+    const repositoryResult = await UserRepository.singUp(
       email,
       nickname,
       hashedpassword
     );
-    if (repository_result) return true;
+
+    if (repositoryResult) {
+      const error = new Error("already exsist email");
+      error.name = "Account error";
+      error.status = 403;
+      throw error;
+    } else {
+      await UserRepository.createAccount(email, nickname, hashedpassword);
+      return 1;
+    }
   };
 
   //로그인                /api/user/login
