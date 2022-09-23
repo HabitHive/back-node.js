@@ -4,30 +4,30 @@ const Point = require("../../models/point");
 const { Op, where } = require("sequelize");
 
 class UserRepository {
-  //회원가입              /api/user/signup
+  //회원가입              /api/user/signup        (singUp, createAccount)
   singUp = async (email, nickname, password) => {
     console.log(email, nickname, password);
     const exsistEmail = await User.findOne({
       where: { email, social: false },
     });
     if (exsistEmail) {
-      const error = new Error("account error");
-      error.name = "exsist email";
-      error.status = 403;
-      throw error;
+      return 1;
     } else {
-      await User.create({
-        email,
-        password,
-        nickname,
-        social: false,
-        provider: null,
-      });
-      return true;
+      return 0;
     }
   };
 
-  //로그인                /api/user/login
+  createAccount = async (email, nickname, password) => {
+    await User.create({
+      email,
+      password,
+      nickname,
+      social: false,
+      provider: null,
+    });
+  };
+
+  //로그인                /api/user/login       (logIn, refresh)
   logIn = async (email) => {
     const findUser = await User.findOne({
       where: { email, social: false },
@@ -42,7 +42,7 @@ class UserRepository {
     return refresh.dataValues.refresh_id;
   };
 
-  //로그 아웃             /api/user/logout
+  //로그 아웃             /api/user/logout      (logOut)
   logOut = async (refresh_id) => {
     const refresh = await Refresh.findOne({ where: { refresh_id } });
     if (refresh) return 1;
@@ -50,7 +50,7 @@ class UserRepository {
     return 0;
   };
 
-  //관심사 설정           /api/user/interest
+  //관심사 설정           /api/user/interest    (interest)
   interest = async (interest, user_id) => {
     await User.update({ interest }, { where: { user_id } });
   };
