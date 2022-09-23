@@ -3,8 +3,7 @@ const dotenv = require("dotenv");
 const router = require("./layers/router");
 const social = require("./layers/router/social.login");
 const morgan = require("morgan");
-const chalk = require("chalk");
-const sequelize = require("./models");
+const { sequelize } = require("./models");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
@@ -18,7 +17,7 @@ passportConfig();
 
 app.set("port", process.env.PORT || 3000);
 
-sequelize.sequelize
+sequelize
   .sync({ force: false })
   .then(() => console.log("db connect"))
   .catch((err) => console.error(err));
@@ -62,7 +61,7 @@ const corsOptions = {
       console.log(origin);
       callback(new Error("Not Allowed Origin!"));
     }
-  }
+  },
 };
 
 app.use(cors(corsOptions));
@@ -85,6 +84,4 @@ app.use((err, req, res, next) => {
   });
 });
 
-app.listen(app.get("port"), () =>
-  console.log(chalk.blueBright(app.get("port")) + " 포트로 열렸습니다")
-);
+module.exports = app;

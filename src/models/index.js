@@ -39,4 +39,4 @@ Pet.associate(db);
 Done.associate(db);
 Refresh.associate(db);
 
-module.exports = { db, sequelize };
+module.exports = db;
