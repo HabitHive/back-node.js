@@ -22,8 +22,8 @@ module.exports = async (req, res, next) => {
 
     // 유저 있는지 확인하기 없으면 에러 throw
     if (existUser === null) {
-      const error = new Error("user not exist");
-      error.name = "User error";
+      const error = new Error("not exist user");
+      error.name = "Account error";
       throw error;
     }
 
