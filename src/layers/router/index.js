@@ -6,8 +6,12 @@ const TagController = require("../controllers/tag.controller");
 const PetController = require("../controllers/pet.controller");
 
 const authMiddleware = require("../utils/auth.middleware");
+const reissuance = require("../utils/token.reissuance");
 
 const router = express.Router();
+
+/* /api/token */
+router.get("/token", reissuance); //엑세스 토큰 재발급
 
 /* /api/user */
 router.post("/user/signup", UserController.singUp); //회원가입
@@ -27,7 +31,7 @@ router.post("/tag/done", authMiddleware, TagController.doneTag); //습관 완료
 router.get(
   "/tag/schedule/add/:userTagId",
   authMiddleware,
-  DailyController.schedulePage // 지금 현재 필요없는 로직
+  DailyController.schedulePage
 );
 router.post(
   "/tag/schedule/add/:userTagId",

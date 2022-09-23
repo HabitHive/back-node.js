@@ -1,7 +1,7 @@
 const User = require("../../models/user");
-const Session = require("../../models/session");
+const Refresh = require("../../models/refresh");
 const Point = require("../../models/point");
-const { Op } = require("sequelize");
+const { Op, where } = require("sequelize");
 
 class UserRepository {
   //회원가입              /api/user/signup
@@ -36,17 +36,18 @@ class UserRepository {
     return findUser;
   };
 
-  //로그 아웃             /api/user/logout
-  logOut = async (session_id) => {
-    await Session.destroy({ where: { session_id } });
+  refresh = async (refresh_token) => {
+    const refresh = await Refresh.create({ refresh_token });
+
+    return refresh.dataValues.refresh_id;
   };
 
-  session = async (session_id) => {
-    const findSession = await Session.findOne({
-      where: { session_id },
-      raw: true,
-    });
-    return findSession;
+  //로그 아웃             /api/user/logout
+  logOut = async (refresh_id) => {
+    const refresh = await Refresh.findOne({ where: { refresh_id } });
+    if (refresh) return 1;
+    await Refresh.destroy({ where: { refresh_id } });
+    return 0;
   };
 
   //관심사 설정           /api/user/interest

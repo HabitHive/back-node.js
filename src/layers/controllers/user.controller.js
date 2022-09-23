@@ -11,34 +11,42 @@ class UserController {
           req.body.password,
           req
         );
-        res.cookie("result", "success");
-        res.status(201).json({ session: req.sessionID });
+        res.status(201).json({
+          accessToken: token.accessToken,
+          refreshToken: token.refreshToken,
+        });
       }
     } catch (error) {
       if (error.status) {
         res
           .status(error.status)
-          .json({ name: error.name, message: error.message });
+          .json({ err_message: `${error.name}: ${error.message}` });
         return;
       }
-      res.status(400).json({ name: error.name, message: error.message });
+      res.status(400).json({ err_message: `${error.name}: ${error.message}` });
     }
   };
 
   //로그인                /api/user/login
   logIn = async (req, res) => {
     try {
-      await UserService.logIn(req.body.email, req.body.password, req);
-      res.cookie("result", "success");
-      res.status(201).json({ session: req.sessionID });
+      const token = await UserService.logIn(
+        req.body.email,
+        req.body.password,
+        req
+      );
+      res.status(201).json({
+        accessToken: token.accessToken,
+        refreshToken: token.refreshToken,
+      });
     } catch (error) {
       if (error.status) {
         res
           .status(error.status)
-          .json({ name: error.name, message: error.message });
+          .json({ err_message: `${error.name}: ${error.message}` });
         return;
       }
-      res.status(400).json({ name: error.name, message: error.message });
+      res.status(400).json({ err_message: `${error.name}: ${error.message}` });
     }
   };
 
@@ -46,15 +54,9 @@ class UserController {
   logOut = async (req, res) => {
     try {
       await UserService.logOut(req);
-      res.status(200).json({});
+      res.status(200).json({ message: "success" });
     } catch (error) {
-      if (error.status) {
-        res
-          .status(error.status)
-          .json({ name: error.name, message: error.message });
-        return;
-      }
-      res.status(400).json({ name: error.name, message: error.message });
+      res.status(400).json({ err_message: `${error.name}: ${error.message}` });
     }
   };
 
@@ -62,15 +64,15 @@ class UserController {
   interest = async (req, res) => {
     try {
       await UserService.interest(req.body, res.locals.userId);
-      res.status(201).json({});
+      res.status(201).json({ message: "success" });
     } catch (error) {
       if (error.status) {
         res
           .status(error.status)
-          .json({ name: error.name, message: error.message });
+          .json({ err_message: `${error.name}: ${error.message}` });
         return;
       }
-      res.status(400).json({ name: error.name, message: error.message });
+      res.status(400).json({ err_message: `${error.name}: ${error.message}` });
     }
   };
 
