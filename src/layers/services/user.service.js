@@ -82,7 +82,6 @@ class UserService {
         { expiresIn: "7d" }
       );
 
-      console.log(refreshToken);
       const refreshId = await UserRepository.refresh(refreshToken);
 
       return {
