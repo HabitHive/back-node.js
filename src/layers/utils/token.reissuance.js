@@ -14,7 +14,7 @@ module.exports = async (req, res, next) => {
     });
     if (refreshData === null) {
       const error = new Error("not exist token");
-      error.name = "Refresh-Token error";
+      error.name = "Token error";
       throw error;
     }
     const refreshToken = refreshData.refresh_token;
@@ -24,7 +24,7 @@ module.exports = async (req, res, next) => {
       (err, decoded) => {
         if (err) {
           const error = new Error("invalid token");
-          error.name = "Verify token error";
+          error.name = "Token error";
           throw err;
         }
         return decoded;
