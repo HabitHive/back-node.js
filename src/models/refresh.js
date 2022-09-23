@@ -4,15 +4,14 @@ module.exports = class Refresh extends Sequelize.Model {
   static init(sequelize) {
     return super.init(
       {
-        session_id: {
-          type: Sequelize.STRING,
+        refresh_id: {
+          type: Sequelize.INTEGER,
+          autoIncrement: true,
           primaryKey: true,
         },
-        expires: {
-          type: Sequelize.INTEGER,
-        },
-        data: {
-          type: Sequelize.JSON,
+        refresh_token: {
+          type: Sequelize.STRING(1500),
+          allowNull: false,
         },
       },
       {

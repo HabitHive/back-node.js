@@ -1,6 +1,7 @@
 const passport = require("passport");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
+const Refresh = require("../../models/refresh");
 dotenv.config();
 
 class SocialLogin {
@@ -38,23 +39,28 @@ class SocialLogin {
     // failureFlash: true, //실패시 플래시 메시지 출력여부
   });
 
-  ResponseToken = (req, res) => {
+  ResponseToken = async (req, res) => {
     if (req.user) {
+      console.log(req.user);
       const accessToken = jwt.sign(
         { key1: req.user + parseInt(process.env.SUM) },
         process.env.ACCESS_TOKEN_SECRET,
-        { expiresIn: "1h" }
+        { expiresIn: "12h" }
       );
       const refreshToken = jwt.sign(
-        { key2: accessToken, key3: req.user },
+        { key2: req.user },
         process.env.REFRESH_TOKEN_SECRET,
         { expiresIn: "7d" }
       );
 
-      req.session.a1 = refreshToken;
-      req.session.save();
+      const refresh = await Refresh.create({ refresh_token: refreshToken });
+
+      const refreshId = refresh.dataValues.refresh_id;
+
+      const randomRefreshId = refreshId + parseInt(process.env.SUM2);
+
       res.redirect(
-        `http://habit-rabbit-front.s3-website.ap-northeast-2.amazonaws.com/?token=${accessToken}&session=${req.sessionID}`
+        `http://localhost:3000/?accessToken=${accessToken}&refreshToken=${randomRefreshId}`
       );
       return;
     }
