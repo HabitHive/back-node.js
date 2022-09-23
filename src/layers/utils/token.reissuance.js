@@ -14,7 +14,7 @@ module.exports = async (req, res, next) => {
     });
     if (refreshData === null) {
       const error = new Error("not exist token");
-      error.name = "refresh error";
+      error.name = "Refresh-Token error";
       throw error;
     }
     const refreshToken = refreshData.refresh_token;
@@ -23,8 +23,8 @@ module.exports = async (req, res, next) => {
       process.env.REFRESH_TOKEN_SECRET,
       (err, decoded) => {
         if (err) {
-          //   const error = new Error("verify token error");
-          //   error.name = "invalid token";
+          const error = new Error("invalid token");
+          error.name = "Verify token error";
           throw err;
         }
         return decoded;
@@ -52,6 +52,6 @@ module.exports = async (req, res, next) => {
       accessToken: newAccessToken,
     });
   } catch (error) {
-    res.status(403).json({ name: error.name, message: error.message });
+    res.status(403).json({ err_message: `${error.name}: ${error.message}` });
   }
 };

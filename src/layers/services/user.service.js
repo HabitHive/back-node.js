@@ -57,7 +57,7 @@ class UserService {
       const validPassword = await bcrypt.compare(password, user.password);
       if (!validPassword) {
         const error = new Error("wrong password");
-        error.name = "account error";
+        error.name = "Account error";
         error.status = 403;
         throw error;
       }
@@ -82,7 +82,7 @@ class UserService {
       };
     } else {
       const error = new Error("not exist User");
-      error.name = "user not found";
+      error.name = "Account error";
       error.status = 403;
       throw error;
     }
@@ -95,7 +95,7 @@ class UserService {
     const result = await UserRepository.logOut(refreshId);
     if (result) {
       const error = new Error("not exist logindata");
-      error.name = "login error";
+      error.name = "Login error";
       throw error;
     }
   };

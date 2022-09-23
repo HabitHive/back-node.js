@@ -20,10 +20,10 @@ class UserController {
       if (error.status) {
         res
           .status(error.status)
-          .json({ name: error.name, message: error.message });
+          .json({ err_message: `${error.name}: ${error.message}` });
         return;
       }
-      res.status(400).json({ name: error.name, message: error.message });
+      res.status(400).json({ err_message: `${error.name}: ${error.message}` });
     }
   };
 
@@ -43,10 +43,10 @@ class UserController {
       if (error.status) {
         res
           .status(error.status)
-          .json({ name: error.name, message: error.message });
+          .json({ err_message: `${error.name}: ${error.message}` });
         return;
       }
-      res.status(400).json({ name: error.name, message: error.message });
+      res.status(400).json({ err_message: `${error.name}: ${error.message}` });
     }
   };
 
@@ -56,7 +56,7 @@ class UserController {
       await UserService.logOut(req);
       res.status(200).json({ message: "success" });
     } catch (error) {
-      res.status(400).json({ name: error.name, message: error.message });
+      res.status(400).json({ err_message: `${error.name}: ${error.message}` });
     }
   };
 
@@ -64,15 +64,15 @@ class UserController {
   interest = async (req, res) => {
     try {
       await UserService.interest(req.body, res.locals.userId);
-      res.status(201).json({});
+      res.status(201).json({ message: "success" });
     } catch (error) {
       if (error.status) {
         res
           .status(error.status)
-          .json({ name: error.name, message: error.message });
+          .json({ err_message: `${error.name}: ${error.message}` });
         return;
       }
-      res.status(400).json({ name: error.name, message: error.message });
+      res.status(400).json({ err_message: `${error.name}: ${error.message}` });
     }
   };
 
