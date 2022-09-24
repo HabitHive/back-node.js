@@ -49,7 +49,11 @@ app.use(express.urlencoded({ extended: true }));
 // 소셜 로그인 라우터
 app.use("/api", social);
 
-const whitelist = ["https://localhost:3000", "https://habitrabbit.vercel.app"];
+const whitelist = [
+  "https://localhost:3000",
+  "http://localhost:3000",
+  "https://habitrabbit.vercel.app",
+];
 
 const corsOptions = {
   origin: function (origin, callback) {
@@ -59,7 +63,7 @@ const corsOptions = {
       console.log(origin);
       callback(new Error("Not Allowed Origin!"));
     }
-  }
+  },
 };
 
 app.use(cors(corsOptions));
