@@ -31,10 +31,17 @@ module.exports = new (class DailyService {
     const dailyTagLists = dailyTagList.map((schedule) => {
       const categoryArr = schedule["UserTag.Tag.category"].split("#");
       const category = translation(categoryArr, 1);
+      const date =
+        schedule["UserTag.start_date"].split(" ")[0] +
+        "~" +
+        schedule["UserTag.end_date"].split(" ")[0];
       return {
         scheduleId: schedule.schedule_id,
         userTagId: schedule.user_tag_id,
-        weekCycle: schedule.time_cycle,
+        timeCycle: schedule.time_cycle,
+        weekCycle: schedule.week_cycle,
+        period: schedule["UserTag.period"],
+        date,
         tagName: schedule["UserTag.Tag.tag_name"],
         category,
         done: doneScheduleList.includes(schedule.user_tag_id),

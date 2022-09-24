@@ -1,9 +1,9 @@
-const app = require("../src/test");
+const app = require("../src/app");
 const request = require("supertest");
 const agent = request.agent(app);
 
 let token;
-let session;
+
 describe("회원가입", () => {
   test("1번 유저 로컬 회원가입 하기(성공)", (done) => {
     request(app)

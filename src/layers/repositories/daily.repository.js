@@ -19,9 +19,11 @@ module.exports = new (class DailyRepository {
   dailyPage = async (user_id, toDate) => {
     return await Schedule.findAll({
       where: { user_id },
+      attributes: ["schedule_id", "user_tag_id", "time_cycle", "week_cycle"],
       raw: true,
       include: {
         model: UserTag,
+        attributes: ["period", "start_date", "end_date"],
         where: {
           start_date: { [Op.lte]: toDate }, // start_date =< toDate
           end_date: { [Op.gt]: toDate }, // toDate < end_date
