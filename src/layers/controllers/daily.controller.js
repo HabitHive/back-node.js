@@ -82,7 +82,7 @@ module.exports = new (class Dailycontroller {
 
       const date = await DailyService.scheduleUpdate(
         userId,
-        scheduleId,
+        scheduleId / 1,
         startTime,
         endTime,
         weekCycle,
@@ -104,7 +104,7 @@ module.exports = new (class Dailycontroller {
       const { userId } = res.locals;
       const { scheduleId } = req.params;
 
-      const date = await DailyService.scheduleDelete(userId, scheduleId);
+      const date = await DailyService.scheduleDelete(userId, scheduleId / 1);
 
       return res
         .status(date.status)

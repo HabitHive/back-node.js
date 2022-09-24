@@ -118,8 +118,30 @@ module.exports = new (class DailyService {
     weekCycle,
     startDate
   ) => {
-    // weekCycle는 1개이상 있어야 한다.
+    if (weekCycle == "") {
+      return {
+        status: 400,
+        message: "선택된 요일이 없다.",
+      }; // "0,1,3,4,5,6" 이라는 형태의 값이 오지 않는 다면?? 확인이 안됨
+    }
+    let [start, end] = [startTime.split(""), endTime.split("")];
     // startTime, endTime는 둘다 정해져서 와야 한다, (태스트 코드 조건 필요)
+    while (start.length != 5 || end.length != 5) {
+      if (start[1] == ":") {
+        start.unshift("0");
+      } else if (start.length != 5) {
+        start.push("0");
+      }
+      if (end[1] == ":") {
+        end.unshift("0");
+      } else if (end.length != 5) {
+        end.push("0");
+      }
+    }
+    [startTime, endTime] = [start.join(""), end.join("")];
+
+    const timeCycle = startTime + "~" + endTime; // startTime + "," + endTime; 00:00 형태
+
     // startDate는 2022-09-20의 형태로 와야한다. (문자, 숫자, 안되고 정제되지 않아도 안됨)
 
     const userTag = await DailyRepository.userTagInOf(userId, userTagId);
@@ -130,7 +152,6 @@ module.exports = new (class DailyService {
     startDate = startDate + " 00:00:00"; // startDate는 2022-09-20 00:00:00 형태
     startDateStr.setDate(startDateStr.getDate() + period);
     let endDate = startDateStr.toISOString().split("T")[0] + " 00:00:00"; // 2022-09-25 00:00:00 형태 반환
-    const timeCycle = startTime + "~" + endTime; // startTime + "," + endTime;
 
     if (userTag.start_date == null) {
       await DailyRepository.startDateUpdate(userTagId, startDate, endDate); // 처음
@@ -139,10 +160,16 @@ module.exports = new (class DailyService {
     } else {
       // 스타트 시간이 지난 후에 새로운 스케줄을 설정은?? 지금은 수정 X
       // 만들어지는는 스케줄이 달라야한다.? // 시작시간인 지난 뒤에
-      await DailyRepository.schedule(userTagId, userId, timeCycle, weekCycle);
+      await DailyRepository.schedule(
+        userTagId,
+        userId,
+        timeCycle,
+        weekCycle,
+        afterDate
+      );
       return {
-        status: 203,
-        message: "스케줄 생성됨 이미 스케줄 싱생된 이후임으로 날짜 수정 안됨",
+        status: 201,
+        message: "스케줄 실행된 후의 스케줄 생성 완료",
       };
     }
     await DailyRepository.schedule(userTagId, userId, timeCycle, weekCycle);
@@ -162,8 +189,31 @@ module.exports = new (class DailyService {
     weekCycle,
     startDate
   ) => {
-    // weekCycle는 1개이상 있어야 한다.
+    if (weekCycle == "") {
+      return {
+        status: 400,
+        message: "선택된 요일이 없다.",
+      }; // "0,1,3,4,5,6" 이라는 형태의 값이 오지 않는 다면?? 확인이 안됨
+    }
+
+    let [start, end] = [startTime.split(""), endTime.split("")];
     // startTime, endTime는 둘다 정해져서 와야 한다, (태스트 코드 조건 필요)
+    while (start.length != 5 || end.length != 5) {
+      if (start[1] == ":") {
+        start.unshift("0");
+      } else if (start.length != 5) {
+        start.push("0");
+      }
+      if (end[1] == ":") {
+        end.unshift("0");
+      } else if (end.length != 5) {
+        end.push("0");
+      }
+    }
+    [startTime, endTime] = [start.join(""), end.join("")];
+
+    const timeCycle = startTime + "~" + endTime;
+
     // startDate는 2022-09-20의 형태로 와야한다. (문자, 숫자, 안되고 정제되지 않아도 안됨)
 
     const schedule = await DailyRepository.scheduleInOf(userId, scheduleId);
@@ -175,7 +225,6 @@ module.exports = new (class DailyService {
     startDate = startDate + " 00:00:00"; // startDate는 2022-09-20 00:00:00 형태
     startDateStr.setDate(startDateStr.getDate() + period);
     let endDate = startDateStr.toISOString().split("T")[0] + " 00:00:00"; // 2022-09-25 00:00:00 형태 반환
-    const timeCycle = startTime + "~" + endTime;
 
     if (schedule.UserTag.startDate == null) {
       return {

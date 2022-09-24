@@ -82,8 +82,20 @@ module.exports = new (class DailyRepository {
     await UserTag.update({ start_date, end_date }, { where: { user_tag_id } });
   };
 
-  schedule = async (user_tag_id, user_id, time_cycle, week_cycle) => {
-    await Schedule.create({ user_tag_id, user_id, time_cycle, week_cycle });
+  schedule = async (
+    user_tag_id,
+    user_id,
+    time_cycle,
+    week_cycle,
+    after_date
+  ) => {
+    await Schedule.create({
+      user_tag_id,
+      user_id,
+      time_cycle,
+      week_cycle,
+      after_date,
+    });
   };
 
   scheduleInOf = async (user_id, schedule_id) => {
