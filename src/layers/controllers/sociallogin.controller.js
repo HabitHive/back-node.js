@@ -59,9 +59,7 @@ class SocialLogin {
 
       // const randomRefreshId = refreshId + parseInt(process.env.SUM2);
 
-      res.redirect(
-        `http://habit-rabbit-front.s3-website.ap-northeast-2.amazonaws.com/?accessToken=${accessToken}`
-      ); // &refreshToken=${randomRefreshId}
+      res.redirect(`http://localhost:3000/?accessToken=${accessToken}`); // &refreshToken=${randomRefreshId}
       return;
     }
     res.redirect(
