@@ -150,10 +150,10 @@ class UserService {
    */
   myTag = async (userId) => {
     const now = new Date();
-    console.log(now);
-    const today = new Date(
-      [now.getFullYear(), now.getMonth() + 1, now.getDate()].join("-")
-    );
+    const utc = now.getTime() + now.getTimezoneOffset() * 60 * 1000;
+    const krDiff = 9 * 60 * 60 * 1000;
+    const today = new Date(utc + krDiff);
+    today.setHours(0, 0, 0, 0);
 
     const tagLists = await TagRepository.myAllTagList(userId);
     if (tagLists.length == 0) {

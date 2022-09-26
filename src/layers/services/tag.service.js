@@ -205,9 +205,9 @@ module.exports = new (class TagService {
 
     const done = await TagRepository.createDone(
       userId,
+      scheduleId,
       userTagId,
-      date,
-      schedule.time_cycle
+      date
     );
 
     const exist = await UserRepository.existHistory(userTagId, date);

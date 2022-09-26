@@ -17,12 +17,12 @@ module.exports = class Done extends Sequelize.Model {
           type: Sequelize.INTEGER,
           allowNull: false,
         },
-        date: {
-          type: Sequelize.DATE,
+        schedule_id: {
+          type: Sequelize.INTEGER,
           allowNull: false,
         },
-        time_cycle: {
-          type: Sequelize.STRING,
+        date: {
+          type: Sequelize.DATE,
           allowNull: false,
         },
       },
@@ -46,6 +46,11 @@ module.exports = class Done extends Sequelize.Model {
     });
     db.Done.belongsTo(db.UserTag, {
       foreignKey: { name: "user_tag_id", allowNull: false },
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    });
+    db.Done.belongsTo(db.Schedule, {
+      foreignKey: { name: "schedule_id", allowNull: false },
       onDelete: "cascade",
       onUpdate: "cascade",
     });
