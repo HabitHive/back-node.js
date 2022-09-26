@@ -13,7 +13,7 @@ class UserController {
         );
         res.status(201).json({
           accessToken: token.accessToken,
-          refreshToken: token.refreshToken,
+          // refreshToken: token.refreshToken,
         });
       }
     } catch (error) {
