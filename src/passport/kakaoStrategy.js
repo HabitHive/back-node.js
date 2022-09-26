@@ -43,7 +43,6 @@ module.exports = () => {
               email: profile._json.kakao_account.email,
               nickname: profile._json.kakao_account.profile.nickname,
               interest: "#",
-              point: 0,
               social: true,
               provider: "kakao",
             });

@@ -151,9 +151,9 @@ class UserService {
    */
   myTag = async (userId) => {
     const now = new Date();
+    console.log(now);
     const today = new Date(
-      [now.getFullYear(), now.getMonth() + 1, now.getDate()].join("-") +
-        " 09:00:00"
+      [now.getFullYear(), now.getMonth() + 1, now.getDate()].join("-")
     );
 
     const tagLists = await TagRepository.myAllTagList(userId);
