@@ -25,6 +25,10 @@ module.exports = class Schedule extends Sequelize.Model {
           type: Sequelize.STRING(50),
           allowNull: false,
         },
+        after_date: {
+          type: Sequelize.DATE,
+          allowNull: true,
+        },
       },
       {
         sequelize,
