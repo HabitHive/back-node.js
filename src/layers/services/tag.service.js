@@ -2,6 +2,11 @@ const TagRepository = require("../repositories/tag.repository");
 const UserRepository = require("../repositories/user.repository");
 const translation = require("../utils/translation.category");
 
+const curr = new Date();
+const utc = curr.getTime(); //+ curr.getTimezoneOffset() * 60 * 1000; // 2. UTC 시간 계산
+const krTime = 9 * 60 * 60 * 1000; // 3. UTC to KST (UTC + 9시간)
+const krNewDate = new Date(utc + krTime);
+
 module.exports = new (class TagService {
   result = async (status, message, result) => {
     return { status, message, result };
@@ -37,8 +42,7 @@ module.exports = new (class TagService {
 
     const userPoint = userInfo.point;
     // 포인트 찾아서 보내기 {객체 이름 정한것}
-    const date = new Date();
-    const buyLists = await TagRepository.userBuyList(userId, date);
+    const buyLists = await TagRepository.userBuyList(userId, krNewDate);
     const tagIdBuyList = buyLists.map((tag) => tag.tag_id);
     // 구매한 태그 리스트 목록 배열로(tagId만)
 
