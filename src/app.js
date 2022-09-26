@@ -49,8 +49,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api", social);
 
 const whitelist = [
+  "https://localhost:3000",
   "http://localhost:3000",
-  "http://habit-rabbit-front.s3-website.ap-northeast-2.amazonaws.com",
+  "https://habitrabbit.vercel.app",
 ];
 
 const corsOptions = {

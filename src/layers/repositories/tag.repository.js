@@ -126,12 +126,12 @@ module.exports = new (class TagRepository {
     return result;
   };
 
-  createDone = async (user_id, user_tag_id, date, time_cycle) => {
+  createDone = async (user_id, schedule_id, user_tag_id, date, time_cycle) => {
     const result = await Done.create({
       user_id,
+      schedule_id,
       user_tag_id,
       date,
-      time_cycle,
     });
     return result;
   };

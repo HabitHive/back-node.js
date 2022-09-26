@@ -1,8 +1,9 @@
 const Tag = require("../../models/tag");
+const User = require("../../models/user");
 const translation = require("../utils/translation.category");
 
 // 태그 생성 메소드... 파일 위치 옮길 예정
-module.exports = new (class adminService {
+module.exports = new (class AdminService {
   input = async (req, res) => {
     const { list } = req.body;
     const listSplit = list.split("/");
@@ -21,5 +22,13 @@ module.exports = new (class adminService {
 
     await Tag.bulkCreate(allTags);
     res.status(201).send("완료");
+  };
+
+  money = async (req, res) => {
+    const user_id = res.locals.userId;
+    const point = 10040000;
+
+    await User.update({ point }, { where: { user_id } });
+    return res.status(201).send("넣어둬 넣어둬");
   };
 })();

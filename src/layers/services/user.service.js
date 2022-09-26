@@ -81,7 +81,6 @@ class UserService {
       //   process.env.REFRESH_TOKEN_SECRET,
       //   { expiresIn: "7d" }
       // );
-
       // const refreshId = await UserRepository.refresh(refreshToken);
 
       return {
@@ -151,10 +150,10 @@ class UserService {
    */
   myTag = async (userId) => {
     const now = new Date();
-    const today = new Date(
-      [now.getFullYear(), now.getMonth() + 1, now.getDate()].join("-") +
-        " 09:00:00"
-    );
+    const utc = now.getTime() + now.getTimezoneOffset() * 60 * 1000;
+    const krDiff = 9 * 60 * 60 * 1000;
+    const today = new Date(utc + krDiff);
+    today.setHours(0, 0, 0, 0);
 
     const tagLists = await TagRepository.myAllTagList(userId);
     if (tagLists.length == 0) {

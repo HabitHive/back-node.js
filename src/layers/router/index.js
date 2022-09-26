@@ -54,7 +54,10 @@ router.get("/tag/monthly/:date", authMiddleware, TagController.monthly);
 router.get("/pet", authMiddleware, PetController.getPetInfo);
 router.post("/pet", authMiddleware, PetController.buyingPetExp);
 
-const adminService = require("../services/admin");
-router.post("/admin/input/tag", adminService.input);
+/* /api/admin */
+// 배포시 주석처리 또는 삭제
+const AdminService = require("../services/admin");
+router.post("/admin/input", AdminService.input);
+router.put("/admin/money", authMiddleware, AdminService.money);
 
 module.exports = router;

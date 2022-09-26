@@ -188,10 +188,8 @@ module.exports = new (class TagService {
    * @returns first : 첫 완료 여부 / bonus : 보너스 여부 / bonusPoint
    */
   done = async (userId, scheduleId, strDate) => {
-    console.log(userId);
     /* 일정 정보 불러오기 */
     const schedule = await TagRepository.findSchedule(scheduleId);
-    console.log(schedule);
     if (!schedule) return this.result(400, "존재하지 않는 일정입니다.");
     else if (schedule.user_id !== userId)
       return this.result(401, "본인의 일정이 아닙니다.");
@@ -207,9 +205,9 @@ module.exports = new (class TagService {
 
     const done = await TagRepository.createDone(
       userId,
+      scheduleId,
       userTagId,
-      date,
-      schedule.time_cycle
+      date
     );
 
     const exist = await UserRepository.existHistory(userTagId, date);
