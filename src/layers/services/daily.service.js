@@ -1,6 +1,11 @@
 const DailyRepository = require("../repositories/daily.repository");
 const translation = require("../utils/translation.category");
 
+const curr = new Date();
+const utc = curr.getTime(); //+ curr.getTimezoneOffset() * 60 * 1000; // 2. UTC 시간 계산
+const krTime = 9 * 60 * 60 * 1000; // 3. UTC to KST (UTC + 9시간)
+const krNewDate = new Date(utc + krTime);
+
 module.exports = new (class DailyService {
   result = async (status, message, result) => {
     return { status, message, result };
@@ -71,7 +76,6 @@ module.exports = new (class DailyService {
   };
 
   tagList = async (userId) => {
-    const date = new Date();
     const notNew = await DailyRepository.checkSchedule(userId);
     // 배열로 스케줄들의 user_tag_id가 배열로써 나오게 (O)
 
@@ -79,7 +83,7 @@ module.exports = new (class DailyService {
       return check.user_tag_id;
     }); // 유저의 UserTag 모두 가져오기
 
-    const result = await DailyRepository.tagList(userId, date);
+    const result = await DailyRepository.tagList(userId, krNewDate);
     // 구매한 태그들 가져옴 //
     const tagLists = result.map((list) => {
       const categoryArr = list["Tag.category"].split("#");
@@ -170,7 +174,7 @@ module.exports = new (class DailyService {
 
     if (userTag.start_date == null) {
       await DailyRepository.startDateUpdate(userTagId, startDate, endDate); // 처음
-    } else if (new Date() < new Date(userTag.start_date)) {
+    } else if (krNewDate < new Date(userTag.start_date)) {
       await DailyRepository.startDateUpdate(userTagId, startDate, endDate); // 시간이 되기전
     } else {
       const afterDate = startDate;
@@ -245,7 +249,7 @@ module.exports = new (class DailyService {
         status: 400,
         message: "스케줄이 생성된적이 없는 태그를 수정하려고함",
       };
-    } else if (new Date() < new Date(schedule.UserTag.startDate)) {
+    } else if (krNewDate < new Date(schedule.UserTag.startDate)) {
       await DailyRepository.startDateUpdate(userTagId, startDate, endDate); // 시간이 되기전
       await DailyRepository.scheduleUpdate(scheduleId, timeCycle, weekCycle);
     } else {
