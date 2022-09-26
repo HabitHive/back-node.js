@@ -50,7 +50,8 @@ module.exports = new (class DailyService {
         dDay = Math.floor(
           (new Date(schedule["UserTag.end_date"]).getTime() -
             new Date(toDate).getTime()) /
-            (1000 * 60 * 60 * 24)
+            (1000 * 60 * 60 * 24) +
+            1
         ); // 멥 메소드가 아니라 9시간 데해 주면 된다. => ["UserTag.end_date"]에 09:00:00으로
       } // MySQL에 저장 할때 9시간을 빼면서 넣어주고 생성할때에는 9시간을 우리나라기준으로 더한다.
 
@@ -168,9 +169,9 @@ module.exports = new (class DailyService {
     const period = userTag.period;
 
     const startDateStr = new Date(startDate);
-    startDate = startDate; // + " 00:00:00" startDate는 2022-09-20 00:00:00 형태
+    startDate = startDate; // startDate는 2022-09-20 00:00:00 형태
     startDateStr.setDate(startDateStr.getDate() + period);
-    let endDate = startDateStr.toISOString().split("T")[0]; //+ " 00:00:00" 2022-09-25 00:00:00 형태 반환
+    let endDate = startDateStr.toISOString().split("T")[0]; // 2022-09-25 00:00:00 형태 반환
 
     if (userTag.start_date == null) {
       await DailyRepository.startDateUpdate(userTagId, startDate, endDate); // 처음
@@ -235,30 +236,35 @@ module.exports = new (class DailyService {
     // startDate는 2022-09-20의 형태로 와야한다. (문자, 숫자, 안되고 정제되지 않아도 안됨)
 
     const schedule = await DailyRepository.scheduleInOf(userId, scheduleId);
-    // 유저의가 선택한 태그의 정보
+    // 유저가 생성한 스케줄의 정보
 
-    const userTagId = schedule.UserTag.user_tag_id;
-    const period = schedule.UserTag.period;
+    const userTagId = schedule.user_tag_id;
     const startDateStr = new Date(startDate);
-    startDate = startDate + " 00:00:00"; // startDate는 2022-09-20 00:00:00 형태
-    startDateStr.setDate(startDateStr.getDate() + period);
-    let endDate = startDateStr.toISOString().split("T")[0] + " 00:00:00"; // 2022-09-25 00:00:00 형태 반환
+    startDate = startDate; // startDate는 2022-09-20 00:00:00 형태
+    startDateStr.setDate(startDateStr.getDate() + schedule["UserTag.period"]);
+    let endDate = startDateStr.toISOString().split("T")[0]; // 2022-09-25 00:00:00 형태 반환
 
-    if (schedule.UserTag.startDate == null) {
+    if (schedule["UserTag.start_date"] == null) {
       return {
         status: 400,
         message: "스케줄이 생성된적이 없는 태그를 수정하려고함",
       };
-    } else if (krNewDate < new Date(schedule.UserTag.startDate)) {
+    } else if (krNewDate <= new Date(schedule["UserTag.start_date"])) {
       await DailyRepository.startDateUpdate(userTagId, startDate, endDate); // 시간이 되기전
       await DailyRepository.scheduleUpdate(scheduleId, timeCycle, weekCycle);
     } else {
       // 스타트 시간이 지난 후에 새로운 스케줄을 설정은?? 지금은 수정 X
       // 만들어지는는 스케줄이 달라야한다.? // 시작시간인 지난 뒤에
-      await DailyRepository.scheduleUpdate(scheduleId, timeCycle, weekCycle);
+      const afterDate = startDate;
+      await DailyRepository.scheduleUpdate(
+        scheduleId,
+        timeCycle,
+        weekCycle,
+        afterDate
+      );
       return {
         status: 203,
-        message: "스케줄 생성됨 이미 스케줄 싱생된 이후임으로 날짜 수정 안됨",
+        message: "스케줄 생성됨 시작날짜 수정 안됨 스케줄 시작했음",
       };
     }
 
