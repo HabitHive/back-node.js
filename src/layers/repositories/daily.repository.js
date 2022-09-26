@@ -31,8 +31,8 @@ module.exports = new (class DailyRepository {
         model: UserTag,
         attributes: ["period", "start_date", "end_date"],
         where: {
-          start_date: { [Op.lte]: toDate }, // start_date =< toDate
-          end_date: { [Op.gt]: toDate }, // toDate < end_date
+          start_date: { [Op.lte]: toDate }, // start_date <= toDate
+          end_date: { [Op.gte]: toDate }, // toDate <= end_date
         },
         include: [
           {

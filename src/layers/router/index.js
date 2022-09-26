@@ -56,8 +56,8 @@ router.post("/pet", authMiddleware, PetController.buyingPetExp);
 
 /* /api/admin */
 // 배포시 주석처리 또는 삭제
-const AdminService = require("../services/admin");
-router.post("/admin/input", AdminService.input);
-router.put("/admin/money", authMiddleware, AdminService.money);
+// const AdminService = require("../services/admin");
+// router.post("/admin/input", AdminService.input);
+// router.put("/admin/money", authMiddleware, AdminService.money);
 
 module.exports = router;
