@@ -10,7 +10,7 @@ module.exports = new (class DailyRepository {
     new Date(lastDate.setDate(lastDate.getDate() - 1)); // 정시인 00시에서 1일 지난 00시 만들기
 
     return await Done.findAll({
-      where: { user_id, date: { [Op.lte]: toDate, [Op.gt]: lastDate } }, // toDate =< date , date =< lastDate
+      where: { user_id, date: { [Op.lte]: toDate, [Op.gt]: lastDate } }, // toDate =< date , date < lastDate
       attributes: ["schedule_id"],
       raw: true,
     });

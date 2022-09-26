@@ -166,11 +166,8 @@ module.exports = new (class DailyService {
 
     const userTag = await DailyRepository.userTagInOf(userId, userTagId);
     // userTag 에서 구매한 습관의 시작날짜, 지속날짜를 가져온다.
-    const period = userTag.period;
-
-    const startDateStr = new Date(startDate);
-    startDate = startDate; // startDate는 2022-09-20 00:00:00 형태
-    startDateStr.setDate(startDateStr.getDate() + period);
+    const startDateStr = new Date(startDate); // startDate는 2022-09-20 00:00:00 형태
+    startDateStr.setDate(startDateStr.getDate() + userTag.period - 1);
     let endDate = startDateStr.toISOString().split("T")[0]; // 2022-09-25 00:00:00 형태 반환
 
     if (userTag.start_date == null) {
@@ -178,7 +175,7 @@ module.exports = new (class DailyService {
     } else if (krNewDate < new Date(userTag.start_date)) {
       await DailyRepository.startDateUpdate(userTagId, startDate, endDate); // 시간이 되기전
     } else {
-      const afterDate = startDate;
+      const afterDate = startDate + " +";
       await DailyRepository.schedule(
         userTagId,
         userId,
@@ -239,8 +236,7 @@ module.exports = new (class DailyService {
     // 유저가 생성한 스케줄의 정보
 
     const userTagId = schedule.user_tag_id;
-    const startDateStr = new Date(startDate);
-    startDate = startDate; // startDate는 2022-09-20 00:00:00 형태
+    const startDateStr = new Date(startDate); // startDate는 2022-09-20 00:00:00 형태
     startDateStr.setDate(startDateStr.getDate() + schedule["UserTag.period"]);
     let endDate = startDateStr.toISOString().split("T")[0]; // 2022-09-25 00:00:00 형태 반환
 
@@ -255,7 +251,7 @@ module.exports = new (class DailyService {
     } else {
       // 스타트 시간이 지난 후에 새로운 스케줄을 설정은?? 지금은 수정 X
       // 만들어지는는 스케줄이 달라야한다.? // 시작시간인 지난 뒤에
-      const afterDate = startDate;
+      const afterDate = startDate + " +";
       await DailyRepository.scheduleUpdate(
         scheduleId,
         timeCycle,
@@ -270,7 +266,6 @@ module.exports = new (class DailyService {
 
     return {
       status: 200,
-      result: {},
       message: "내 태그 스케줄 수정",
     };
   };
@@ -280,7 +275,6 @@ module.exports = new (class DailyService {
 
     return {
       status: 200,
-      result: {},
       message: "스케줄이 삭제되었습니다.",
     };
   };
