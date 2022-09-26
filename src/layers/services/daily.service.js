@@ -24,6 +24,10 @@ module.exports = new (class DailyService {
       return check.week_cycle.includes(week);
     }); // 날짜에 맞추어 들고온 스케줄의 요알에 맞는지 필터 (O)
 
+    dailyTagList = dailyTagList.filter((check) => {
+      return toDate >= new Date(check.after_date);
+    }); // 이후에 된 날짜가 있는지 확인하고 요일 안에 있는지 필터
+
     const doneSchedule = await DailyRepository.doneSchedule(toDate);
     const doneScheduleList = doneSchedule.map((done) => done.user_tag_id);
     // 해당 날짜의 스케줄 중에 완료된 것들 목록 (배열로) (O)
@@ -31,17 +35,28 @@ module.exports = new (class DailyService {
     const dailyTagLists = dailyTagList.map((schedule) => {
       const categoryArr = schedule["UserTag.Tag.category"].split("#");
       const category = translation(categoryArr, 1);
-      const date =
-        schedule["UserTag.start_date"].split(" ")[0] +
-        "~" +
-        schedule["UserTag.end_date"].split(" ")[0];
+      let startDate = schedule["UserTag.start_date"].split(" ")[0];
+      let dDay = schedule["UserTag.period"];
+
+      if (schedule.after_date != null) {
+        startDate = schedule.after_date.split(" ")[0];
+      }
+      if (new Date(toDate) > new Date(schedule["UserTag.start_date"])) {
+        dDay = Math.floor(
+          (new Date(schedule["UserTag.end_date"]).getTime() -
+            new Date(toDate).getTime()) /
+            (1000 * 60 * 60 * 24)
+        ); // 멥 메소드가 아니라 9시간 데해 주면 된다. => ["UserTag.end_date"]에 09:00:00으로
+      } // MySQL에 저장 할때 9시간을 빼면서 넣어주고 생성할때에는 9시간을 우리나라기준으로 더한다.
+
+      const date = startDate + "~" + schedule["UserTag.end_date"].split(" ")[0];
       return {
         scheduleId: schedule.schedule_id,
         userTagId: schedule.user_tag_id,
         timeCycle: schedule.time_cycle,
         weekCycle: schedule.week_cycle,
-        period: schedule["UserTag.period"],
-        date,
+        period: dDay,
+        date, // after_date가 있다면 시작날짜를 수정후 리턴
         tagName: schedule["UserTag.Tag.tag_name"],
         category,
         done: doneScheduleList.includes(schedule.user_tag_id),
@@ -149,17 +164,16 @@ module.exports = new (class DailyService {
     const period = userTag.period;
 
     const startDateStr = new Date(startDate);
-    startDate = startDate + " 00:00:00"; // startDate는 2022-09-20 00:00:00 형태
+    startDate = startDate; // + " 00:00:00" startDate는 2022-09-20 00:00:00 형태
     startDateStr.setDate(startDateStr.getDate() + period);
-    let endDate = startDateStr.toISOString().split("T")[0] + " 00:00:00"; // 2022-09-25 00:00:00 형태 반환
+    let endDate = startDateStr.toISOString().split("T")[0]; //+ " 00:00:00" 2022-09-25 00:00:00 형태 반환
 
     if (userTag.start_date == null) {
       await DailyRepository.startDateUpdate(userTagId, startDate, endDate); // 처음
     } else if (new Date() < new Date(userTag.start_date)) {
       await DailyRepository.startDateUpdate(userTagId, startDate, endDate); // 시간이 되기전
     } else {
-      // 스타트 시간이 지난 후에 새로운 스케줄을 설정은?? 지금은 수정 X
-      // 만들어지는는 스케줄이 달라야한다.? // 시작시간인 지난 뒤에
+      const afterDate = startDate;
       await DailyRepository.schedule(
         userTagId,
         userId,

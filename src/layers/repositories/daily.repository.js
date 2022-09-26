@@ -19,7 +19,13 @@ module.exports = new (class DailyRepository {
   dailyPage = async (user_id, toDate) => {
     return await Schedule.findAll({
       where: { user_id },
-      attributes: ["schedule_id", "user_tag_id", "time_cycle", "week_cycle"],
+      attributes: [
+        "schedule_id",
+        "user_tag_id",
+        "time_cycle",
+        "week_cycle",
+        "after_date",
+      ],
       raw: true,
       include: {
         model: UserTag,
