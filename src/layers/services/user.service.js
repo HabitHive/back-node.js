@@ -76,18 +76,17 @@ class UserService {
         process.env.ACCESS_TOKEN_SECRET,
         { expiresIn: "12h" }
       );
-      const refreshToken = jwt.sign(
-        { key2: user.user_id },
-        process.env.REFRESH_TOKEN_SECRET,
-        { expiresIn: "7d" }
-      );
+      // const refreshToken = jwt.sign(
+      //   { key2: user.user_id },
+      //   process.env.REFRESH_TOKEN_SECRET,
+      //   { expiresIn: "7d" }
+      // );
 
-      console.log(refreshToken);
-      const refreshId = await UserRepository.refresh(refreshToken);
+      // const refreshId = await UserRepository.refresh(refreshToken);
 
       return {
         accessToken: accessToken,
-        refreshToken: refreshId + parseInt(process.env.SUM2),
+        // refreshToken: refreshId + parseInt(process.env.SUM2),
       };
     } else {
       const error = new Error("not exist User");

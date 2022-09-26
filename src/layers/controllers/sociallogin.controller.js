@@ -47,21 +47,21 @@ class SocialLogin {
         process.env.ACCESS_TOKEN_SECRET,
         { expiresIn: "12h" }
       );
-      const refreshToken = jwt.sign(
-        { key2: req.user },
-        process.env.REFRESH_TOKEN_SECRET,
-        { expiresIn: "7d" }
-      );
+      // const refreshToken = jwt.sign(
+      //   { key2: req.user },
+      //   process.env.REFRESH_TOKEN_SECRET,
+      //   { expiresIn: "7d" }
+      // );
 
-      const refresh = await Refresh.create({ refresh_token: refreshToken });
+      // const refresh = await Refresh.create({ refresh_token: refreshToken });
 
-      const refreshId = refresh.dataValues.refresh_id;
+      // const refreshId = refresh.dataValues.refresh_id;
 
-      const randomRefreshId = refreshId + parseInt(process.env.SUM2);
+      // const randomRefreshId = refreshId + parseInt(process.env.SUM2);
 
       res.redirect(
-        `http://localhost:3000/?accessToken=${accessToken}&refreshToken=${randomRefreshId}`
-      );
+        `http://habit-rabbit-front.s3-website.ap-northeast-2.amazonaws.com/?accessToken=${accessToken}`
+      ); // &refreshToken=${randomRefreshId}
       return;
     }
     res.redirect(
