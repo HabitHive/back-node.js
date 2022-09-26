@@ -27,7 +27,7 @@ module.exports = new (class DailyService {
 
     dailyTagList = dailyTagList.filter((check) => {
       return check.week_cycle.includes(week);
-    }); // 날짜에 맞추어 들고온 스케줄의 요알에 맞는지 필터 (O)
+    }); // 날짜에 맞추어 들고온 스케줄의 요일에 맞는지 필터 (O)
 
     dailyTagList = dailyTagList.filter((check) => {
       return toDate >= new Date(check.after_date);
@@ -170,7 +170,7 @@ module.exports = new (class DailyService {
 
     const startDateStr = new Date(startDate);
     startDate = startDate; // startDate는 2022-09-20 00:00:00 형태
-    startDateStr.setDate(startDateStr.getDate() + period);
+    startDateStr.setDate(startDateStr.getDate() + period - 1);
     let endDate = startDateStr.toISOString().split("T")[0]; // 2022-09-25 00:00:00 형태 반환
 
     if (userTag.start_date == null) {
@@ -241,7 +241,9 @@ module.exports = new (class DailyService {
     const userTagId = schedule.user_tag_id;
     const startDateStr = new Date(startDate);
     startDate = startDate; // startDate는 2022-09-20 00:00:00 형태
-    startDateStr.setDate(startDateStr.getDate() + schedule["UserTag.period"]);
+    startDateStr.setDate(
+      startDateStr.getDate() + schedule["UserTag.period"] - 1
+    );
     let endDate = startDateStr.toISOString().split("T")[0]; // 2022-09-25 00:00:00 형태 반환
 
     if (schedule["UserTag.start_date"] == null) {

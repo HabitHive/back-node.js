@@ -202,7 +202,7 @@ module.exports = new (class TagService {
     const tag = await TagRepository.findUserTag(userTagId);
     const date = new Date(strDate);
     const startDate = new Date(tag.start_date);
-    const endDate = new Date(tag.end_date);
+    let endDate = new Date(tag.end_date);
 
     if (date < startDate) return this.result(400, "시작되지 않은 일정입니다.");
     else if (date > endDate) return this.result(400, "종료된 일정입니다.");
@@ -216,35 +216,33 @@ module.exports = new (class TagService {
 
     const exist = await UserRepository.existHistory(userTagId, date);
     const first = exist ? false : true; // 이미 기록이 존재한다면 포인트 X
+
     let bonus = false;
     let bonusPoint = 0;
 
-    /* 첫 완료*/
-    if (first && date != endDate) {
+    if (first) {
       const userPoint = await UserRepository.findPoint(userId);
       const increase = await UserRepository.updatePoint(userId, userPoint + 20);
       if (increase == [0]) return this.result(400, "알 수 없는 에러");
-
       await UserRepository.createHistory(userId, 20, date, userTagId);
-    }
 
-    /* 첫 완료 + 마지막 날 */
-    if (first && date == endDate) {
-      const count = await UserRepository.countHistory(userTagId);
-      bonus = count == tag.period; // 일정 내내 성공했다면 보너스 true
-      if (bonus) {
-        bonusPoint = tag.period * 20;
+      const bonusDay = date.getTime() >= endDate.getTime();
+
+      if (bonusDay) {
+        const count = await UserRepository.countHistory(userTagId);
+        bonus = count == tag.period; // 일정 내내 성공했다면 보너스 true
+
+        if (bonus) {
+          bonusPoint = tag.period * 20;
+          const increase = await UserRepository.updatePoint(
+            userId,
+            userPoint + 20 + bonusPoint
+          );
+          if (increase == [0]) return this.result(400, "알 수 없는 에러");
+        }
+        const updateTag = await TagRepository.isSuccess(userTagId, bonus);
+        if (updateTag == [0]) return this.result(400, "알 수 없는 에러");
       }
-
-      const userPoint = await UserRepository.findPoint(userId);
-      const increase = await UserRepository.updatePoint(
-        userId,
-        userPoint + 20 + bonusPoint
-      );
-      if (increase == [0]) return this.result(400, "알 수 없는 에러");
-
-      const updateTag = await TagRepository.isSuccess(userTagId, bonus);
-      if (updateTag == [0]) return this.result(400, "알 수 없는 에러");
     }
 
     return this.result(201, "습관 완료", { first, bonus, bonusPoint });
