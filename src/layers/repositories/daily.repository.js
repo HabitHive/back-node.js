@@ -107,6 +107,7 @@ module.exports = new (class DailyRepository {
   scheduleInOf = async (user_id, schedule_id) => {
     const schedule = await Schedule.findOne({
       where: { user_id, schedule_id },
+      raw: true,
       include: {
         model: UserTag,
         attributes: ["user_tag_id", "start_date", "period"],
@@ -115,9 +116,9 @@ module.exports = new (class DailyRepository {
     return schedule;
   };
 
-  scheduleUpdate = async (schedule_id, time_cycle, week_cycle) => {
+  scheduleUpdate = async (schedule_id, time_cycle, week_cycle, after_date) => {
     await Schedule.update(
-      { time_cycle, week_cycle },
+      { time_cycle, week_cycle, after_date },
       { where: { schedule_id } }
     );
   };
