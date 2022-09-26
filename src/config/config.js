@@ -9,7 +9,7 @@ const development = {
   host: process.env.DEV_DB_HOST,
   dialect: "mysql",
   logging: false,
-  timezone: "+09:00",
+  timezone: "+00:00",
   dialectOptions: { dateStrings: true, typeCast: true },
   define: { timestamps: true },
 };
@@ -21,7 +21,7 @@ const test = {
   host: process.env.TEST_DB_HOST,
   dialect: "mysql",
   logging: false,
-  timezone: "+09:00",
+  timezone: "+00:00",
   dialectOptions: { dateStrings: true, typeCast: true },
   define: { timestamps: true },
 };
@@ -33,7 +33,7 @@ const production = {
   host: process.env.PRO_DB_HOST,
   dialect: "mysql",
   logging: false,
-  timezone: "+09:00",
+  timezone: "+00:00",
   dialectOptions: { dateStrings: true, typeCast: true },
   define: { timestamps: true },
 };
