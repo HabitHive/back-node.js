@@ -6,12 +6,12 @@ const TagController = require("../controllers/tag.controller");
 const PetController = require("../controllers/pet.controller");
 
 const authMiddleware = require("../utils/auth.middleware");
-const reissuance = require("../utils/token.reissuance");
+// const reissuance = require("../utils/token.reissuance");
 
 const router = express.Router();
 
 /* /api/token */
-router.get("/token", reissuance); //엑세스 토큰 재발급
+// router.get("/token", reissuance); //엑세스 토큰 재발급
 
 /* /api/user */
 router.post("/user/signup", UserController.singUp); //회원가입
