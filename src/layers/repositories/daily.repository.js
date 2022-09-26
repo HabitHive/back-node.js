@@ -5,13 +5,13 @@ const { Op } = require("sequelize");
 const Done = require("../../models/done");
 
 module.exports = new (class DailyRepository {
-  doneSchedule = async (toDate) => {
+  doneSchedule = async (user_id, toDate) => {
     let lastDate = new Date(toDate);
     new Date(lastDate.setDate(lastDate.getDate() - 1)); // 정시인 00시에서 1일 지난 00시 만들기
 
     return await Done.findAll({
-      where: { date: { [Op.lte]: toDate, [Op.gt]: lastDate } }, // toDate =< date , date =< lastDate
-      attributes: ["user_tag_id"],
+      where: { user_id, date: { [Op.lte]: toDate, [Op.gt]: lastDate } }, // toDate =< date , date =< lastDate
+      attributes: ["schedule_id"],
       raw: true,
     });
   };

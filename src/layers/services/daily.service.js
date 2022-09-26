@@ -28,8 +28,8 @@ module.exports = new (class DailyService {
       return toDate >= new Date(check.after_date);
     }); // 이후에 된 날짜가 있는지 확인하고 요일 안에 있는지 필터
 
-    const doneSchedule = await DailyRepository.doneSchedule(toDate);
-    const doneScheduleList = doneSchedule.map((done) => done.user_tag_id);
+    const doneSchedule = await DailyRepository.doneSchedule(userId, toDate);
+    const doneScheduleList = doneSchedule.map((done) => done.schedule_id);
     // 해당 날짜의 스케줄 중에 완료된 것들 목록 (배열로) (O)
 
     const dailyTagLists = dailyTagList.map((schedule) => {
@@ -59,7 +59,7 @@ module.exports = new (class DailyService {
         date, // after_date가 있다면 시작날짜를 수정후 리턴
         tagName: schedule["UserTag.Tag.tag_name"],
         category,
-        done: doneScheduleList.includes(schedule.user_tag_id),
+        done: doneScheduleList.includes(schedule.schedule_id),
       }; // 데일리 페이지에 전달한 키와 값 정리
     });
 
