@@ -25,8 +25,11 @@ module.exports = new (class AdminService {
   };
 
   money = async (req, res) => {
-    const user_id = res.locals.userId;
-    const point = 10040000;
+    const { userId, point } = req.body;
+    let user_id = 0;
+
+    userId ? (user_id = userId) : (user_id = 1);
+    point ? (point = point) : (point = 10040000);
 
     await User.update({ point }, { where: { user_id } });
     return res.status(201).send("넣어둬 넣어둬");
