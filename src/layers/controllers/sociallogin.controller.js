@@ -38,7 +38,6 @@ class SocialLogin {
 
   ResponseToken = async (req, res) => {
     if (req.user) {
-      console.log(req.user);
       const accessToken = jwt.sign(
         { key1: req.user + parseInt(process.env.SUM) },
         process.env.ACCESS_TOKEN_SECRET,
