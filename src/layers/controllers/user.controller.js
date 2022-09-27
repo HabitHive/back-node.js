@@ -95,18 +95,21 @@ class UserController {
   //유저 태그 리스트         /api/user/mypage/tag
   myTagList = async (req, res) => {
     const { userId } = res.locals;
-    try {
-      const receive = await UserService.myTag(userId);
-      res.status(receive.status).json({
-        message: receive.message,
-        result: receive.result,
-      });
-    } catch (err) {
-      res.status(400).json({
-        name: err.name,
-        message: "에러가.. 떴어요...? 왜죠.... 알려주세요...",
-      });
-    }
+
+    const receive = await UserService.myTag(userId);
+    res
+      .status(receive.status)
+      .json({ message: receive.message, result: receive.result });
+  };
+
+  //랜덤 포인트 지급          /api/user/random
+  randomPoint = async (req, res) => {
+    const { userId } = res.locals;
+
+    const receive = await UserService.randomPoint(userId);
+    res
+      .status(receive.status)
+      .json({ message: receive.message, result: receive.result });
   };
 }
 

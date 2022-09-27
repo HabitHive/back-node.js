@@ -19,6 +19,7 @@ router.post("/user/login", UserController.logIn); //로그인
 router.delete("/user/logout", UserController.logOut); //로그 아웃
 router.put("/user/interest", authMiddleware, UserController.interest); //관심사 설정
 
+router.post("/user/random", authMiddleware, UserController.randomPoint); //보상 - 랜덤 포인트 지급
 router.get("/user/mypage/info", authMiddleware, UserController.myInfo); //유저정보
 router.put("/user/mypage/tag", authMiddleware, UserController.myTagList); //유저 습관 전적
 
