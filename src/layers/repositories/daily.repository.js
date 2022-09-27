@@ -49,12 +49,12 @@ module.exports = new (class DailyRepository {
     });
   };
 
-  tagList = async (user_id, krNewDate) => {
+  tagList = async (user_id, lastDate) => {
     return await UserTag.findAll({
       order: [["createdAt", "desc"]], // 정렬할 컬럼명과 오름차순/내림차순 구분
       where: {
         user_id,
-        end_date: { [Op.or]: { [Op.gte]: krNewDate, [Op.eq]: null } },
+        end_date: { [Op.or]: { [Op.gte]: lastDate, [Op.eq]: null } },
       }, // krNewDate < end_date or end_date = null
       include: [
         {

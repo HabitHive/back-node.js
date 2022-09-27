@@ -1,12 +1,6 @@
 const DailyRepository = require("../repositories/daily.repository");
 const translation = require("../utils/translation.category");
 
-const curr = new Date();
-const utc = curr.getTime(); //+ curr.getTimezoneOffset() * 60 * 1000; // 2. UTC 시간 계산
-const krTime = 9 * 60 * 60 * 1000; // 3. UTC to KST (UTC + 9시간)
-const krNewDate = new Date(utc + krTime);
-const lastDate = new Date(utc + krTime - 24 * 60 * 60 * 1000);
-
 module.exports = new (class DailyService {
   result = async (status, message, result) => {
     return { status, message, result };
@@ -95,6 +89,10 @@ module.exports = new (class DailyService {
       return check.user_tag_id;
     }); // 유저의 UserTag 모두 가져오기
 
+    const curr = new Date(); // 요청 할 때 한국 시간 구하기
+    const utc = curr.getTime(); // + curr.getTimezoneOffset() * 60 * 1000; // 2. UTC 시간 계산
+    const lastDate = new Date(utc + (9 - 24) * 60 * 60 * 1000);
+
     const result = await DailyRepository.tagList(userId, lastDate);
     // 구매한 태그들 가져옴 //
     const tagLists = result.map((list) => {
@@ -149,6 +147,9 @@ module.exports = new (class DailyService {
     weekCycle,
     startDate
   ) => {
+    const curr = new Date(); // 요청 할 때 한국 시간 구하기
+    const utc = curr.getTime(); // + curr.getTimezoneOffset() * 60 * 1000; // 2. UTC 시간 계산
+    const krNewDate = new Date(utc + 9 * 60 * 60 * 1000);
     if (weekCycle == "") {
       return {
         status: 400,
@@ -177,6 +178,7 @@ module.exports = new (class DailyService {
 
     const userTag = await DailyRepository.userTagInOf(userId, userTagId);
     // userTag 에서 구매한 습관의 시작날짜, 지속날짜를 가져온다.
+
     const startDateStr = new Date(startDate); // startDate는 2022-09-20 00:00:00 형태
     startDateStr.setDate(startDateStr.getDate() + userTag.period - 1);
     let endDate = startDateStr.toISOString().split("T")[0]; // 2022-09-25 00:00:00 형태 반환
@@ -216,6 +218,10 @@ module.exports = new (class DailyService {
     weekCycle,
     startDate
   ) => {
+    const curr = new Date(); // 요청 할 때 한국 시간 구하기
+    const utc = curr.getTime(); //+ curr.getTimezoneOffset() * 60 * 1000; // 2. UTC 시간 계산
+    const krNewDate = new Date(utc + 9 * 60 * 60 * 1000);
+
     if (weekCycle == "") {
       return {
         status: 400,
