@@ -233,6 +233,38 @@ class UserService {
 
     return this.result(200, "마이 태그", { stillTags, successTags, failTags });
   };
+
+  randomPoint = async (userId) => {
+    const userPoint = await UserRepository.findPoint(userId);
+    if (!userPoint) return this.result(400, "존재하지 않는 유저입니다.");
+
+    // const now = new Date();
+    // const utc = now.getTime() + now.getTimezoneOffset() * 60 * 1000;
+    // const krDiff = 9 * 60 * 60 * 1000;
+    // const today = new Date(utc + krDiff);
+    // today.setHours(0, 0, 0, 0);
+
+    // const chance = 5;
+    // const existHistory = await UserRepository.existRandomHistory(userId, today);
+    // if (existHistory > chance) return this.result(403, "수령 가능 횟수 초과");
+
+    let random = Math.floor(Math.random() * 100 + 1); // 1~100
+    const percentage = (num, count) => {
+      if (num > 100) return 50 * count;
+      else if (num < 6) return 250;
+      else return percentage(num * 2, count + 1);
+    };
+
+    const point = percentage(random, 0);
+    const updatePoint = await UserRepository.updatePoint(
+      userId,
+      userPoint + point
+    );
+    if (updatePoint == [0]) return this.result(400, "알 수 없는 에러");
+    // const createHistory = await UserRepository.createRandomHistory(userId, today, point);
+
+    return this.result(201, "랜덤 포인트", { point });
+  };
 }
 
 module.exports = new UserService();

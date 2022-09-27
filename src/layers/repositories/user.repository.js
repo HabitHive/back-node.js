@@ -99,6 +99,16 @@ class UserRepository {
     const result = await Point.create({ user_id, point, date, user_tag_id });
     return result;
   };
+
+  existRandomHistory = async (user_id, date) => {
+    const count = await Point.count({ where: { user_id, date } });
+    return count;
+  };
+
+  createRandomHistory = async (user_id, date, point) => {
+    const result = await Point.create({ user_id, date, point });
+    return result;
+  };
 }
 
 module.exports = new UserRepository();
