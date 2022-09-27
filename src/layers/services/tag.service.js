@@ -2,12 +2,6 @@ const TagRepository = require("../repositories/tag.repository");
 const UserRepository = require("../repositories/user.repository");
 const translation = require("../utils/translation.category");
 
-const curr = new Date();
-const utc = curr.getTime(); //+ curr.getTimezoneOffset() * 60 * 1000; // 2. UTC 시간 계산
-const krTime = 9 * 60 * 60 * 1000; // 3. UTC to KST (UTC + 9시간)
-const krNewDate = new Date(utc + krTime);
-const lastDate = new Date(utc + krTime - 24 * 60 * 60 * 1000);
-
 module.exports = new (class TagService {
   result = async (status, message, result) => {
     return { status, message, result };
@@ -16,6 +10,10 @@ module.exports = new (class TagService {
   tagBuyPage = async (userId) => {
     // 구매한 태그는 찾지 않게 만들기 (O)
     // TagId의 고유 값을 선택한 횟수 관심회 한 태그들의 목록 으로 추천 알고리즘 만들기 (XXX)
+
+    const curr = new Date(); // 요청 할 때 한국 시간 구하기
+    const utc = curr.getTime(); //+ curr.getTimezoneOffset() * 60 * 1000; // 2. UTC 시간 계산
+    const krNewDate = new Date(utc + 9 * 60 * 60 * 1000);
 
     const userInfo = await TagRepository.userInterest(userId);
     // 유저 ID로 유저의 정보를 가져온다.
@@ -43,7 +41,8 @@ module.exports = new (class TagService {
 
     const userPoint = userInfo.point;
     // 포인트 찾아서 보내기 {객체 이름 정한것}
-    const buyLists = await TagRepository.userBuyList(userId, lastDate);
+    const buyLists = await TagRepository.userBuyList(userId, krNewDate);
+    // 일부로 하루전에 먼저 장바구니에 등장
     const tagIdBuyList = buyLists.map((tag) => tag.tag_id);
     // 구매한 태그 리스트 목록 배열로(tagId만)
 
