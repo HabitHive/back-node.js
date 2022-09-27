@@ -30,6 +30,12 @@ module.exports = new (class DailyService {
     }); // 날짜에 맞추어 들고온 스케줄의 요일에 맞는지 필터 (O)
 
     dailyTagList = dailyTagList.filter((check) => {
+      if (check.after_date != null) {
+        if (check.after_date.split("T")[1] == "+")
+          return toDate >= new Date(check.after_date.split("T")[0]);
+        if (check.after_date.split("T")[1] == "-")
+          return toDate <= new Date(check.after_date.split("T")[0]);
+      }
       return toDate >= new Date(check.after_date);
     }); // 이후에 된 날짜가 있는지 확인하고 요일 안에 있는지 필터
 
@@ -41,10 +47,15 @@ module.exports = new (class DailyService {
       const categoryArr = schedule["UserTag.Tag.category"].split("#");
       const category = translation(categoryArr, 1);
       let startDate = schedule["UserTag.start_date"].split(" ")[0];
+      let endDate = schedule["UserTag.end_date"].split(" ")[0];
       let dDay = schedule["UserTag.period"];
 
       if (schedule.after_date != null) {
-        startDate = schedule.after_date.split(" ")[0];
+        if (schedule.after_date.split("T")[1] == "+") {
+          startDate = schedule.after_date.split("T")[0];
+        } else {
+          endDate = schedule.after_date.split("T")[0];
+        }
       }
       if (new Date(toDate) > new Date(schedule["UserTag.start_date"])) {
         dDay = Math.floor(
@@ -55,14 +66,13 @@ module.exports = new (class DailyService {
         ); // 멥 메소드가 아니라 9시간 데해 주면 된다. => ["UserTag.end_date"]에 09:00:00으로
       } // MySQL에 저장 할때 9시간을 빼면서 넣어주고 생성할때에는 9시간을 우리나라기준으로 더한다.
 
-      const date = startDate + "~" + schedule["UserTag.end_date"].split(" ")[0];
       return {
         scheduleId: schedule.schedule_id,
         userTagId: schedule.user_tag_id,
         timeCycle: schedule.time_cycle,
         weekCycle: schedule.week_cycle,
         period: dDay,
-        date, // after_date가 있다면 시작날짜를 수정후 리턴
+        date: startDate + "~" + endDate, // after_date가 있다면 시작날짜를 수정후 리턴
         tagName: schedule["UserTag.Tag.tag_name"],
         category,
         done: doneScheduleList.includes(schedule.schedule_id),
@@ -117,18 +127,18 @@ module.exports = new (class DailyService {
     };
   };
 
-  schedulePage = async (userId, userTagId) => {
-    // 지금 현재 필요없는 로직
-    const result = await DailyRepository.schedulePage(userId, userTagId);
-    let date = `${result.start_date}~${result.end_date}`;
+  // schedulePage = async (userId, userTagId) => {
+  //   // 지금 현재 필요없는 로직
+  //   const result = await DailyRepository.schedulePage(userId, userTagId);
+  //   let date = `${result.start_date}~${result.end_date}`;
 
-    return {
-      status: 200,
-      result: date,
-      message: "스케줄의 기간",
-    };
-  };
-  // 지금은 스케줄의 생성에 대한 로직만
+  //   return {
+  //     status: 200,
+  //     result: date,
+  //     message: "스케줄의 기간",
+  //   };
+  // };
+  // // 지금은 스케줄의 생성에 대한 로직만
 
   scheduleCreate = async (
     userId,
@@ -175,7 +185,7 @@ module.exports = new (class DailyService {
     } else if (krNewDate < new Date(userTag.start_date)) {
       await DailyRepository.startDateUpdate(userTagId, startDate, endDate); // 시간이 되기전
     } else {
-      const afterDate = startDate + " +";
+      const afterDate = startDate + "T+";
       await DailyRepository.schedule(
         userTagId,
         userId,
@@ -252,11 +262,17 @@ module.exports = new (class DailyService {
       await DailyRepository.startDateUpdate(userTagId, startDate, endDate); // 시간이 되기전
       await DailyRepository.scheduleUpdate(scheduleId, timeCycle, weekCycle);
     } else {
-      // 스타트 시간이 지난 후에 새로운 스케줄을 설정은?? 지금은 수정 X
-      // 만들어지는는 스케줄이 달라야한다.? // 시작시간인 지난 뒤에
-      const afterDate = startDate + " +";
+      let afterDate = startDate + "T-";
       await DailyRepository.scheduleUpdate(
         scheduleId,
+        timeCycle,
+        weekCycle,
+        afterDate
+      );
+      afterDate = startDate + "T+";
+      await DailyRepository.schedule(
+        userTagId,
+        userId,
         timeCycle,
         weekCycle,
         afterDate
