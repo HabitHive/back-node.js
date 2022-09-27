@@ -5,6 +5,7 @@ const curr = new Date();
 const utc = curr.getTime(); //+ curr.getTimezoneOffset() * 60 * 1000; // 2. UTC 시간 계산
 const krTime = 9 * 60 * 60 * 1000; // 3. UTC to KST (UTC + 9시간)
 const krNewDate = new Date(utc + krTime);
+const lastDate = new Date(utc + krTime - 24 * 60 * 60 * 1000);
 
 module.exports = new (class DailyService {
   result = async (status, message, result) => {
@@ -94,7 +95,7 @@ module.exports = new (class DailyService {
       return check.user_tag_id;
     }); // 유저의 UserTag 모두 가져오기
 
-    const result = await DailyRepository.tagList(userId, krNewDate);
+    const result = await DailyRepository.tagList(userId, lastDate);
     // 구매한 태그들 가져옴 //
     const tagLists = result.map((list) => {
       const categoryArr = list["Tag.category"].split("#");
