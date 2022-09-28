@@ -5,6 +5,8 @@ const bcrypt = require("bcrypt");
 const Joi = require("joi");
 const dotenv = require("dotenv");
 const jwt = require("jsonwebtoken");
+const nodemailer = require("nodemailer");
+const User = require("../../models/user");
 
 dotenv.config();
 
@@ -264,6 +266,95 @@ class UserService {
     // const createHistory = await UserRepository.createRandomHistory(userId, today, point);
 
     return this.result(201, "랜덤 포인트", { point });
+  };
+
+  findPassWord1 = async (email) => {
+    const findUser = await UserRepository.findPassWord1(email);
+    if (!findUser) {
+      const error = new Error("not exist User");
+      error.name = "Account error";
+      error.status = 403;
+      throw error;
+    }
+    const randomString = new Date().getTime().toString(36);
+
+    await UserRepository.updateVerify(email, randomString);
+
+    const mailConfig = {
+      service: "Naver",
+      host: "smtp.naver.com",
+
+      port: 587,
+      auth: {
+        user: process.env.MAIL_EMAIL,
+        pass: process.env.MAIL_PASSWORD,
+      },
+    };
+    let message = {
+      from: `"해빗 래빗" <${process.env.MAIL_EMAIL}>`,
+      to: email,
+      subject: "비밀번호 변경 인증 요청 코드입니다.",
+      html: `<p>인증 요청 코드: ${randomString}</p>`,
+    };
+    let transporter = nodemailer.createTransport(mailConfig);
+    transporter.sendMail(message, function (error, info) {
+      if (error) {
+        throw error;
+      }
+    });
+  };
+
+  findPassWord2 = async (verify) => {
+    const result = await UserRepository.findVerify(verify);
+    const { email } = result;
+    if (result) {
+      const temporaryPW = `PW@${Math.random().toString(36).substring(2, 8)}`;
+      const salt = await bcrypt.genSalt(10);
+      const hashedpassword = await bcrypt.hash(temporaryPW, salt);
+      await UserRepository.temporaryPW(verify, hashedpassword);
+
+      const mailConfig = {
+        service: "Naver",
+        host: "smtp.naver.com",
+
+        port: 587,
+        auth: {
+          user: process.env.MAIL_EMAIL,
+          pass: process.env.MAIL_PASSWORD,
+        },
+      };
+      let message = {
+        from: `"해빗 래빗" <${process.env.MAIL_EMAIL}>`,
+        to: email,
+        subject: "임시 비밀번호입니다.",
+        html: `<p>임시 비밀번호: ${temporaryPW}</p>`,
+      };
+      let transporter = nodemailer.createTransport(mailConfig);
+      transporter.sendMail(message, function (error, info) {
+        if (error) {
+          throw error;
+        }
+      });
+    } else {
+      const error = new Error("not exist Verify-code");
+      error.name = "Verify error";
+      error.status = 403;
+      throw error;
+    }
+  };
+
+  changePassWord = async (userId, password) => {
+    const user = await UserRepository.findUser(userId);
+    if (user) {
+      const salt = await bcrypt.genSalt(10);
+      const hashedpassword = await bcrypt.hash(password, salt);
+      await UserRepository.changePassWord(userId, hashedpassword);
+    } else {
+      const error = new Error("not exist User");
+      error.name = "Account error";
+      error.status = 403;
+      throw error;
+    }
   };
 }
 
