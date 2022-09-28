@@ -2,9 +2,9 @@ const User = require("../../models/user");
 const Refresh = require("../../models/refresh");
 const Point = require("../../models/point");
 const { Op, where } = require("sequelize");
+const { verify } = require("jsonwebtoken");
 
 class UserRepository {
-  //회원가입              /api/user/signup        (singUp, createAccount)
   singUp = async (email, nickname, password) => {
     const exsistEmail = await User.findOne({
       where: { email, social: false },
@@ -26,7 +26,6 @@ class UserRepository {
     });
   };
 
-  //로그인                /api/user/login       (logIn, refresh)
   logIn = async (email) => {
     const findUser = await User.findOne({
       where: { email, social: false },
@@ -41,7 +40,6 @@ class UserRepository {
     return refresh.dataValues.refresh_id;
   };
 
-  //로그 아웃             /api/user/logout      (logOut)
   logOut = async (refresh_id) => {
     const refresh = await Refresh.findOne({ where: { refresh_id } });
     if (refresh) return 1;
@@ -49,7 +47,6 @@ class UserRepository {
     return 0;
   };
 
-  //관심사 설정           /api/user/interest    (interest)
   interest = async (interest, user_id) => {
     await User.update({ interest }, { where: { user_id } });
   };
@@ -98,6 +95,45 @@ class UserRepository {
   createHistory = async (user_id, point, date, user_tag_id) => {
     const result = await Point.create({ user_id, point, date, user_tag_id });
     return result;
+  };
+
+  existRandomHistory = async (user_id, date) => {
+    const count = await Point.count({ where: { user_id, date } });
+    return count;
+  };
+
+  createRandomHistory = async (user_id, date, point) => {
+    const result = await Point.create({ user_id, date, point });
+    return result;
+  };
+
+  findPassWord1 = async (email) => {
+    const result = await User.findOne({ where: { email, social: false } });
+    return result;
+  };
+
+  updateVerify = async (email, randomString) => {
+    await User.update(
+      { verify: randomString },
+      { where: { email, social: false } }
+    );
+  };
+
+  findVerify = async (verify) => {
+    const result = await User.findOne({ where: { verify }, raw: true });
+    return result;
+  };
+
+  temporaryPW = async (verify, password) => {
+    await User.update({ password }, { where: { verify } });
+  };
+
+  changePassWord = async (user_id, password) => {
+    await User.update({ password }, { where: { user_id } });
+  };
+
+  signOut = async (user_id) => {
+    await User.destroy({ where: { user_id } });
   };
 }
 

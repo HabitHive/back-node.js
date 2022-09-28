@@ -202,7 +202,7 @@ module.exports = new (class TagService {
     const schedule = await TagRepository.findSchedule(scheduleId);
     if (!schedule) return this.result(400, "존재하지 않는 일정입니다.");
     else if (schedule.user_id !== userId)
-      return this.result(401, "본인의 일정이 아닙니다.");
+      return this.result(403, "본인의 일정이 아닙니다.");
 
     const userTagId = schedule.user_tag_id;
     const tag = await TagRepository.findUserTag(userTagId);
