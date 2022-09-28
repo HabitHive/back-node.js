@@ -23,6 +23,9 @@ router.post("/user/random", authMiddleware, UserController.randomPoint); //보�
 router.get("/user/mypage/info", authMiddleware, UserController.myInfo); //유저정보
 router.put("/user/mypage/tag", authMiddleware, UserController.myTagList); //유저 습관 전적
 
+// router.post("/user/sendemail", UserController.findPassWord1); //비밀번호를 바꾸기위한 인증코드 발송
+// router.post("/user/resetpassword", UserController.findPassWord2); //임시 비밀번호 적용 및 발급
+
 /* /api/tag */
 router.get("/tag/list", authMiddleware, TagController.tagBuyPage);
 router.post("/tag/buy", authMiddleware, TagController.tagBuy);

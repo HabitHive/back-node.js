@@ -111,6 +111,40 @@ class UserController {
       .status(receive.status)
       .json({ message: receive.message, result: receive.result });
   };
+
+  //비밀 번호 찾기 1 인증코드 발급
+  findPassWord1 = async (req, res) => {
+    try {
+      const { email } = req.body;
+      await UserService.findPassWord1(email);
+      res.status(200).json({ message: "success" });
+    } catch (error) {
+      if (error.status) {
+        res
+          .status(error.status)
+          .json({ err_message: `${error.name}: ${error.message}` });
+        return;
+      }
+      res.status(400).json({ err_message: `${error.name}: ${error.message}` });
+    }
+  };
+
+  //비밀 번호 찾기 2 인증코드 확인
+  findPassWord2 = async (req, res) => {
+    try {
+      const { verify } = req.body;
+      await UserService.findPassWord2(verify);
+      res.status(201).json({ message: "success" });
+    } catch (error) {
+      if (error.status) {
+        res
+          .status(error.status)
+          .json({ err_message: `${error.name}: ${error.message}` });
+        return;
+      }
+      res.status(400).json({ err_message: `${error.name}: ${error.message}` });
+    }
+  };
 }
 
 module.exports = new UserController();
