@@ -137,16 +137,16 @@ module.exports = new (class TagService {
     const fixPoint = period * 10; // 포인트는 날짜의 *10
     const point = userInfo.point - fixPoint;
     if (point < 0) {
+      // 포인트를 계산해서 포인트가 부족하면 실행 안 함
       return {
         status: 400,
         result: point,
         message: "보유한 포인트가 부족합니다.",
       };
-    } // 포인트를 개산해서 포인트가 부족하면 실행안함
-
-    await TagRepository.tagBuy(userId, tagId, period, point);
-
-    return { status: 200, result: point, message: "내 습관 추가" };
+    } else {
+      await TagRepository.tagBuy(userId, tagId, period, point);
+      return { status: 200, result: point, message: "내 습관 추가" };
+    }
   };
 
   monthDone = async (userId, strDate) => {

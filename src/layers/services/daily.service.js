@@ -69,6 +69,7 @@ module.exports = new (class DailyService {
         period: dDay,
         date: startDate + "~" + endDate, // after_date가 있다면 시작날짜를 수정후 리턴
         tagName: schedule["UserTag.Tag.tag_name"],
+        color: schedule["UserTag.Tag.color"],
         category,
         done: doneScheduleList.includes(schedule.schedule_id),
       }; // 데일리 페이지에 전달한 키와 값 정리

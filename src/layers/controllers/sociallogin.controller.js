@@ -13,7 +13,7 @@ class SocialLogin {
   // router.get("/kakao/callback", passport.authenticate("kakao",{option}));
   KakaoCallBack = passport.authenticate("kakao", {
     // successRedirect: "/", // kakaoStrategy에서 성공한다면 이 주소로 이동
-    failureRedirect: "https://habitrabbit.vercel.app/", // kakaoStrategy에서 실패한다면 이 주소로 이동
+    failureRedirect: "https://www.habit-rabbit.shop/", // kakaoStrategy에서 실패한다면 이 주소로 이동
     // successFlash: "성공적", // 성공시 플래시 메시지 출력
     // failureFlash: true, //실패시 플래시 메시지 출력여부
   });
@@ -22,7 +22,7 @@ class SocialLogin {
 
   GoogleCallBack = passport.authenticate("google", {
     // successRedirect: "/", // kakaoStrategy에서 성공한다면 이 주소로 이동
-    failureRedirect: "https://habitrabbit.vercel.app/", // kakaoStrategy에서 실패한다면 이 주소로 이동
+    failureRedirect: "https://www.habit-rabbit.shop/", // kakaoStrategy에서 실패한다면 이 주소로 이동
     // successFlash: "성공적", // 성공시 플래시 메시지 출력
     // failureFlash: true, //실패시 플래시 메시지 출력여부
   });
@@ -31,7 +31,7 @@ class SocialLogin {
 
   NaverCallBack = passport.authenticate("naver", {
     // successRedirect: "/", // kakaoStrategy에서 성공한다면 이 주소로 이동
-    failureRedirect: "https://habitrabbit.vercel.app/", // kakaoStrategy에서 실패한다면 이 주소로 이동
+    failureRedirect: "https://www.habit-rabbit.shop/", // kakaoStrategy에서 실패한다면 이 주소로 이동
     // successFlash: "성공적", // 성공시 플래시 메시지 출력
     // failureFlash: true, //실패시 플래시 메시지 출력여부
   });
@@ -55,12 +55,10 @@ class SocialLogin {
 
       // const randomRefreshId = refreshId + parseInt(process.env.SUM2);
 
-      res.redirect(
-        `https://habitrabbit.vercel.app/?accessToken=${accessToken}`
-      ); // &refreshToken=${randomRefreshId}
+      res.redirect(`https://www.habit-rabbit.shop/?accessToken=${accessToken}`); // &refreshToken=${randomRefreshId}
       return;
     }
-    res.redirect("https://habitrabbit.vercel.app/");
+    res.redirect("https://www.habit-rabbit.shop/");
   };
 }
 

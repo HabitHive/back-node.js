@@ -47,7 +47,7 @@ module.exports = new (class TagRepository {
     const myTags = await UserTag.findAll({
       where: { user_id },
       order: [["end_date", "DESC"]],
-      include: [{ model: Tag, attributes: ["tag_name"] }],
+      include: [{ model: Tag, attributes: ["tag_name", "color"] }],
       raw: true,
     });
     return myTags;
