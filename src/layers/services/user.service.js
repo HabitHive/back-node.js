@@ -185,6 +185,7 @@ class UserService {
           tagName: tag["Tag.tag_name"],
           dDay: tag.period,
           week: [false, false, false, false, false, false, false],
+          color: tag["Tag.color"],
         });
       } else {
         const endDate = new Date(tag.end_date);
