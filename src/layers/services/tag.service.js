@@ -8,43 +8,38 @@ module.exports = new (class TagService {
   };
 
   tagBuyPage = async (userId) => {
-    // 구매한 태그는 찾지 않게 만들기 (O)
     // TagId의 고유 값을 선택한 횟수 관심회 한 태그들의 목록 으로 추천 알고리즘 만들기 (XXX)
 
     const curr = new Date(); // 요청 할 때 한국 시간 구하기
     const utc = curr.getTime(); //+ curr.getTimezoneOffset() * 60 * 1000; // 2. UTC 시간 계산
-    const lastDate = new Date(utc + (9 - 24) * 60 * 60 * 1000);
+    const lastDate = new Date(utc + 9 * 60 * 60 * 1000);
 
-    const userInfo = await TagRepository.userInterest(userId);
-    // 유저 ID로 유저의 정보를 가져온다.
+    const userInfo = await TagRepository.userInterest(userId); // 유저 ID로 유저의 정보를 가져온다.(관심 목록, 포인트)
 
-    if (userInfo.interest == null) {
+    if (userInfo.interest == null || !userInfo.interest.includes("#")) {
       return {
-        status: 400,
-        result: userInfo.interest,
+        status: 401,
+        result: userInfo.interest, // 관심목록이 설정이 잘못됨
         message: "관심 목록 설정이 잘못 되었습니다.",
       };
-    } // 관심목록이 설정이 안됌
+    }
 
     let userInterest = userInfo.interest.split("#").slice(1);
     userInterest.pop(); // 관심사를 #으로 자르고 배열로 만든다.
-
     const categoryCount = userInterest.length; // 관심사의 개수
 
     if (3 < categoryCount) {
       return {
-        status: 400,
+        status: 403,
         result: userInfo.interest,
         message: "관심 목록 개수가 정해진 양보다 많습니다.",
       };
     } // 관심 개수가 3개 보다 많을때
 
-    const userPoint = userInfo.point;
-    // 포인트 찾아서 보내기 {객체 이름 정한것}
-    const buyLists = await TagRepository.userBuyList(userId, lastDate);
-    // 일부로 하루전에 먼저 장바구니에 등장
-    const tagIdBuyList = buyLists.map((tag) => tag.tag_id);
-    // 구매한 태그 리스트 목록 배열로(tagId만)
+    const userPoint = userInfo.point; // 포인트 찾아서 보내기 {객체 이름 정한것}
+    const buyLists = await TagRepository.userBuyList(userId, lastDate); // 구매한 태그는 찾지 않게 만들기 (O)
+    // 구매한 태그들의 가져온다. (스케줄이 끝나면 구매 페이지에 보여준다.)
+    const tagIdBuyList = buyLists.map((tag) => tag.tag_id); // 구매한 태그 리스트 목록 배열로(tagId만)
 
     const tagAllLists = await TagRepository.tagAllList();
     // 태그 전체 목록 리스트
@@ -54,7 +49,6 @@ module.exports = new (class TagService {
     ); // 전체 태그 리스트 중에서 구매한 태그들 필터
 
     const tagAllList = tagAllFilterList.map((tag) => {
-      // 태그의 키와 값의 형태 정리
       const categoryArr = tag.category.split("#");
       const category = translation(categoryArr, 1);
       return {
@@ -76,7 +70,7 @@ module.exports = new (class TagService {
       ); // 관심 목록의 태그들을 배열로 가져옴
 
       const number = Math.floor(Math.random() * categoryCount);
-      // 어떤 카태고리의 태그를 고를지 랜덤
+      // 어떤 카태고리의 태그를 고를지 랜덤 (0,1,2)
 
       const tagFilterLists = recommendedList[number].filter((tagCategory) => {
         return !tagIdBuyList.includes(tagCategory.tag_id);
@@ -91,10 +85,7 @@ module.exports = new (class TagService {
           category,
         }; // 태그의 키와 값의 형태 정리
       });
-      // 태그가 수가 부족하면 무한 로딩에 걸릴 수있다...
-      // 카테고리로 찾는 경우에는 특정 카테고리에 대해서 다 사고 찾을 때 개수가 3개보다 부족할 수 있다.
-      let count = 0;
-      // 관심 목록의 수가 부족할 때 반복 횟수를 제한하는 용도
+      let count = 0; // 관심 목록의 수가 부족할 때 반복 횟수를 제한하는 용도
 
       while (randomTagList.length != 3 && count != tagCategoryList.length) {
         let randomNum = Math.floor(Math.random() * tagCategoryList.length);
@@ -105,8 +96,7 @@ module.exports = new (class TagService {
         } // 태그들 중에서 중복 되지 않게 3개의 태그를 배열로 만든다.
       }
     }
-
-    let count = 0;
+    let count = 0; // 관심 목록의 수가 부족할 때 반복 횟수를 제한하는 용도
     while (randomTagList.length != 3 && count != tagAllList.length) {
       //전체 태그들 중에서 중복 되지 않게 3개의 태그를 배열로 만든다.
       let randomNum = Math.floor(Math.random() * tagAllList.length);
@@ -121,17 +111,17 @@ module.exports = new (class TagService {
       status: 200,
       result: { randomTagList, tagAllList, userPoint },
       message: "습관 목록 불러오기 성공",
-    }; // 추천의 랜덤 3개, 구매하지 않은 전체 테그들, 유저가 가지고있는 포인트
+    }; // 관심목록에 연관된 테그 3개, 구매하지 않은 전체 테그들, 유저가 가지고있는 포인트
   };
 
   tagBuy = async (userId, tagId, period) => {
-    if (!period) {
+    if (isNaN(tagId) || isNaN(period)) {
       return {
-        status: 400,
-        result: period,
-        message: "period 값이 없습니다.",
+        status: 401,
+        result: { tagId, period },
+        message: " tagId 또는 period 값이 잘못 되었습니다.",
       };
-    } // period 값이 없으면
+    } // tagId 또는 period 값이 없거나 숫자형이 아니면
 
     const userInfo = await TagRepository.userInterest(userId);
     const fixPoint = period * 10; // 포인트는 날짜의 *10
@@ -142,10 +132,26 @@ module.exports = new (class TagService {
         result: point,
         message: "보유한 포인트가 부족합니다.",
       };
-    } // 포인트를 개산해서 포인트가 부족하면 실행안함
+    } // 포인트를 개산해서 포인트가 부족하면 부족한 포인트 리턴
 
-    await TagRepository.tagBuy(userId, tagId, period, point);
+    const curr = new Date(); // 요청 할 때 한국 시간 구하기
+    const utc = curr.getTime(); //+ curr.getTimezoneOffset() * 60 * 1000; // 2. UTC 시간 계산
+    const lastDate = new Date(utc + 9 * 60 * 60 * 1000);
 
+    const result = await TagRepository.tagBuy(
+      userId,
+      tagId,
+      period,
+      point, // 포인트 개산한것 업데이트 하면서 태그를 구매
+      lastDate // 구매할때 내가 구매한 태그들이 없으면 구매
+    );
+    if (result == "잘못된 요청") {
+      return {
+        status: 403,
+        result: userInfo.point,
+        message: "이미 구매한 태그에 대한 요청입니다.",
+      };
+    }
     return { status: 200, result: point, message: "내 습관 추가" };
   };
 
