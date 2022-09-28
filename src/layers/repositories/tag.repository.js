@@ -26,8 +26,9 @@ module.exports = new (class TagRepository {
     });
   };
 
-  tagAllList = async () => {
+  tagAllList = async (attention) => {
     return await Tag.findAll({
+      where: { category: { [Op.like]: `%${attention}%` } }, // 선택한 관심 목록을 불러오기 위한
       raw: true,
     });
   };
@@ -43,16 +44,7 @@ module.exports = new (class TagRepository {
     }
     return tagList;
   };
-  // userBuyList = async (user_id, lastDate) => {
-  //   return await UserTag.findAll({
-  //     attributes: ["tag_id"],
-  //     where: {
-  //       user_id,
-  //       end_date: { [Op.or]: { [Op.gt]: lastDate, [Op.eq]: null } },
-  //     },
-  //     raw: true,
-  //   });
-  // };
+
   tagBuy = async (user_id, tag_id, period, point, lastDate) => {
     const result = await UserTag.findOrCreate({
       where: {

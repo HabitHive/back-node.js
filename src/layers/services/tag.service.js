@@ -7,7 +7,7 @@ module.exports = new (class TagService {
     return { status, message, result };
   };
 
-  tagBuyPage = async (userId) => {
+  tagBuyPage = async (userId, attention) => {
     // TagId의 고유 값을 선택한 횟수 관심회 한 태그들의 목록 으로 추천 알고리즘 만들기 (XXX)
 
     const curr = new Date(); // 요청 할 때 한국 시간 구하기
@@ -41,7 +41,7 @@ module.exports = new (class TagService {
     // 구매한 태그들의 가져온다. (스케줄이 끝나면 구매 페이지에 보여준다.)
     const tagIdBuyList = buyLists.map((tag) => tag.tag_id); // 구매한 태그 리스트 목록 배열로(tagId만)
 
-    const tagAllLists = await TagRepository.tagAllList();
+    const tagAllLists = await TagRepository.tagAllList(attention);
     // 태그 전체 목록 리스트
 
     const tagAllFilterList = tagAllLists.filter(
