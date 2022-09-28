@@ -127,6 +127,10 @@ class UserRepository {
   temporaryPW = async (verify, password) => {
     await User.update({ password }, { where: { verify } });
   };
+
+  changePassWord = async (user_id, password) => {
+    await User.update({ password }, { where: { user_id } });
+  };
 }
 
 module.exports = new UserRepository();

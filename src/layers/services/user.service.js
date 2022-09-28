@@ -6,6 +6,7 @@ const Joi = require("joi");
 const dotenv = require("dotenv");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
+const User = require("../../models/user");
 
 dotenv.config();
 
@@ -337,6 +338,20 @@ class UserService {
     } else {
       const error = new Error("not exist Verify-code");
       error.name = "Verify error";
+      error.status = 403;
+      throw error;
+    }
+  };
+
+  changePassWord = async (userId, password) => {
+    const user = await UserRepository.findUser(userId);
+    if (user) {
+      const salt = await bcrypt.genSalt(10);
+      const hashedpassword = await bcrypt.hash(password, salt);
+      await UserRepository.changePassWord(userId, hashedpassword);
+    } else {
+      const error = new Error("not exist User");
+      error.name = "Account error";
       error.status = 403;
       throw error;
     }

@@ -145,6 +145,24 @@ class UserController {
       res.status(400).json({ err_message: `${error.name}: ${error.message}` });
     }
   };
+
+  //비밀번호 변경
+  changePassWord = async (req, res) => {
+    try {
+      const { userId } = res.locals;
+      const { password } = req.body;
+      await UserService.changePassWord(userId, password);
+      res.status(200).json({ message: "success" });
+    } catch (error) {
+      if (error.status) {
+        res
+          .status(error.status)
+          .json({ err_message: `${error.name}: ${error.message}` });
+        return;
+      }
+      res.status(400).json({ err_message: `${error.name}: ${error.message}` });
+    }
+  };
 }
 
 module.exports = new UserController();
