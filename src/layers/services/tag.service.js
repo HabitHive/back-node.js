@@ -15,7 +15,7 @@ module.exports = new (class TagService {
     const lastDate = new Date(utc + 9 * 60 * 60 * 1000);
 
     const userInfo = await TagRepository.userInterest(userId); // 유저 ID로 유저의 정보를 가져온다.(관심 목록, 포인트)
-    console.log(userInfo);
+
     if (userInfo.interest == null || !userInfo.interest.includes("#")) {
       return {
         status: 401,
