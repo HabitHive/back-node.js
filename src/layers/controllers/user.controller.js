@@ -163,6 +163,22 @@ class UserController {
       res.status(400).json({ err_message: `${error.name}: ${error.message}` });
     }
   };
+
+  signOut = async (req, res) => {
+    try {
+      const { userId } = res.locals;
+      await UserService.signOut(userId);
+      res.status(200).json({ message: "success" });
+    } catch (error) {
+      if (error.status) {
+        res
+          .status(error.status)
+          .json({ err_message: `${error.name}: ${error.message}` });
+        return;
+      }
+      res.status(400).json({ err_message: `${error.name}: ${error.message}` });
+    }
+  };
 }
 
 module.exports = new UserController();
