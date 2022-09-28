@@ -15,7 +15,7 @@ const router = express.Router();
 
 /* /api/user */
 router.post("/user/signup", UserController.singUp); //회원가입
-router.delete("/user/signout", authMiddleware, UserController.singOut); //회원탈퇴
+router.delete("/user/signout", authMiddleware, UserController.signOut); //회원탈퇴
 router.post("/user/login", UserController.logIn); //로그인
 router.delete("/user/logout", UserController.logOut); //로그 아웃
 router.put("/user/interest", authMiddleware, UserController.interest); //관심사 설정
