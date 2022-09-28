@@ -29,6 +29,7 @@ module.exports = new (class TagController {
       res.status(400).send(error.message);
     }
   };
+
   response = (res, receive) => {
     res
       .status(receive.status)
