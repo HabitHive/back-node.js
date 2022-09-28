@@ -22,6 +22,14 @@ router.put("/user/interest", authMiddleware, UserController.interest); //관심�
 router.post("/user/random", authMiddleware, UserController.randomPoint); //보상 - 랜덤 포인트 지급
 router.get("/user/mypage/info", authMiddleware, UserController.myInfo); //유저정보
 router.put("/user/mypage/tag", authMiddleware, UserController.myTagList); //유저 습관 전적
+// router.post(
+//   "/user/changepassword",
+//   authMiddleware,
+//   UserController.changePassWord
+// ); //유저 비밀번호 변경
+
+// router.post("/user/sendemail", UserController.findPassWord1); //비밀번호를 바꾸기위한 인증코드 발송
+// router.post("/user/resetpassword", UserController.findPassWord2); //임시 비밀번호 적용 및 발급
 
 /* /api/tag */
 router.get("/tag/list", authMiddleware, TagController.tagBuyPage);
