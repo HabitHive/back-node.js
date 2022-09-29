@@ -13,7 +13,7 @@ class SocialLogin {
   // router.get("/kakao/callback", passport.authenticate("kakao",{option}));
   KakaoCallBack = passport.authenticate("kakao", {
     // successRedirect: "/", // kakaoStrategy에서 성공한다면 이 주소로 이동
-    failureRedirect: "https://habitrabbit.vercel.app/", // kakaoStrategy에서 실패한다면 이 주소로 이동
+    failureRedirect: "https://www.habit-rabbit.shop/", // kakaoStrategy에서 실패한다면 이 주소로 이동
     // successFlash: "성공적", // 성공시 플래시 메시지 출력
     // failureFlash: true, //실패시 플래시 메시지 출력여부
   });
@@ -22,7 +22,7 @@ class SocialLogin {
 
   GoogleCallBack = passport.authenticate("google", {
     // successRedirect: "/", // kakaoStrategy에서 성공한다면 이 주소로 이동
-    failureRedirect: "https://habitrabbit.vercel.app/", // kakaoStrategy에서 실패한다면 이 주소로 이동
+    failureRedirect: "https://www.habit-rabbit.shop/", // kakaoStrategy에서 실패한다면 이 주소로 이동
     // successFlash: "성공적", // 성공시 플래시 메시지 출력
     // failureFlash: true, //실패시 플래시 메시지 출력여부
   });
@@ -31,20 +31,22 @@ class SocialLogin {
 
   NaverCallBack = passport.authenticate("naver", {
     // successRedirect: "/", // kakaoStrategy에서 성공한다면 이 주소로 이동
-    failureRedirect: "https://habitrabbit.vercel.app/", // kakaoStrategy에서 실패한다면 이 주소로 이동
+    failureRedirect: "https://www.habit-rabbit.shop/", // kakaoStrategy에서 실패한다면 이 주소로 이동
     // successFlash: "성공적", // 성공시 플래시 메시지 출력
     // failureFlash: true, //실패시 플래시 메시지 출력여부
   });
 
   ResponseToken = async (req, res) => {
     if (req.user) {
+      const userId = req.user[0];
+      const exUser = req.user[1];
       const accessToken = jwt.sign(
-        { key1: req.user + parseInt(process.env.SUM) },
+        { key1: userId + parseInt(process.env.SUM) },
         process.env.ACCESS_TOKEN_SECRET,
         { expiresIn: "12h" }
       );
       // const refreshToken = jwt.sign(
-      //   { key2: req.user },
+      //   { key2: userId },
       //   process.env.REFRESH_TOKEN_SECRET,
       //   { expiresIn: "7d" }
       // );
@@ -56,11 +58,11 @@ class SocialLogin {
       // const randomRefreshId = refreshId + parseInt(process.env.SUM2);
 
       res.redirect(
-        `https://habitrabbit.vercel.app/?accessToken=${accessToken}`
+        `https://habitrabbit.vercel.app/?accessToken=${accessToken}&exuser=${exUser}`
       ); // &refreshToken=${randomRefreshId}
       return;
     }
-    res.redirect("https://habitrabbit.vercel.app/");
+    res.redirect("https://www.habit-rabbit.shop/");
   };
 }
 

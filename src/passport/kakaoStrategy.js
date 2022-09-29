@@ -10,7 +10,6 @@ module.exports = () => {
       {
         clientID: process.env.KAKAO_ID, // 카카오 로그인에서 발급받은 REST API 키
         callbackURL: process.env.KAKAO_URL, // 카카오 로그인 Redirect URI 경로
-        // session: true,
         // passReqToCallback: true,
       },
       /*
@@ -36,7 +35,7 @@ module.exports = () => {
               { nickname: profile._json.kakao_account.profile.nickname },
               { where: { user_id: exUser.user_id } }
             );
-            done(null, exUser.user_id); // 로그인 인증 완료
+            done(null, [exUser.user_id, true]); // 로그인 인증 완료
           } else {
             // 가입되지 않는 유저면 회원가입 시키고 로그인을 시킨다
             const newUser = await User.create({
@@ -46,7 +45,7 @@ module.exports = () => {
               social: true,
               provider: "kakao",
             });
-            done(null, newUser.dataValues.user_id); // 회원가입하고 로그인 인증 완료
+            done(null, [newUser.dataValues.user_id, false]); // 회원가입하고 로그인 인증 완료
           }
         } catch (error) {
           done(error);
