@@ -10,8 +10,7 @@ module.exports = new (class TagRepository {
     return await User.findOne({
       attributes: ["interest", "point"],
       where: { user_id },
-      // include: { model: UserTag, attributes: ["tag_id"] },
-      raw: true, // 사용하니  include: 로 1:N의 관계의 연결이 하나만 나온다.
+      raw: true,
     });
   };
 
@@ -26,17 +25,21 @@ module.exports = new (class TagRepository {
     });
   };
 
-  tagAllList = async (attention) => {
+  tagAllList = async (user_id, attention) => {
     return await Tag.findAll({
-      where: { category: { [Op.like]: `%${attention}%` } }, // 선택한 관심 목록을 불러오기 위한
+      where: {
+        [Op.or]: { user_id, user_id: null },
+        category: { [Op.like]: `%${attention}%` },
+      }, // 선택한 관심 목록을 불러오기 위한
       raw: true,
     });
   };
 
-  recommended = async (categoryCount, userInterest) => {
+  recommended = async (user_id, categoryCount, userInterest) => {
     let tagList = [];
     for (let i = 0; i < categoryCount; i++) {
       const list = await Tag.findAll({
+        [Op.or]: { user_id, user_id: null },
         where: { category: { [Op.like]: `%${userInterest[i]}%` } },
         raw: true,
       });

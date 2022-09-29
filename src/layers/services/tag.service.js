@@ -41,7 +41,7 @@ module.exports = new (class TagService {
     // 구매한 태그들의 가져온다. (스케줄이 끝나면 구매 페이지에 보여준다.)
     const tagIdBuyList = buyLists.map((tag) => tag.tag_id); // 구매한 태그 리스트 목록 배열로(tagId만)
 
-    let tagAllLists = await TagRepository.tagAllList(attention);
+    let tagAllLists = await TagRepository.tagAllList(userId, attention);
     // 태그 전체 목록 리스트
 
     const tagAllFilterList = tagAllLists.filter(
@@ -55,6 +55,7 @@ module.exports = new (class TagService {
         tagId: tag.tag_id,
         tagName: tag.tag_name,
         category,
+        color: tag.color,
       };
     }); // 태그의 키와 값의 형태 정리
 
@@ -65,6 +66,7 @@ module.exports = new (class TagService {
       //관심목록을 설정을 했을 경우
 
       const recommendedList = await TagRepository.recommended(
+        userId,
         categoryCount,
         userInterest
       ); // 관심 목록의 태그들을 배열로 가져옴
@@ -83,6 +85,7 @@ module.exports = new (class TagService {
           tagId: tag.tag_id,
           tagName: tag.tag_name,
           category,
+          color: tag.color,
         }; // 태그의 키와 값의 형태 정리
       });
       let count = 0; // 관심 목록의 수가 부족할 때 반복 횟수를 제한하는 용도
