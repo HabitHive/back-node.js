@@ -8,8 +8,8 @@ module.exports = () => {
   google(); // 구글 등록
   naver(); // 네이버 등록
 
-  passport.serializeUser((user_id, done) => {
-    done(null, user_id);
+  passport.serializeUser((user, done) => {
+    done(null, user[0]);
   });
 
   passport.deserializeUser((id, done) => {

@@ -10,8 +10,7 @@ module.exports = () => {
       {
         clientID: process.env.NAVER_ID,
         clientSecret: process.env.NAVER_SECRET,
-        callbackURL: "/api/google/callback",
-        // session: true,
+        callbackURL: process.env.NAVER_URL,
         // passReqToCallback: true,
       },
       async (accessToken, refreshToken, profile, done) => {
@@ -31,7 +30,7 @@ module.exports = () => {
               { nickname: profile._json.nickname },
               { where: { user_id: exUser.user_id } }
             );
-            done(null, exUser.user_id); // 로그인 인증 완료
+            done(null, [exUser.user_id, true]); // 로그인 인증 완료
           } else {
             // 가입되지 않는 유저면 회원가입 시키고 로그인을 시킨다
             const newUser = await User.create({
@@ -42,7 +41,7 @@ module.exports = () => {
               social: true,
               provider: "naver",
             });
-            done(null, newUser.dataValues.user_id); // 회원가입하고 로그인 인증 완료
+            done(null, [newUser.dataValues.user_id, false]); // 회원가입하고 로그인 인증 완료
           }
         } catch (error) {
           done(error);
