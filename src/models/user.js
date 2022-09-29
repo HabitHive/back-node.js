@@ -37,10 +37,6 @@ module.exports = class User extends Sequelize.Model {
           type: Sequelize.STRING,
           allowNull: true,
         },
-        verify: {
-          type: Sequelize.STRING,
-          allowNull: true,
-        },
       },
       {
         sequelize /* static init 메서드의 매개변수와 연결되는 옵션으로, db.sequelize 객체를 넣어야 한다. */,

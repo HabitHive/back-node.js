@@ -2,10 +2,9 @@ const User = require("../../models/user");
 const Refresh = require("../../models/refresh");
 const Point = require("../../models/point");
 const { Op, where } = require("sequelize");
-const { verify } = require("jsonwebtoken");
 
 class UserRepository {
-  singUp = async (email, nickname, password) => {
+  singUp = async (email) => {
     const exsistEmail = await User.findOne({
       where: { email, social: false },
     });

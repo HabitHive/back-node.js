@@ -34,7 +34,7 @@ module.exports = new (class DailyRepository {
         include: [
           {
             model: Tag,
-            attributes: ["tag_name", "category"],
+            attributes: ["tag_name", "category", "color"],
           },
         ],
       },
@@ -59,7 +59,7 @@ module.exports = new (class DailyRepository {
       include: [
         {
           model: Tag,
-          attributes: ["tag_name", "category"],
+          attributes: ["tag_name", "category", "color"],
         },
       ],
       raw: true,

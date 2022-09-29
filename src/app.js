@@ -52,6 +52,9 @@ const whitelist = [
   "https://localhost:3000",
   "http://localhost:3000",
   "https://habitrabbit.vercel.app",
+  "https://www.puringles.shop",
+  "https://habit-rabbit.shop",
+  "https://www.habit-rabbit.shop",
 ];
 
 const corsOptions = {
