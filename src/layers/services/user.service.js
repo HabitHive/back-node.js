@@ -236,15 +236,15 @@ class UserService {
   randomPoint = async (userId) => {
     const userPoint = await UserRepository.findPoint(userId);
 
-    // const now = new Date();
-    // const utc = now.getTime() + now.getTimezoneOffset() * 60 * 1000;
-    // const krDiff = 9 * 60 * 60 * 1000;
-    // const today = new Date(utc + krDiff);
-    // today.setHours(0, 0, 0, 0);
+    const now = new Date();
+    const utc = now.getTime() + now.getTimezoneOffset() * 60 * 1000;
+    const krDiff = 9 * 60 * 60 * 1000;
+    const today = new Date(utc + krDiff);
+    today.setHours(0, 0, 0, 0);
 
-    // const chance = 5;
-    // const existHistory = await UserRepository.existRandomHistory(userId, today);
-    // if (existHistory > chance) return this.result(403, "수령 가능 횟수 초과");
+    const chance = 5;
+    const existHistory = await UserRepository.existRandomHistory(userId, today);
+    if (existHistory > chance) return this.result(403, "수령 가능 횟수 초과");
 
     let random = Math.floor(Math.random() * 100 + 1); // 1~100
     const percentage = (num, count) => {
@@ -259,7 +259,11 @@ class UserService {
       userPoint + point
     );
     if (updatePoint == [0]) return this.result(400, "알 수 없는 에러");
-    // const createHistory = await UserRepository.createRandomHistory(userId, today, point);
+    const createHistory = await UserRepository.createRandomHistory(
+      userId,
+      today,
+      point
+    );
 
     return this.result(201, "랜덤 포인트", { point });
   };
