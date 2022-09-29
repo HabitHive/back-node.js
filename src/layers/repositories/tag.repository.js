@@ -26,7 +26,11 @@ module.exports = new (class TagRepository {
     });
   };
 
-  tagAllList = async (attention) => {
+  tagAllList = async () => {
+    return await Tag.findAll({ raw: true });
+  };
+
+  selectTagAllList = async (attention) => {
     return await Tag.findAll({
       where: { category: { [Op.like]: `%${attention}%` } }, // 선택한 관심 목록을 불러오기 위한
       raw: true,

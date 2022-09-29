@@ -41,7 +41,13 @@ module.exports = new (class TagService {
     // 구매한 태그들의 가져온다. (스케줄이 끝나면 구매 페이지에 보여준다.)
     const tagIdBuyList = buyLists.map((tag) => tag.tag_id); // 구매한 태그 리스트 목록 배열로(tagId만)
 
-    const tagAllLists = await TagRepository.tagAllList(attention);
+    let tagAllLists;
+    if (attention) {
+      tagAllLists = await TagRepository.selectTagAllList(attention);
+    } else {
+      tagAllLists = await TagRepository.tagAllList();
+    }
+
     // 태그 전체 목록 리스트
 
     const tagAllFilterList = tagAllLists.filter(

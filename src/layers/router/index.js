@@ -33,6 +33,7 @@ router.put("/user/mypage/tag", authMiddleware, UserController.myTagList); //유�
 // router.post("/user/resetpassword", UserController.findPassWord2); //임시 비밀번호 적용 및 발급
 
 /* /api/tag */
+router.get("/tag/list", authMiddleware, TagController.tagBuyPage); // 습관 구매 페이지
 router.post("/tag/list", authMiddleware, TagController.tagBuyPage); // 습관 구매 페이지
 router.post("/tag/buy", authMiddleware, TagController.tagBuy); // 습관을 구매하는 API
 router.post("/mytag/create", authMiddleware, TagController.mytagCreate); // 나만의 습관을 만드는 API
