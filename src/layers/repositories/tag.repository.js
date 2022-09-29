@@ -10,6 +10,8 @@ module.exports = new (class TagRepository {
     return await User.findOne({
       attributes: ["interest", "point"],
       where: { user_id },
+      // include: { model: UserTag, attributes: ["tag_id"] },
+      raw: true, // 사용하니  include: 로 1:N의 관계의 연결이 하나만 나온다.
     });
   };
 
@@ -20,11 +22,14 @@ module.exports = new (class TagRepository {
         user_id,
         end_date: { [Op.or]: { [Op.gt]: lastDate, [Op.eq]: null } },
       },
+      raw: true,
     });
   };
 
   tagAllList = async () => {
-    return await Tag.findAll();
+    return await Tag.findAll({
+      raw: true,
+    });
   };
 
   recommended = async (categoryCount, userInterest) => {
@@ -32,15 +37,38 @@ module.exports = new (class TagRepository {
     for (let i = 0; i < categoryCount; i++) {
       const list = await Tag.findAll({
         where: { category: { [Op.like]: `%${userInterest[i]}%` } },
+        raw: true,
       });
       tagList.push(list);
     }
     return tagList;
   };
-
-  tagBuy = async (user_id, tag_id, period, point) => {
-    await UserTag.create({ user_id, tag_id, period });
-    await User.update({ point }, { where: { user_id } });
+  // userBuyList = async (user_id, lastDate) => {
+  //   return await UserTag.findAll({
+  //     attributes: ["tag_id"],
+  //     where: {
+  //       user_id,
+  //       end_date: { [Op.or]: { [Op.gt]: lastDate, [Op.eq]: null } },
+  //     },
+  //     raw: true,
+  //   });
+  // };
+  tagBuy = async (user_id, tag_id, period, point, lastDate) => {
+    const result = await UserTag.findOrCreate({
+      where: {
+        user_id,
+        tag_id,
+        end_date: { [Op.or]: { [Op.gt]: lastDate, [Op.eq]: null } },
+      },
+      defaults: { user_id, tag_id, period, end_date: null },
+    }).then(([save, created]) => {
+      if (!created) {
+        return "잘못된 요청";
+      } else {
+        User.update({ point }, { where: { user_id } });
+      }
+    });
+    return result;
   };
 
   myAllTagList = async (user_id) => {

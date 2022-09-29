@@ -353,6 +353,17 @@ class UserService {
       throw error;
     }
   };
+
+  signOut = async (userId) => {
+    const user = await UserRepository.findUser(userId);
+    if (!user) {
+      const error = new Error("not exist User");
+      error.name = "Account error";
+      error.status = 403;
+      throw error;
+    }
+    await UserRepository.signOut(userId);
+  };
 }
 
 module.exports = new UserService();
