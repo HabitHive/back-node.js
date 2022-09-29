@@ -41,7 +41,13 @@ module.exports = new (class TagService {
     // 구매한 태그들의 가져온다. (스케줄이 끝나면 구매 페이지에 보여준다.)
     const tagIdBuyList = buyLists.map((tag) => tag.tag_id); // 구매한 태그 리스트 목록 배열로(tagId만)
 
-    const tagAllLists = await TagRepository.tagAllList(attention);
+    let tagAllLists;
+    if (attention) {
+      tagAllLists = await TagRepository.selectTagAllList(attention);
+    } else {
+      tagAllLists = await TagRepository.tagAllList();
+    }
+
     // 태그 전체 목록 리스트
 
     const tagAllFilterList = tagAllLists.filter(
@@ -127,6 +133,7 @@ module.exports = new (class TagService {
     const fixPoint = period * 10; // 포인트는 날짜의 *10
     const point = userInfo.point - fixPoint;
     if (point < 0) {
+      // 포인트를 계산해서 포인트가 부족하면 실행 안 함
       return {
         status: 400,
         result: point,

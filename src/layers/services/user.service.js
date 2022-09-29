@@ -184,6 +184,7 @@ class UserService {
           tagName: tag["Tag.tag_name"],
           dDay: tag.period,
           week: [false, false, false, false, false, false, false],
+          color: tag["Tag.color"],
         });
       } else {
         const endDate = new Date(tag.end_date);
@@ -202,18 +203,15 @@ class UserService {
           });
 
           /* 종료까지 남은 기간 == d-Day */
-          const dDay =
-            (endDate.getTime() - today.getTime()) / (1000 * 3600 * 24);
+          let dDay = (endDate.getTime() - today.getTime()) / (1000 * 3600 * 24);
+          if (dDay > tag.period) dDay = tag.period;
 
-          if (dDay > tag.period) {
-            stillTags.push({
-              tagName: tag["Tag.tag_name"],
-              dDay: tag.period,
-              week,
-            });
-          } else {
-            stillTags.push({ tagName: tag["Tag.tag_name"], dDay, week });
-          }
+          stillTags.push({
+            tagName: tag["Tag.tag_name"],
+            dDay,
+            week,
+            color: tag["Tag.color"],
+          });
         } else {
           // 종료 된 습관
           const count = await UserRepository.countHistory(tag.user_tag_id);
@@ -237,7 +235,6 @@ class UserService {
 
   randomPoint = async (userId) => {
     const userPoint = await UserRepository.findPoint(userId);
-    if (!userPoint) return this.result(400, "존재하지 않는 유저입니다.");
 
     // const now = new Date();
     // const utc = now.getTime() + now.getTimezoneOffset() * 60 * 1000;

@@ -34,8 +34,7 @@ class PetService {
   petExpIncrease = async (userId) => {
     const pet = await PetRepository.findPet(userId);
     const userPoint = await UserRepository.findPoint(userId);
-    if (!userPoint) return this.result(400, "존재하지 않는 유저입니다.");
-    else if (!pet) return this.result(400, "펫이 존재하지 않습니다.");
+    if (!pet) return this.result(400, "펫이 존재하지 않습니다.");
     else if (userPoint < 50) return this.result(400, "포인트가 부족합니다.");
     const updatePoint = await UserRepository.updatePoint(
       userId,

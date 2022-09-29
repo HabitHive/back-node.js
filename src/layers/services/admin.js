@@ -10,13 +10,13 @@ module.exports = new (class AdminService {
     listSplit.map((tagInfo) => {
       let categoryArr = tagInfo.split(",");
       const tagName = categoryArr.shift();
-      console.log(tagName, categoryArr);
+      const color = categoryArr.pop();
       const categoryList = translation(categoryArr, 0);
       if (categoryList.length == 0) {
         res.status(400).send("오타남");
       }
       const category = categoryList.join("#");
-      allTags.push({ tag_name: tagName, category });
+      allTags.push({ tag_name: tagName, category, color: +color });
     });
 
     await Tag.bulkCreate(allTags);
