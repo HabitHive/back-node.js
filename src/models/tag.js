@@ -9,6 +9,10 @@ module.exports = class Tag extends Sequelize.Model {
           primaryKey: true,
           autoIncrement: true,
         },
+        user_id: {
+          type: Sequelize.INTEGER,
+          allowNull: true,
+        },
         tag_name: {
           type: Sequelize.STRING(50),
           allowNull: false,
@@ -34,6 +38,11 @@ module.exports = class Tag extends Sequelize.Model {
   static associate(db) {
     db.Tag.hasMany(db.UserTag, {
       foreignKey: { name: "tag_id", allowNull: false },
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    });
+    db.Tag.belongsTo(db.User, {
+      foreignKey: { name: "user_id", allowNull: false },
       onDelete: "cascade",
       onUpdate: "cascade",
     });

@@ -4,7 +4,7 @@ module.exports = new (class TagController {
   tagBuyPage = async (req, res, next) => {
     try {
       const { userId } = res.locals;
-      const { attention } = req.body;
+      const { attention } = req.query;
       const date = await TagService.tagBuyPage(userId, attention);
 
       return res
