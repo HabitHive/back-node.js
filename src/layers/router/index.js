@@ -33,28 +33,23 @@ router.put("/user/mypage/tag", authMiddleware, UserController.myTagList); //유�
 // router.post("/user/resetpassword", UserController.findPassWord2); //임시 비밀번호 적용 및 발급
 
 /* /api/tag */
-router.get("/tag/list", authMiddleware, TagController.tagBuyPage);
-router.post("/tag/buy", authMiddleware, TagController.tagBuy);
-router.get("/tag/daily", authMiddleware, DailyController.dailyPage);
-router.get("/tag/daily/list", authMiddleware, DailyController.dailyTagList);
+router.get("/tag/list", authMiddleware, TagController.tagBuyPage); // 습관 구매 페이지
+router.post("/tag/buy", authMiddleware, TagController.tagBuy); // 습관을 구매하는 API
+router.get("/tag/daily", authMiddleware, DailyController.dailyPage); // 데일리 페이지
+router.get("/tag/daily/list", authMiddleware, DailyController.dailyTagList); // 데일리 페이지 가지고있는 습관 목록
 router.post("/tag/done", authMiddleware, TagController.doneTag); //습관 완료
-// router.get(
-//   "/tag/schedule/add/:userTagId",
-//   authMiddleware,
-//   DailyController.schedulePage
-// );
 router.post(
-  "/tag/schedule/add/:userTagId",
+  "/tag/schedule/add/:userTagId", // 스케줄 생성
   authMiddleware,
   DailyController.scheduleCreate
 );
 router.patch(
-  "/tag/schedule/update/:scheduleId",
+  "/tag/schedule/update/:scheduleId", // 스케줄 수정
   authMiddleware,
   DailyController.scheduleUpdate
 );
 router.delete(
-  "/tag/schedule/delete/:scheduleId",
+  "/tag/schedule/delete/:scheduleId", // 스케줄 삭제
   authMiddleware,
   DailyController.scheduleDelete
 );

@@ -31,24 +31,6 @@ module.exports = new (class Dailycontroller {
     }
   };
 
-  // // 스케줄을  만들 때
-  // schedulePage = async (req, res, next) => {
-  //   // 지금 현재 필요없는 로직
-  //   try {
-  //     const { userId } = res.locals;
-  //     const { userTagId } = req.params;
-
-  //     const date = await DailyService.schedulePage(userId, userTagId);
-
-  //     return res
-  //       .status(date.status)
-  //       .json({ result: date.result, message: date.message });
-  //   } catch (error) {
-  //     console.log(error);
-  //     res.status(400).send(error.message);
-  //   }
-  // };
-
   scheduleCreate = async (req, res, next) => {
     try {
       const { userId } = res.locals;
