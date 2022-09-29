@@ -58,7 +58,7 @@ class SocialLogin {
       // const randomRefreshId = refreshId + parseInt(process.env.SUM2);
 
       res.redirect(
-        `http://localhost:3000/?accessToken=${accessToken}&exuser=${exUser}`
+        `https://www.habit-rabbit.shop/?accessToken=${accessToken}&exuser=${exUser}`
       ); // &refreshToken=${randomRefreshId}
       return;
     }

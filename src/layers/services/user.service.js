@@ -6,7 +6,6 @@ const Joi = require("joi");
 const dotenv = require("dotenv");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
-const User = require("../../models/user");
 
 dotenv.config();
 
