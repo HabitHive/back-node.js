@@ -31,6 +31,36 @@ module.exports = new (class TagController {
     }
   };
 
+  mytagCreate = async (req, res, next) => {
+    try {
+      const { userId } = res.locals;
+      const { tagName, category } = req.body;
+
+      const date = await TagService.mytagCreate(userId, tagName, category);
+      return res
+        .status(date.status)
+        .json({ result: date.result, message: date.message });
+    } catch (error) {
+      console.log(error);
+      res.status(400).send(error.message);
+    }
+  };
+
+  mytagDelete = async (req, res, next) => {
+    try {
+      const { userId } = res.locals;
+      const { tagId } = req.body;
+
+      const date = await TagService.mytagDelete(userId, tagId);
+      return res
+        .status(date.status)
+        .json({ result: date.result, message: date.message });
+    } catch (error) {
+      console.log(error);
+      res.status(400).send(error.message);
+    }
+  };
+
   response = (res, receive) => {
     res
       .status(receive.status)

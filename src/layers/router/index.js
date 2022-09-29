@@ -35,6 +35,8 @@ router.put("/user/mypage/tag", authMiddleware, UserController.myTagList); //유�
 /* /api/tag */
 router.get("/tag/list", authMiddleware, TagController.tagBuyPage); // 습관 구매 페이지
 router.post("/tag/buy", authMiddleware, TagController.tagBuy); // 습관을 구매하는 API
+router.post("/mytag/create", authMiddleware, TagController.mytagCreate); // 나만의 습관을 만드는 API
+router.post("/mytag/delete", authMiddleware, TagController.mytagDelete); // 나만의 습관을 삭제하는 API
 router.get("/tag/daily", authMiddleware, DailyController.dailyPage); // 데일리 페이지
 router.get("/tag/daily/list", authMiddleware, DailyController.dailyTagList); // 데일리 페이지 가지고있는 습관 목록
 router.post("/tag/done", authMiddleware, TagController.doneTag); //습관 완료

@@ -63,6 +63,14 @@ module.exports = new (class TagRepository {
     return result;
   };
 
+  mytagCreate = async (user_id, tag_name, category) => {
+    await Tag.create({ user_id, tag_name, category });
+  };
+
+  mytagDelete = async (user_id, tag_id) => {
+    await Tag.destroy({ where: { user_id, tag_id } });
+  };
+
   myAllTagList = async (user_id) => {
     const myTags = await UserTag.findAll({
       where: { user_id },

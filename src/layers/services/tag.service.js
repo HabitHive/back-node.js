@@ -152,7 +152,17 @@ module.exports = new (class TagService {
         message: "이미 구매한 태그에 대한 요청입니다.",
       };
     }
-    return { status: 200, result: point, message: "내 습관 추가" };
+    return { status: 200, result: point, message: "내 습관 구매 완료" };
+  };
+
+  mytagCreate = async (userId, tagName, category) => {
+    await TagRepository.mytagCreate(userId, tagName, category);
+    return { status: 200, message: "내 습관 테그 추가" };
+  };
+
+  mytagDelete = async (userId, tagId) => {
+    await TagRepository.mytagDelete(userId, tagId);
+    return { status: 200, message: "내 습관 테그 삭제" };
   };
 
   monthDone = async (userId, strDate) => {
