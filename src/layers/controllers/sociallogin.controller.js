@@ -38,13 +38,15 @@ class SocialLogin {
 
   ResponseToken = async (req, res) => {
     if (req.user) {
+      const userId = req.user[0];
+      const exUser = req.user[1];
       const accessToken = jwt.sign(
-        { key1: req.user + parseInt(process.env.SUM) },
+        { key1: userId + parseInt(process.env.SUM) },
         process.env.ACCESS_TOKEN_SECRET,
         { expiresIn: "12h" }
       );
       // const refreshToken = jwt.sign(
-      //   { key2: req.user },
+      //   { key2: userId },
       //   process.env.REFRESH_TOKEN_SECRET,
       //   { expiresIn: "7d" }
       // );
@@ -55,7 +57,9 @@ class SocialLogin {
 
       // const randomRefreshId = refreshId + parseInt(process.env.SUM2);
 
-      res.redirect(`https://www.habit-rabbit.shop/?accessToken=${accessToken}`); // &refreshToken=${randomRefreshId}
+      res.redirect(
+        `https://www.habit-rabbit.shop/?accessToken=${accessToken}&exuser=${exUser}`
+      ); // &refreshToken=${randomRefreshId}
       return;
     }
     res.redirect("https://www.habit-rabbit.shop/");

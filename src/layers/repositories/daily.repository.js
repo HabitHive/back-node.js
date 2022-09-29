@@ -55,7 +55,7 @@ module.exports = new (class DailyRepository {
       where: {
         user_id,
         end_date: { [Op.or]: { [Op.gte]: lastDate, [Op.eq]: null } },
-      }, // krNewDate < end_date or end_date = null
+      }, // lastDate < end_date or end_date = null
       include: [
         {
           model: Tag,
@@ -65,13 +65,6 @@ module.exports = new (class DailyRepository {
       raw: true,
     });
   };
-
-  // schedulePage = async (user_id, user_tag_id) => {
-  //   return await UserTag.findOne({
-  //     where: { user_id, user_tag_id },
-  //     raw: true,
-  //   });
-  // };
 
   userTagInOf = async (user_id, user_tag_id) => {
     return await UserTag.findOne({

@@ -35,8 +35,7 @@ module.exports = new (class DailyService {
     }); // 이후에 된 날짜가 있는지 확인하고 요일 안에 있는지 필터
 
     const doneSchedule = await DailyRepository.doneSchedule(userId, toDate);
-    const doneScheduleList = doneSchedule.map((done) => done.schedule_id);
-    // 해당 날짜의 스케줄 중에 완료된 것들 목록 (배열로) (O)
+    const doneScheduleList = doneSchedule.map((done) => done.schedule_id); // 해당 날짜의 스케줄 중에 완료된 것들 목록 (배열로) (O)
 
     const dailyTagLists = dailyTagList.map((schedule) => {
       const categoryArr = schedule["UserTag.Tag.category"].split("#");
@@ -83,8 +82,7 @@ module.exports = new (class DailyService {
   };
 
   tagList = async (userId) => {
-    const notNew = await DailyRepository.checkSchedule(userId);
-    // 배열로 스케줄들의 user_tag_id가 배열로써 나오게 (O)
+    const notNew = await DailyRepository.checkSchedule(userId); // 배열로 스케줄들의 user_tag_id가 배열로써 나오게 (O)
 
     const notNewList = notNew.map((check) => {
       return check.user_tag_id;
@@ -94,31 +92,24 @@ module.exports = new (class DailyService {
     const utc = curr.getTime(); // + curr.getTimezoneOffset() * 60 * 1000; // 2. UTC 시간 계산
     const lastDate = new Date(utc + (9 - 24) * 60 * 60 * 1000);
 
-    const result = await DailyRepository.tagList(userId, lastDate);
-    // 구매한 태그들 가져옴 //
+    const result = await DailyRepository.tagList(userId, lastDate); // 구매한 태그들 가져옴 //
+
     const tagLists = result.map((list) => {
       const categoryArr = list["Tag.category"].split("#");
       const category = translation(categoryArr, 1);
-      if (list.start_date == null) {
-        return {
-          userTagId: list.user_tag_id,
-          tagName: list["Tag.tag_name"],
-          period: list.period,
-          new: !notNewList.includes(list.user_tag_id),
-          category,
-          date: list.start_date,
-        }; // start_date 이 생긴적이 있나 없나
-      } else {
-        return {
-          userTagId: list.user_tag_id,
-          tagName: list["Tag.tag_name"],
-          period: list.period,
-          new: !notNewList.includes(list.user_tag_id),
-          category,
-          date:
-            list.start_date.split(" ")[0] + " ~ " + list.end_date.split(" ")[0],
-        }; // 많은 정보를 보내주는 이유는 스케줄 패이지에 쓸 데이터까지 한번에 보내주는 것이다.
-      }
+      let date = list.start_date;
+      if (list.start_date != null) {
+        date =
+          list.start_date.split(" ")[0] + " ~ " + list.end_date.split(" ")[0];
+      } // start_date 이 생긴적이 있나 없나
+      return {
+        userTagId: list.user_tag_id,
+        tagName: list["Tag.tag_name"],
+        period: list.period,
+        new: !notNewList.includes(list.user_tag_id),
+        category,
+        date,
+      };
     });
     return {
       status: 200,
@@ -126,19 +117,6 @@ module.exports = new (class DailyService {
       message: "유저의 태그 목록",
     };
   };
-
-  // schedulePage = async (userId, userTagId) => {
-  //   // 지금 현재 필요없는 로직
-  //   const result = await DailyRepository.schedulePage(userId, userTagId);
-  //   let date = `${result.start_date}~${result.end_date}`;
-
-  //   return {
-  //     status: 200,
-  //     result: date,
-  //     message: "스케줄의 기간",
-  //   };
-  // };
-  // // 지금은 스케줄의 생성에 대한 로직만
 
   scheduleCreate = async (
     userId,
@@ -154,11 +132,22 @@ module.exports = new (class DailyService {
     if (weekCycle == "") {
       return {
         status: 400,
-        message: "선택된 요일이 없다.",
-      }; // "0,1,3,4,5,6" 이라는 형태의 값이 오지 않는 다면?? 확인이 안됨
+        message: "요일을 선택하지 않았습니다.",
+      }; // 각가의 값을 선택하지 않은 경우에 대한 메세지
+    }
+    if (!startTime || !endTime) {
+      return {
+        status: 400,
+        message: "시간을 선택하지 않았습니다.",
+      }; // 각가의 값을 선택하지 않은 경우에 대한 메세지
+    }
+    if (!startDate) {
+      return {
+        status: 400,
+        message: "날짜을 선택하지 않았습니다.",
+      }; // 각가의 값을 선택하지 않은 경우에 대한 메세지
     }
     let [start, end] = [startTime.split(""), endTime.split("")];
-    // startTime, endTime는 둘다 정해져서 와야 한다, (태스트 코드 조건 필요)
     while (start.length != 5 || end.length != 5) {
       if (start[1] == ":") {
         start.unshift("0");
@@ -170,16 +159,17 @@ module.exports = new (class DailyService {
       } else if (end.length != 5) {
         end.push("0");
       }
-    }
+    } // 시간이  0을 생략하는 것에대한 0 넣어주기
     [startTime, endTime] = [start.join(""), end.join("")];
-
     const timeCycle = startTime + "~" + endTime; // startTime + "," + endTime; 00:00 형태
 
-    // startDate는 2022-09-20의 형태로 와야한다. (문자, 숫자, 안되고 정제되지 않아도 안됨)
-
-    const userTag = await DailyRepository.userTagInOf(userId, userTagId);
-    // userTag 에서 구매한 습관의 시작날짜, 지속날짜를 가져온다.
-
+    const userTag = await DailyRepository.userTagInOf(userId, userTagId); // userTag 에서 구매한 습관의 시작날짜, 지속날짜를 가져온다.
+    if (userTag == null) {
+      return {
+        status: 401,
+        message: "가지고 있지않은 구매 습관을 불러오려하고 있다.",
+      };
+    }
     const startDateStr = new Date(startDate); // startDate는 2022-09-20 00:00:00 형태
     startDateStr.setDate(startDateStr.getDate() + userTag.period - 1);
     let endDate = startDateStr.toISOString().split("T")[0]; // 2022-09-25 00:00:00 형태 반환
@@ -189,7 +179,7 @@ module.exports = new (class DailyService {
     } else if (krNewDate < new Date(userTag.start_date)) {
       await DailyRepository.startDateUpdate(userTagId, startDate, endDate); // 시간이 되기전
     } else {
-      const afterDate = startDate + "T+";
+      const afterDate = startDate + "T+"; // 스케줄이 시작된 이후의 생성의 경우 데일리에서 구분하기 위한 로직
       await DailyRepository.schedule(
         userTagId,
         userId,
@@ -211,8 +201,7 @@ module.exports = new (class DailyService {
   };
 
   scheduleUpdate = async (
-    // 스케줄을 선택하고 수정할 때 원래 있던 스케줄 수정
-    userId,
+    userId, // 스케줄을 선택하고 수정할 때 원래 있던 스케줄 수정
     scheduleId,
     startTime,
     endTime,
@@ -222,16 +211,25 @@ module.exports = new (class DailyService {
     const curr = new Date(); // 요청 할 때 한국 시간 구하기
     const utc = curr.getTime(); //+ curr.getTimezoneOffset() * 60 * 1000; // 2. UTC 시간 계산
     const krNewDate = new Date(utc + 9 * 60 * 60 * 1000);
-
     if (weekCycle == "") {
       return {
         status: 400,
-        message: "선택된 요일이 없다.",
-      }; // "0,1,3,4,5,6" 이라는 형태의 값이 오지 않는 다면?? 확인이 안됨
+        message: "요일을 선택하지 않았습니다.",
+      }; // 각가의 값을 선택하지 않은 경우에 대한 메세지
     }
-
+    if (!startTime || !endTime) {
+      return {
+        status: 400,
+        message: "시간을 선택하지 않았습니다.",
+      }; // 각가의 값을 선택하지 않은 경우에 대한 메세지
+    }
+    if (!startDate) {
+      return {
+        status: 400,
+        message: "날짜을 선택하지 않았습니다.",
+      }; // 각가의 값을 선택하지 않은 경우에 대한 메세지
+    }
     let [start, end] = [startTime.split(""), endTime.split("")];
-    // startTime, endTime는 둘다 정해져서 와야 한다, (태스트 코드 조건 필요)
     while (start.length != 5 || end.length != 5) {
       if (start[1] == ":") {
         start.unshift("0");
@@ -243,19 +241,20 @@ module.exports = new (class DailyService {
       } else if (end.length != 5) {
         end.push("0");
       }
-    }
+    } // 시간이  0을 생략하는 것에대한 0 넣어주기
     [startTime, endTime] = [start.join(""), end.join("")];
-
     const timeCycle = startTime + "~" + endTime;
 
-    // startDate는 2022-09-20의 형태로 와야한다. (문자, 숫자, 안되고 정제되지 않아도 안됨)
-
-    const schedule = await DailyRepository.scheduleInOf(userId, scheduleId);
-    // 유저가 생성한 스케줄의 정보
-
+    const schedule = await DailyRepository.scheduleInOf(userId, scheduleId); // 유저가 생성한 스케줄의 정보
+    if (schedule == null) {
+      return {
+        status: 401,
+        message: "존재하지 않은 스케줄을 수정하려 한다.",
+      };
+    }
     const userTagId = schedule.user_tag_id;
-    const startDateStr = new Date(startDate);
-    startDate = startDate; // startDate는 2022-09-20 00:00:00 형태
+
+    const startDateStr = new Date(startDate); // startDate는 2022-09-20 00:00:00 형태
     startDateStr.setDate(
       startDateStr.getDate() + schedule["UserTag.period"] - 1
     );
@@ -270,14 +269,7 @@ module.exports = new (class DailyService {
       await DailyRepository.startDateUpdate(userTagId, startDate, endDate); // 시간이 되기전
       await DailyRepository.scheduleUpdate(scheduleId, timeCycle, weekCycle);
     } else {
-      let afterDate = startDate + "T-";
-      await DailyRepository.scheduleUpdate(
-        scheduleId,
-        timeCycle,
-        weekCycle,
-        afterDate
-      );
-      afterDate = startDate + "T+";
+      let afterDate = startDate + "T+";
       await DailyRepository.schedule(
         userTagId,
         userId,
@@ -285,6 +277,16 @@ module.exports = new (class DailyService {
         weekCycle,
         afterDate
       );
+      const startDateStr = new Date(startDate);
+      startDateStr.setDate(startDateStr.getDate() - 1);
+      afterDate = startDateStr.toISOString().split("T")[0] + "T-";
+      await DailyRepository.scheduleUpdate(
+        scheduleId,
+        timeCycle,
+        weekCycle,
+        afterDate
+      );
+
       return {
         status: 203,
         message: "스케줄 생성됨 시작날짜 수정 안됨 스케줄 시작했음",
