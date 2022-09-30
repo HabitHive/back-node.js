@@ -71,7 +71,11 @@ module.exports = new (class TagRepository {
   };
 
   tagCheck = async (tag_id) => {
-    return await Tag.findOne({ where: { tag_id } });
+    return await Tag.findOne({
+      where: { tag_id },
+      attributes: ["tag_id", "tag_name"],
+      raw: true,
+    });
   };
 
   mytagDelete = async (user_id, tag_id) => {

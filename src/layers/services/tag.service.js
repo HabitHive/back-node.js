@@ -197,7 +197,11 @@ module.exports = new (class TagService {
       return { status: 400, message: "내 존재하지 않는 테그입니다." };
     }
     await TagRepository.mytagDelete(userId, tagId);
-    return { status: 200, message: "내 습관 테그 삭제" };
+    return {
+      status: 200,
+      result: checking.tag_name,
+      message: "내 습관 테그 삭제",
+    };
   };
 
   monthDone = async (userId, strDate) => {
