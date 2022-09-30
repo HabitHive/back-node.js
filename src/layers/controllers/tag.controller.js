@@ -21,10 +21,10 @@ module.exports = new (class TagController {
       const { userId } = res.locals;
       const { tagId, period } = req.body;
 
-      const date = await TagService.tagBuy(userId, tagId, period);
+      const data = await TagService.tagBuy(userId, tagId, period);
       return res
-        .status(date.status)
-        .json({ result: date.result, message: date.message });
+        .status(data.status)
+        .json({ result: data.result, message: data.message });
     } catch (error) {
       console.log(error);
       res.status(400).send(error.message);
@@ -36,10 +36,10 @@ module.exports = new (class TagController {
       const { userId } = res.locals;
       const { tagName, category } = req.body;
 
-      const date = await TagService.mytagCreate(userId, tagName, category);
+      const data = await TagService.mytagCreate(userId, tagName, category);
       return res
-        .status(date.status)
-        .json({ result: date.result, message: date.message });
+        .status(data.status)
+        .json({ result: data.result, message: data.message });
     } catch (error) {
       console.log(error);
       res.status(400).send(error.message);
@@ -51,10 +51,10 @@ module.exports = new (class TagController {
       const { userId } = res.locals;
       const { tagId } = req.body;
 
-      const date = await TagService.mytagDelete(userId, tagId);
+      const data = await TagService.mytagDelete(userId, tagId);
       return res
-        .status(date.status)
-        .json({ result: date.result, message: date.message });
+        .status(data.status)
+        .json({ result: data.result, message: data.message });
     } catch (error) {
       console.log(error);
       res.status(400).send(error.message);
