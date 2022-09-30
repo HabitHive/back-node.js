@@ -6,11 +6,11 @@ module.exports = new (class Dailycontroller {
       const { userId } = res.locals;
       const { todayDate } = req.query;
 
-      const date = await DailyService.dailyPage(userId, todayDate);
+      const data = await DailyService.dailyPage(userId, todayDate);
 
       return res
-        .status(date.status)
-        .json({ result: date.result, message: date.message });
+        .status(data.status)
+        .json({ result: data.result, message: data.message });
     } catch (error) {
       console.log(error);
       res.status(400).send(error.message);
@@ -20,11 +20,11 @@ module.exports = new (class Dailycontroller {
   dailyTagList = async (req, res, next) => {
     try {
       const { userId } = res.locals;
-      const date = await DailyService.tagList(userId);
+      const data = await DailyService.tagList(userId);
 
       return res
-        .status(date.status)
-        .json({ result: date.result, message: date.message });
+        .status(data.status)
+        .json({ result: data.result, message: data.message });
     } catch (error) {
       console.log(error);
       res.status(400).send(error.message);
@@ -37,7 +37,7 @@ module.exports = new (class Dailycontroller {
       const { userTagId } = req.params;
       const { startTime, endTime, weekCycle, startDate } = req.body;
 
-      const date = await DailyService.scheduleCreate(
+      const data = await DailyService.scheduleCreate(
         userId,
         userTagId / 1,
         startTime,
@@ -47,8 +47,8 @@ module.exports = new (class Dailycontroller {
       );
 
       return res
-        .status(date.status)
-        .json({ result: date.result, message: date.message });
+        .status(data.status)
+        .json({ result: data.result, message: data.message });
     } catch (error) {
       console.log(error);
       res.status(400).send(error.message);
@@ -62,7 +62,7 @@ module.exports = new (class Dailycontroller {
       const { scheduleId } = req.params;
       const { startTime, endTime, weekCycle, startDate } = req.body;
 
-      const date = await DailyService.scheduleUpdate(
+      const data = await DailyService.scheduleUpdate(
         userId,
         scheduleId / 1,
         startTime,
@@ -72,8 +72,8 @@ module.exports = new (class Dailycontroller {
       );
 
       return res
-        .status(date.status)
-        .json({ result: date.result, message: date.message });
+        .status(data.status)
+        .json({ result: data.result, message: data.message });
     } catch (error) {
       console.log(error);
       res.status(400).send(error.message);
@@ -86,11 +86,11 @@ module.exports = new (class Dailycontroller {
       const { userId } = res.locals;
       const { scheduleId } = req.params;
 
-      const date = await DailyService.scheduleDelete(userId, scheduleId / 1);
+      const data = await DailyService.scheduleDelete(userId, scheduleId / 1);
 
       return res
         .status(date.status)
-        .json({ result: date.result, message: date.message });
+        .json({ result: data.result, message: data.message });
     } catch (error) {
       console.log(error);
       res.status(400).send(error.message);

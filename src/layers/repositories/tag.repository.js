@@ -28,7 +28,7 @@ module.exports = new (class TagRepository {
   tagAllList = async (user_id, attention) => {
     return await Tag.findAll({
       where: {
-        [Op.or]: { user_id, user_id: null },
+        user_id: { [Op.or]: [user_id, null] },
         category: { [Op.like]: `%${attention}%` },
       }, // 선택한 관심 목록을 불러오기 위한
       raw: true,
@@ -39,7 +39,7 @@ module.exports = new (class TagRepository {
     let tagList = [];
     for (let i = 0; i < categoryCount; i++) {
       const list = await Tag.findAll({
-        [Op.or]: { user_id, user_id: null },
+        user_id: { [Op.or]: [user_id, null] },
         where: { category: { [Op.like]: `%${userInterest[i]}%` } },
         raw: true,
       });
@@ -68,6 +68,10 @@ module.exports = new (class TagRepository {
 
   mytagCreate = async (user_id, tag_name, category) => {
     await Tag.create({ user_id, tag_name, category });
+  };
+
+  tagCheck = async (tag_id) => {
+    return await Tag.findOne({ where: { tag_id } });
   };
 
   mytagDelete = async (user_id, tag_id) => {
