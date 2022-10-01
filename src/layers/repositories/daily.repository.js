@@ -16,6 +16,7 @@ module.exports = new (class DailyRepository {
   dailyPage = async (user_id, toDate) => {
     return await Schedule.findAll({
       where: { user_id },
+      order: [["time_cycle", "ASC"]], // 정렬할 컬럼명과 오름차순 구분
       attributes: [
         "schedule_id",
         "user_tag_id",
@@ -51,7 +52,7 @@ module.exports = new (class DailyRepository {
 
   tagList = async (user_id, lastDate) => {
     return await UserTag.findAll({
-      order: [["createdAt", "desc"]], // 정렬할 컬럼명과 오름차순/내림차순 구분
+      order: [["createdAt", "desc"]], // 정렬할 컬럼명과 내림차순 구분
       where: {
         user_id,
         end_date: { [Op.or]: { [Op.gte]: lastDate, [Op.eq]: null } },

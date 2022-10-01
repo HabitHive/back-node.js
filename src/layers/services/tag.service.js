@@ -160,13 +160,48 @@ module.exports = new (class TagService {
   };
 
   mytagCreate = async (userId, tagName, category) => {
+    if (!category || !tagName) {
+      return { status: 400, message: "내 습관 추가에 실패했습니다." };
+    }
+    let categorys = category.split("#"); //형태가 이상할 때
+    const categoryList = [
+      "workout",
+      "study",
+      "hobby",
+      "diet",
+      "cleaning",
+      "wellness",
+      "self-development",
+      "test",
+      "cook",
+      "certificate",
+      "book",
+      "etc",
+    ];
+    for (let i = 0; i < categorys.length; i++) {
+      if (!categoryList.includes(categorys[i])) {
+        return {
+          status: 400,
+          result: category,
+          message: "카테고리 목록에 없는 카테고리가 왔다.",
+        };
+      }
+    }
     await TagRepository.mytagCreate(userId, tagName, category);
     return { status: 200, message: "내 습관 테그 추가" };
   };
 
   mytagDelete = async (userId, tagId) => {
+    const checking = await TagRepository.tagCheck(tagId);
+    if (!checking) {
+      return { status: 400, message: "내 존재하지 않는 테그입니다." };
+    }
     await TagRepository.mytagDelete(userId, tagId);
-    return { status: 200, message: "내 습관 테그 삭제" };
+    return {
+      status: 200,
+      result: checking.tag_name,
+      message: "내 습관 테그 삭제",
+    };
   };
 
   monthDone = async (userId, strDate) => {
