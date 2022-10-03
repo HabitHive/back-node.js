@@ -108,6 +108,7 @@ module.exports = new (class DailyService {
         period: list.period,
         new: !notNewList.includes(list.user_tag_id),
         category,
+        color: list["Tag.color"],
         date,
       };
     });
