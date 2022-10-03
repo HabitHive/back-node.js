@@ -49,7 +49,7 @@ module.exports = new (class TagRepository {
   };
 
   tagBuy = async (user_id, tag_id, period, point, lastDate) => {
-    const result = await UserTag.findOrCreate({
+    return await UserTag.findOrCreate({
       where: {
         user_id,
         tag_id,
@@ -63,11 +63,24 @@ module.exports = new (class TagRepository {
         User.update({ point }, { where: { user_id } });
       }
     });
-    return result;
   };
 
   mytagCreate = async (user_id, tag_name, category, color) => {
-    await Tag.create({ user_id, tag_name, category, color });
+    return await Tag.findOrCreate({
+      where: {
+        user_id,
+        tag_name,
+        category,
+        color,
+      },
+      raw: true,
+    }).then(([save, created]) => {
+      if (!created) {
+        return save;
+      } else {
+        return save;
+      }
+    });
   };
 
   tagCheck = async (tag_id) => {
