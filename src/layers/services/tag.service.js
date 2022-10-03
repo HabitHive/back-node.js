@@ -164,7 +164,7 @@ module.exports = new (class TagService {
       return { status: 400, message: "내 습관 이름이 없습니다." };
     }
     const category = "myhabit";
-    const color = 4;
+    const color = 1;
     await TagRepository.mytagCreate(userId, tagName, category, color);
     return { status: 200, message: "내 습관 테그 추가" };
   };
