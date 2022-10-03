@@ -159,14 +159,55 @@ module.exports = new (class TagService {
     return { status: 200, result: point, message: "내 습관 구매 완료" };
   };
 
-  mytagCreate = async (userId, tagName) => {
+  mytagCreate = async (userId, tagName, period) => {
     if (!tagName) {
       return { status: 400, message: "내 습관 이름이 없습니다." };
     }
+    if (!period) {
+      return { status: 400, message: "구매할 요일 선택하지 않았다." };
+    }
     const category = "myhabit";
     const color = 1;
-    await TagRepository.mytagCreate(userId, tagName, category, color);
-    return { status: 200, message: "내 습관 테그 추가" };
+    const creationTag = await TagRepository.mytagCreate(
+      userId,
+      tagName,
+      category,
+      color
+    );
+    const tagId = creationTag.tag_id;
+    const userInfo = await TagRepository.userInterest(userId);
+    const fixPoint = period * 10; // 포인트는 날짜의 *10
+    const point = userInfo.point - fixPoint;
+
+    if (point < 0) {
+      // 포인트를 계산해서 포인트가 부족하면 실행 안 함
+      return {
+        status: 400,
+        result: point,
+        message: "보유한 포인트가 부족합니다.",
+      };
+    } // 포인트를 개산해서 포인트가 부족하면 부족한 포인트 리턴
+
+    const curr = new Date(); // 요청 할 때 한국 시간 구하기
+    const utc = curr.getTime(); //+ curr.getTimezoneOffset() * 60 * 1000; // 2. UTC 시간 계산
+    const lastDate = new Date(utc + 9 * 60 * 60 * 1000);
+
+    const result = await TagRepository.tagBuy(
+      userId,
+      tagId,
+      period,
+      point, // 포인트 개산한것 업데이트 하면서 태그를 구매
+      lastDate // 구매할때 내가 구매한 태그가 없으면 구매
+    );
+    if (result == "잘못된 요청") {
+      return {
+        status: 403,
+        result: userInfo.point,
+        message: "이미 구매한 태그에 대한 요청입니다.",
+      };
+    }
+
+    return { status: 200, result: point, message: "내 습관 구매 완료" };
   };
 
   mytagDelete = async (userId, tagId) => {
