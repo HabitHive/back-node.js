@@ -12,6 +12,7 @@ module.exports = (categoryArr, option) => {
     "자격증",
     "독서",
     "기타",
+    "내 습관",
   ];
   const en = [
     "workout",
@@ -26,6 +27,7 @@ module.exports = (categoryArr, option) => {
     "certificate",
     "book",
     "etc",
+    "myhabit",
   ];
 
   let category = [];
