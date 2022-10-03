@@ -42,7 +42,7 @@ module.exports = class Tag extends Sequelize.Model {
       onUpdate: "cascade",
     });
     db.Tag.belongsTo(db.User, {
-      foreignKey: { name: "user_id", allowNull: false },
+      foreignKey: { name: "user_id", allowNull: true },
       onDelete: "cascade",
       onUpdate: "cascade",
     });

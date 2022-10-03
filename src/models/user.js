@@ -57,7 +57,7 @@ module.exports = class User extends Sequelize.Model {
       onUpdate: "cascade",
     });
     db.User.hasMany(db.Tag, {
-      foreignKey: { name: "user_id", allowNull: false },
+      foreignKey: { name: "user_id", allowNull: true },
       onDelete: "cascade",
       onUpdate: "cascade",
     });

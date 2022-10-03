@@ -18,10 +18,6 @@ module.exports = class Point extends Sequelize.Model {
         user_tag_id: {
           type: Sequelize.INTEGER,
           allowNull: true,
-          references: {
-            model: UserTag,
-            key: "user_tag_id",
-          },
         },
         point: {
           type: Sequelize.INTEGER,
