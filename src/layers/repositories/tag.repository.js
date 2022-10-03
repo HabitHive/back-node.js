@@ -66,14 +66,14 @@ module.exports = new (class TagRepository {
     return result;
   };
 
-  mytagCreate = async (user_id, tag_name, category) => {
-    await Tag.create({ user_id, tag_name, category });
+  mytagCreate = async (user_id, tag_name, category, color) => {
+    await Tag.create({ user_id, tag_name, category, color });
   };
 
   tagCheck = async (tag_id) => {
     return await Tag.findOne({
       where: { tag_id },
-      attributes: ["tag_id", "tag_name"],
+      attributes: ["user_id", "tag_name"],
       raw: true,
     });
   };
