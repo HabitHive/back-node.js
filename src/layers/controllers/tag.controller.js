@@ -34,9 +34,9 @@ module.exports = new (class TagController {
   mytagCreate = async (req, res, next) => {
     try {
       const { userId } = res.locals;
-      const { tagName, category } = req.body;
+      const { tagName } = req.body;
 
-      const data = await TagService.mytagCreate(userId, tagName, category);
+      const data = await TagService.mytagCreate(userId, tagName);
       return res
         .status(data.status)
         .json({ result: data.result, message: data.message });
@@ -49,7 +49,7 @@ module.exports = new (class TagController {
   mytagDelete = async (req, res, next) => {
     try {
       const { userId } = res.locals;
-      const { tagId } = req.body;
+      const { tagId } = req.query;
 
       const data = await TagService.mytagDelete(userId, tagId);
       return res
