@@ -1,0 +1,5 @@
+## 모듈
+node_modules
+
+## 환경변수
+.env
