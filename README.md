@@ -80,7 +80,7 @@ Library | description
 |성명|GitHub|E-mail|
 |----|-----|-----|
 | **용성령**🔰|https://github.com/soularofdawn|tjdfud1789@naver.com|
-| **최진광** |https://github.com/jinguang-chou||
+| **최진광** |https://github.com/jinguang-chou|chjg1231@gmail.com|
 | **김영광** |https://github.com/maneuljokbal||
 
 ### 💜 Front-End Repo [보러가기][front] 💜
