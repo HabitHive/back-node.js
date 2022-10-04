@@ -44,9 +44,13 @@ module.exports = new (class TagService {
     let tagAllLists = await TagRepository.tagAllList(userId, attention);
     // 태그 전체 목록 리스트
 
-    const tagAllFilterList = tagAllLists.filter(
+    tagAllLists = tagAllLists.filter(
       (tag) => !tagIdBuyList.includes(tag.tag_id)
     ); // 전체 태그 리스트 중에서 구매한 태그들 필터
+
+    const tagAllFilterList = tagAllLists // 습관 중에서 내 습관만 제일 위로
+      .filter((tag) => tag.category == "myhabit")
+      .concat(tagAllLists.filter((tag) => tag.category != "myhabit"));
 
     const tagAllList = tagAllFilterList.map((tag) => {
       const categoryArr = tag.category.split("#");
@@ -203,7 +207,7 @@ module.exports = new (class TagService {
       return {
         status: 403,
         result: userInfo.point,
-        message: "이미 구매한 태그에 대한 요청입니다.",
+        message: "이미 생성한 이름의 습관을 구매 하셨습니다.",
       };
     }
 
