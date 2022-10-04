@@ -38,7 +38,6 @@ module.exports = class Tag extends Sequelize.Model {
   static associate(db) {
     db.Tag.hasMany(db.UserTag, {
       foreignKey: { name: "tag_id", allowNull: false },
-      onDelete: "cascade",
       onUpdate: "cascade",
     });
     db.Tag.belongsTo(db.User, {

@@ -15,7 +15,7 @@ module.exports = class UserTag extends Sequelize.Model {
         },
         tag_id: {
           type: Sequelize.INTEGER,
-          allowNull: false,
+          allowNull: true,
         },
         period: {
           type: Sequelize.INTEGER,
@@ -55,7 +55,6 @@ module.exports = class UserTag extends Sequelize.Model {
     });
     db.UserTag.belongsTo(db.Tag, {
       foreignKey: { name: "tag_id", allowNull: false },
-      onDelete: "cascade",
       onUpdate: "cascade",
     });
     db.UserTag.hasMany(db.Schedule, {
