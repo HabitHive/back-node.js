@@ -27,6 +27,8 @@ module.exports = new (class TagRepository {
 
   tagAllList = async (user_id, attention) => {
     return await Tag.findAll({
+      // order: [["category", "DESC"]],
+      // order: [sequelize.fn("otherfunction", sequelize.col("myhabit")), "DESC"],
       where: {
         user_id: { [Op.or]: [user_id, null] },
         category: { [Op.like]: `%${attention}%` },
