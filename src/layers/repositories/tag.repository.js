@@ -94,7 +94,7 @@ module.exports = new (class TagRepository {
   };
 
   mytagDelete = async (user_id, tag_id) => {
-    await Tag.destroy({ where: { user_id, tag_id } });
+    await Tag.update({ user_id: -user_id }, { where: { user_id, tag_id } });
   };
 
   myAllTagList = async (user_id) => {
