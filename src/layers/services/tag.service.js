@@ -221,7 +221,7 @@ module.exports = new (class TagService {
     } else if (checking.user_id != userId) {
       return { status: 400, message: "내 습관이 아닙니다." };
     }
-    await TagRepository.mytagDelete(userId, tagId);
+    await TagRepository.mytagDelete(userId, tagId); //실제로 삭제하지 않음
     return {
       status: 200,
       result: checking.tag_name,
