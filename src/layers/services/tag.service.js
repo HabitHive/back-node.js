@@ -164,6 +164,9 @@ module.exports = new (class TagService {
   };
 
   mytagCreate = async (userId, tagName, period) => {
+    if (tagName.length < 16) {
+      return { status: 400, message: "글자 수가 넘었습니다." };
+    }
     if (!tagName) {
       return { status: 400, message: "내 습관 이름이 없습니다." };
     }
