@@ -79,7 +79,7 @@ Library | description
 ## 👥 Back-End 팀원
 |성명|GitHub|E-mail|
 |----|-----|-----|
-| **용성령**🔰|https://github.com/soularofdawn|tjdfud1789@naver.com|
+| **용성령**🔰|https://github.com/ryeong25|tjdfud1789@naver.com|
 | **최진광** |https://github.com/jinguang-chou|chjg1231@gmail.com|
 | **김영광** |https://github.com/maneuljokbal||
 
